@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="rummy-server" />
+        <module name="rummy-client" />
+        <module name="rummy-shared" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="rummy-client" target="1.7" />
+      <module name="rummy-server" target="9" />
+      <module name="rummy-shared" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
