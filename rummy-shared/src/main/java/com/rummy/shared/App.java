@@ -1,4 +1,4 @@
-package com.rummy.app;
+package com.rummy.shared;
 
 /**
  * Hello world!
