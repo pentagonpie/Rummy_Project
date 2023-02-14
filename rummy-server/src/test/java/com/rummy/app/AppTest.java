@@ -1,4 +1,4 @@
-package com.rummy-project.app;
+package com.rummy.app;
 
 import static org.junit.Assert.assertTrue;
 
