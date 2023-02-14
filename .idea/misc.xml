@@ -6,6 +6,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/rummy-client/pom.xml" />
         <option value="$PROJECT_DIR$/rummy-server/pom.xml" />
+        <option value="$PROJECT_DIR$/rummy-shared/pom.xml" />
       </list>
     </option>
   </component>

@@ -5,5 +5,7 @@
     <file url="file://$PROJECT_DIR$/rummy-client/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rummy-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rummy-server/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rummy-shared/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rummy-shared/src/main/resources" charset="UTF-8" />
   </component>
 </project>

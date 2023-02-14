@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/Rummy_Project.iml" filepath="$PROJECT_DIR$/.idea/Rummy_Project.iml" />
       <module fileurl="file://$PROJECT_DIR$/rummy-client/rummy-client.iml" filepath="$PROJECT_DIR$/rummy-client/rummy-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/rummy-server/rummy-server.iml" filepath="$PROJECT_DIR$/rummy-server/rummy-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rummy-shared/rummy-shared.iml" filepath="$PROJECT_DIR$/rummy-shared/rummy-shared.iml" />
     </modules>
   </component>
 </project>
