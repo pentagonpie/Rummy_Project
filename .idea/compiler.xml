@@ -12,9 +12,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="rummy-client" target="1.7" />
-      <module name="rummy-server" target="9" />
-      <module name="rummy-shared" target="1.7" />
+      <module name="rummy-ui" target="18" />
     </bytecodeTargetLevel>
   </component>
 </project>
