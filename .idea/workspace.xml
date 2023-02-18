@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0603aebd-e0d0-43a4-9bb8-50b2e9e4613b" name="Changes" comment="complete basic rmi server with login function">
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/login.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/RummyApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/hello-view.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-client-1/rummy-client.iml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
