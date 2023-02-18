@@ -8,13 +8,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 
-public class HelloApplication extends Application {
+public class RummyApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException, NotBoundException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(RummyApplication.class.getResource("login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        boolean result = new RMIClient().login("nadav", "123456");
-        stage.setTitle(result ? "Hello Nadav!" : "Hello guest");
+        stage.setTitle("Welcome to Rummy!");
         stage.setScene(scene);
         stage.show();
     }

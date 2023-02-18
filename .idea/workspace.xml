@@ -5,52 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0603aebd-e0d0-43a4-9bb8-50b2e9e4613b" name="Changes" comment="complete basic rmi server with login function">
-      <change afterPath="$PROJECT_DIR$/Rummy/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-client.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-client/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-client/src/it/settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-client/src/it/simple-it/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-client/src/it/simple-it/verify.groovy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-client/src/main/java/com/rummy/MyMojo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-server.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-server/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-server/src/it/settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-server/src/it/simple-it/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-server/src/it/simple-it/verify.groovy" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Rummy/rummy-server/src/main/java/com/rummy/MyMojo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-shared/src/main/java/module-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/RMIClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/login.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/module-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/rummy-ui/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/src/main/java/com/rummy/client/app/App.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/src/main/java/com/rummy/client/app/RMIClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/src/main/java/com/rummy/client/app/RunClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/src/test/java/com/rummy/app/AppTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/target/classes/com/rummy/client/app/App.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/target/classes/com/rummy/client/app/RMIClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/target/classes/com/rummy/client/app/RunClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-client/target/test-classes/com/rummy/app/AppTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-shared/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-shared/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-shared/target/classes/com/rummy/shared/RummyServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-shared/target/classes/com/rummy/shared/RummyServer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-shared/target/test-classes/com/rummy/shared/AppTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-shared/target/test-classes/com/rummy/shared/AppTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rummy-ui/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/HelloApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/hello-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/RummyApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/hello-view.fxml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,24 +45,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Downloaded.Files.Path.Enabled": "false",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "jdk.selected.JAVA_MODULE": "18",
-    "last_opened_file_path": "/Users/nadavba/Projects/personal/Rummy_Project/rummy-client/src/main/java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;18&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/nadavba/Projects/personal/Rummy_Project/rummy-client/src/main/java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/rummy-client/src/main/java" />
@@ -120,9 +80,9 @@
       <recent name="com.rummy.shared" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.HelloApplication">
-    <configuration name="HelloApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.rummy.ui.rummyui.HelloApplication" />
+  <component name="RunManager" selected="Application.RummyApplication">
+    <configuration name="RummyApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.rummy.ui.rummyui.RummyApplication" />
       <module name="rummy-ui" />
       <extension name="coverage">
         <pattern>
@@ -160,9 +120,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="rummy-ui" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="rummy-ui" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.HelloApplication" />
+        <item itemvalue="Application.RummyApplication" />
         <item itemvalue="Application.RunServer" />
         <item itemvalue="Application.RunClient" />
       </list>
