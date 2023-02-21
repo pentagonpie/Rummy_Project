@@ -19,7 +19,7 @@
                </font>
             </Label>
             <Button layoutX="237.0" layoutY="161.0" mnemonicParsing="false" text="Join existing game" />
-            <Button layoutX="29.0" layoutY="340.0" mnemonicParsing="false" onAction="#onLogoutClick" text="Logout" />
+            <Button fx:id="btnLogout" layoutX="29.0" layoutY="340.0" mnemonicParsing="false" onAction="#onLogoutClick" text="Logout" />
          </children>
       </AnchorPane>
    </children>

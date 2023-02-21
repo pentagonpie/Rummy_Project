@@ -25,6 +25,8 @@ public class LoginController {
 
     @FXML
     protected TextField password;
+    
+    @FXML
     private Button btnLogin;
 
     @FXML
@@ -34,19 +36,21 @@ public class LoginController {
         final Boolean loginResult = this.rmiClient.login(username, password);
 
         if (loginResult) {
-
-        try {
-            //Parent fxmlLoader = FXMLLoader.load(getClass().getResource("mainScreen.fxml"));
-            FXMLLoader  fxmlLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
-            Scene scene;
-            System.out.println("testing1");
-            //scene = new Scene(fxmlLoader);
-            Stage primaryStage = new Stage();
-            primaryStage.setScene(new Scene(fxmlLoader.load()));
-            primaryStage.setTitle("Welcome to Rummy!");
             
-            //primaryStage.initOwner(btnLogin.getScene().getWindow());
-            primaryStage.show();
+        try {
+            
+            //Open main window
+            FXMLLoader  fxmlLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
+            
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(fxmlLoader.load()));
+            newStage.setTitle("Welcome to Rummy!");
+            newStage.show();
+            
+            //Close login window
+            Stage primaryStage = (Stage) btnLogin.getScene().getWindow();
+            primaryStage.close();
+            
         } catch (Exception e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -58,6 +62,7 @@ public class LoginController {
             
 
         }else{
+            //Wrong credentials, show alert
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Login Failed");
             alert.setHeaderText("try again");

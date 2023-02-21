@@ -26,7 +26,8 @@ public class MainScreenController  {
     /**
      * Initializes the controller class.
      */
-    private Button logout;
+    @FXML
+    private Button btnLogout;
     
     @FXML
     protected void onLogoutClick()  {
@@ -34,10 +35,14 @@ public class MainScreenController  {
         Scene scene;
         try {
             scene = new Scene(fxmlLoader.load(), 320, 240);
-            Stage primaryStage = new Stage();
-            primaryStage.setTitle("Welcome to Rummy!");
-            primaryStage.setScene(scene);
-            primaryStage.show();
+            Stage newStage = new Stage();
+            newStage.setTitle("Welcome to Rummy!");
+            newStage.setScene(scene);
+            newStage.show();
+            
+            //Close login window
+            Stage primaryStage = (Stage) btnLogout.getScene().getWindow();
+            primaryStage.close();
         } catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
