@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="com.rummy.ui.rummyui.MainScreenController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rummy.ui.rummyui.MainScreenController">
    <children>
       <AnchorPane id="AnchorPane" prefHeight="410.0" prefWidth="610.0">
          <children>
@@ -20,7 +19,7 @@
                </font>
             </Label>
             <Button layoutX="237.0" layoutY="161.0" mnemonicParsing="false" text="Join existing game" />
-            <Button layoutX="29.0" layoutY="340.0" mnemonicParsing="false" text="Logout" />
+            <Button layoutX="29.0" layoutY="340.0" mnemonicParsing="false" onAction="#onLogoutClick" text="Logout" />
          </children>
       </AnchorPane>
    </children>
