@@ -34,6 +34,8 @@ public class LoginController {
 
         if (loginResult) {
 
+            DataManager.setUserName(username);
+
             try {
                 //Open main window
                 FXMLLoader fxmlLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));

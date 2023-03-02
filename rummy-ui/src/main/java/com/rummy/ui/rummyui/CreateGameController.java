@@ -28,7 +28,8 @@ public class CreateGameController {
 
     @FXML
     protected void onCreateNewGameClick() {
-        Game createdGame = this.rmiClient.createGame(gameName.getText(), "test");
+        final String userName = DataManager.getUserName();
+        final Game createdGame = this.rmiClient.createGame(gameName.getText(), userName);
         FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
 
         try {

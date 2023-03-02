@@ -12,6 +12,6 @@ public class GameController {
 
     void startGame(Game game) {
         this.game = game;
-        this.gameName.setText(this.game.getName());
+        this.gameName.setText("creator: " + game.getCreator() + ", game name: " + this.game.getName());
     }
 }

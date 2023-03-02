@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0603aebd-e0d0-43a4-9bb8-50b2e9e4613b" name="Changes" comment="add create game screen">
-      <change afterPath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/Game.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/GameController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/gameScreen.fxml" afterDir="false" />
+    <list default="true" id="0603aebd-e0d0-43a4-9bb8-50b2e9e4613b" name="Changes" comment="update gitignore">
+      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/DataManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/RummyServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/RummyServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/CreateGameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/CreateGameController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/RMIClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/RMIClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/LoginController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +19,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="FxmlFile" />
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -49,24 +45,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Downloaded.Files.Path.Enabled": "false",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "jdk.selected.JAVA_MODULE": "18",
-    "last_opened_file_path": "/Users/nadavba/Projects/personal/rummy-project-temp/Rummy_Project/rummy-ui/src/main/resources/com/rummy/ui/rummyui",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;18&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/nadavba/Projects/personal/rummy-project-temp/Rummy_Project/rummy-ui/src/main/resources/com/rummy/ui/rummyui&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui" />
