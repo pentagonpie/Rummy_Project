@@ -4,13 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0603aebd-e0d0-43a4-9bb8-50b2e9e4613b" name="Changes" comment="complete basic rmi server with login function">
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/CreateGameController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/createGameScreen.fxml" afterDir="false" />
+    <list default="true" id="0603aebd-e0d0-43a4-9bb8-50b2e9e4613b" name="Changes" comment="add create game screen">
+      <change afterPath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/Game.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/GameController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/gameScreen.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/MainScreenController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/MainScreenController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/mainScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/mainScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/RummyServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/RummyServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/CreateGameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/CreateGameController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/RMIClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/RMIClient.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +24,7 @@
       <list>
         <option value="FxmlFile" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -46,31 +49,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;18&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/nadavba/Projects/personal/Rummy_Project/rummy-client/src/main/java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Downloaded.Files.Path.Enabled": "false",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "jdk.selected.JAVA_MODULE": "18",
+    "last_opened_file_path": "/Users/nadavba/Projects/personal/rummy-project-temp/Rummy_Project/rummy-ui/src/main/resources/com/rummy/ui/rummyui",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui" />
       <recent name="$PROJECT_DIR$/rummy-client/src/main/java" />
       <recent name="$PROJECT_DIR$/rummy-shared/src/main/java" />
       <recent name="$PROJECT_DIR$/rummy-shared" />
       <recent name="$PROJECT_DIR$/rummy-client/src/main/java/com/rummy/client/app" />
-      <recent name="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/rummy-client/src/main/java" />
@@ -148,7 +151,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676364155965</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="add create game screen">
+      <created>1677788875497</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1677788875497</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -164,6 +174,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add basic rmi files" />
-    <option name="LAST_COMMIT_MESSAGE" value="add basic rmi files" />
+    <MESSAGE value="add create game screen" />
+    <option name="LAST_COMMIT_MESSAGE" value="add create game screen" />
   </component>
 </project>

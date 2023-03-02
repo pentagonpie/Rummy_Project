@@ -1,5 +1,6 @@
 package com.rummy.ui.rummyui;
 
+import com.rummy.shared.Game;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,8 +10,15 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 public class CreateGameController {
+    private final RMIClient rmiClient;
+
+    public CreateGameController() throws NotBoundException, RemoteException {
+        this.rmiClient = new RMIClient();
+    }
 
     @FXML
     private Button btnCreateGame;
@@ -20,20 +28,24 @@ public class CreateGameController {
 
     @FXML
     protected void onCreateNewGameClick() {
-        FXMLLoader createGameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("createGameScreen.fxml"));
-        Scene createGameScene;
+        Game createdGame = this.rmiClient.createGame(gameName.getText(), "test");
+        FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
+
         try {
-            createGameScene = new Scene(createGameScreenLoader.load());
+            Scene createGameScene = new Scene(gameScreenLoader.load());
             Stage newStage = new Stage();
-            newStage.setTitle("Create new game");
             newStage.setScene(createGameScene);
+            GameController gameController = gameScreenLoader.getController();
+            gameController.startGame(createdGame);
+
             newStage.show();
-            Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
-            primaryStage.close();
+
+            Stage currentStage = (Stage) btnCreateGame.getScene().getWindow();
+            currentStage.close();
         } catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
-            alert.setHeaderText("Exception at main screen controller");
+            alert.setHeaderText("Exception at new game screen controller");
             alert.show();
         }
     }

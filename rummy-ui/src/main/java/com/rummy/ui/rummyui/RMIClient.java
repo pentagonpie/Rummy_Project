@@ -1,5 +1,6 @@
 package com.rummy.ui.rummyui;
 
+import com.rummy.shared.Game;
 import com.rummy.shared.RummyServer;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -17,6 +18,14 @@ public class RMIClient {
     public boolean login(String username, String password) {
         try {
             return server.login(username, password);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Game createGame(String name, String creatorUserName) {
+        try {
+            return server.createNewGame(name, creatorUserName);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
