@@ -8,6 +8,7 @@ module com.rummy.ui.rummyui {
     requires com.almasb.fxgl.all;
     requires java.rmi;
     requires com.rummy.shared;
+    requires java.base;
 
     opens com.rummy.ui.rummyui to javafx.fxml;
     exports com.rummy.ui.rummyui;
