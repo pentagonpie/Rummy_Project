@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -18,37 +19,42 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.EventListener;
+import java.util.List;
 
-public class CreateGameController implements GameStartedEventListener {
+public class JoinGameController implements GameStartedEventListener {
     private final RMIClient rmiClient;
 
-    public CreateGameController() throws NotBoundException, RemoteException {
+    public JoinGameController() throws NotBoundException, IOException {
         this.rmiClient = RMIClient.getInstance();
         GameEventsManager.register((EventListener) this);
     }
 
     @FXML
-    private Button btnCreateGame;
+    public void initialize() {
+        List<Game> games = this.rmiClient.getGames();
+        for (Game game : games) {
+            HBox gameHBox = new HBox();
+            Label gameNameLabel = new Label(game.getName());
 
-    @FXML
-    protected TextField gameName;
-
-    @FXML
-    protected VBox createNewGameContainer;
-
-    @FXML
-    protected Label lblWaitingText;
-
-    @FXML
-    protected void onCreateNewGameClick() {
-        final String playerId = DataManager.getPlayerId();
-        final Game createdGame = this.rmiClient.createGame(gameName.getText(), playerId);
-        String waitingLabel = "Game Name: " + createdGame.getName() + "\n\nWaiting for another player to join...";
-
-        this.lblWaitingText.setText(waitingLabel);
-        this.createNewGameContainer.setVisible(false);
-        this.lblWaitingText.setVisible(true);
+            Button joinGameButton = new Button("Join Game");
+            joinGameButton.setOnAction(event -> {
+                try {
+                    this.rmiClient.joinGame(game.getName(), DataManager.getPlayerId());
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                this.vboxGames.setVisible(false);
+            });
+            gameHBox.getChildren().addAll(gameNameLabel, joinGameButton);
+            this.vboxGames.getChildren().add(gameHBox);
+        }
     }
+
+    @FXML
+    private HBox hboxGame;
+
+    @FXML
+    private VBox vboxGames;
 
     @Override
     public void onGameStarted(Game game) {
@@ -62,7 +68,7 @@ public class CreateGameController implements GameStartedEventListener {
 
                 try {
                     gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
-                    Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
+                    Stage primaryStage = (Stage) vboxGames.getScene().getWindow();
                     primaryStage.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -73,24 +79,5 @@ public class CreateGameController implements GameStartedEventListener {
                 }
             }
         });
-//        FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
-//        Stage gameScreenStage = new Stage();
-//
-//        GameController gameController = gameScreenLoader.getController();
-//        gameController.startGame(game);
-//
-//        gameScreenStage.show();
-//
-//        try {
-//            gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
-//            Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
-//            primaryStage.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//            alert.setTitle("IOException");
-//            alert.setHeaderText("Exception at create game screen controller");
-//            alert.show();
-//        }
     }
 }

@@ -10,8 +10,9 @@ public class GameController {
     @FXML
     protected Label gameName;
 
-    void startGame(Game game) {
-        this.game = game;
+    @FXML
+    void initialize() {
+        this.game = DataManager.getGame();
         this.gameName.setText("creator: " + game.getCreator() + ", game name: " + this.game.getName());
     }
 }

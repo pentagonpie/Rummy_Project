@@ -14,7 +14,7 @@ public class LoginController {
     private final RMIClient rmiClient;
 
     public LoginController() throws NotBoundException, RemoteException {
-        this.rmiClient = new RMIClient();
+        this.rmiClient = RMIClient.getInstance();
     }
 
     @FXML
@@ -30,11 +30,14 @@ public class LoginController {
     protected void onLoginClick() {
         final String username = this.username.getText();
         final String password = this.password.getText();
-        final boolean loginResult = this.rmiClient.login(username, password);
+        final String userId = this.rmiClient.login(username, password);
 
-        if (loginResult) {
+        boolean isLoggedIn = userId != null;
+
+        if (isLoggedIn) {
 
             DataManager.setUserName(username);
+            DataManager.setPlayerId(userId);
 
             try {
                 //Open main window

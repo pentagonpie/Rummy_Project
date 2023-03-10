@@ -10,8 +10,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="rummy-server" />
-        <module name="rummy-shared" />
         <module name="rummy-ui" />
+        <module name="rummy-shared" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

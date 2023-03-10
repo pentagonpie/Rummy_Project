@@ -27,7 +27,7 @@
                <Insets top="20.0" />
             </VBox.margin>
          </Label>
-         <TextField fx:id="username">
+         <TextField fx:id="username" text="nadav">
             <VBox.margin>
                <Insets top="5.0" />
             </VBox.margin>
@@ -37,12 +37,12 @@
                <Insets top="10.0" />
             </VBox.margin>
          </Label>
-         <PasswordField fx:id="password">
+         <PasswordField fx:id="password" text="123456">
             <VBox.margin>
                <Insets top="5.0" />
             </VBox.margin>
          </PasswordField>
-         <Button fx:id="btnLogin" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="26.0" prefWidth="93.0" text="Login">
+         <Button fx:id="btnLogin" defaultButton="true" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="26.0" prefWidth="93.0" text="Login">
             <VBox.margin>
                <Insets top="30.0" />
             </VBox.margin>

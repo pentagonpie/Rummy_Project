@@ -49,6 +49,26 @@ public class MainScreenController {
     }
 
     @FXML
+    protected void onJoinGameClick() {
+        FXMLLoader createGameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("joinGameScreen.fxml"));
+        Scene joinGameScene;
+        try {
+            joinGameScene = new Scene(createGameScreenLoader.load());
+            Stage newStage = new Stage();
+            newStage.setTitle("Join A Game");
+            newStage.setScene(joinGameScene);
+            newStage.show();
+            Stage primaryStage = (Stage) btnNewGame.getScene().getWindow();
+            primaryStage.close();
+        } catch (IOException ex) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("IOException");
+            alert.setHeaderText("Exception at main screen controller");
+            alert.show();
+        }
+    }
+
+    @FXML
     protected void onLogoutClick() {
         FXMLLoader fxmlLoader = new FXMLLoader(RummyApplication.class.getResource("login.fxml"));
         Scene scene;
@@ -70,10 +90,4 @@ public class MainScreenController {
         }
     }
 }
-
-//  @Override
-// public void initialize(URL url, ResourceBundle rb) {
-// TODO
-//}
-    
 
