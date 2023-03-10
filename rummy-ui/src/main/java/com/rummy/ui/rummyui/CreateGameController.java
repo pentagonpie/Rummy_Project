@@ -6,7 +6,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -27,27 +29,19 @@ public class CreateGameController {
     protected TextField gameName;
 
     @FXML
+    protected VBox createNewGameContainer;
+
+    @FXML
+    protected Label lblWaitingText;
+
+    @FXML
     protected void onCreateNewGameClick() {
         final String userName = DataManager.getUserName();
         final Game createdGame = this.rmiClient.createGame(gameName.getText(), userName);
-        FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
+        String waitingLabel = "Game Name: " + createdGame.getName() + "\n\nWaiting for another player to join...";
 
-        try {
-            Scene createGameScene = new Scene(gameScreenLoader.load());
-            Stage newStage = new Stage();
-            newStage.setScene(createGameScene);
-            GameController gameController = gameScreenLoader.getController();
-            gameController.startGame(createdGame);
-
-            newStage.show();
-
-            Stage currentStage = (Stage) btnCreateGame.getScene().getWindow();
-            currentStage.close();
-        } catch (IOException ex) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("IOException");
-            alert.setHeaderText("Exception at new game screen controller");
-            alert.show();
-        }
+        this.lblWaitingText.setText(waitingLabel);
+        this.createNewGameContainer.setVisible(false);
+        this.lblWaitingText.setVisible(true);
     }
 }
