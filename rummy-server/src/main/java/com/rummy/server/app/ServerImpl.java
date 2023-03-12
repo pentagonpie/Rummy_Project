@@ -1,5 +1,6 @@
 package com.rummy.server.app;
 
+import static com.rummy.server.app.Database.createGame;
 import com.rummy.shared.*;
 
 import java.util.*;
@@ -18,14 +19,31 @@ public class ServerImpl implements RummyServer {
 
     @Override
     public String login(String username, String password, RummyClient client) throws RemoteException {
-        String userId1 = UUID.randomUUID().toString();
-        String userId2 = UUID.randomUUID().toString();
+        
+        String userId1,userId2;
+        
+        int id1 = Database.getID("nadav");
+        int id2 = Database.getID("tom");
+        userId1 = Integer.toString(id1);
+        userId2 = Integer.toString(id2);
+        
+        
+        if(id1 == -1){
+            userId1 = UUID.randomUUID().toString();
+        }
+        
+        if(id2 == -1){
+            userId2 = UUID.randomUUID().toString();
+        }
+
 
         Map<String, User> usersMap = Map.of(
                 userId1, new User(userId1, "nadav", "123456"),
                 userId2, new User(userId2, "tom", "123456")
         );
 
+        System.out.println("username "+ username + " id " +  Database.getID(username) );
+        
         User user = usersMap.values().stream()
                 .filter(u -> u.getUserName().equals(username) && u.getPassword().equals(password))
                 .findFirst()
@@ -71,13 +89,20 @@ public class ServerImpl implements RummyServer {
     @Override
     public Game createNewGame(String gameName, String playerId) throws RemoteException {
         Player creator = this._connectedPlayers.get(playerId);
-
+        System.out.println("hello createNewGame1");
         if (creator == null) {
             return null;
         }
 
         final int CARDS_PER_PLAYER = 14;
+        
 
+        
+        System.out.println(playerId);
+        System.out.println("hello createNewGame2");
+        Database.createGame(Integer.parseInt(playerId));
+        //Database.createGame(1);
+        
         ArrayList<Card> deck = generateDeck();
         ArrayList<Card> player1Cards = new ArrayList<>(deck.subList(0, CARDS_PER_PLAYER));
         ArrayList<Card> player2Cards = new ArrayList<>(deck.subList(CARDS_PER_PLAYER, CARDS_PER_PLAYER * 2));
