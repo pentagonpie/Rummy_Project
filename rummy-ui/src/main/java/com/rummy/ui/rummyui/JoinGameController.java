@@ -20,6 +20,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.EventListener;
 import java.util.List;
+import javafx.event.EventHandler;
+import javafx.stage.WindowEvent;
 
 public class JoinGameController implements GameStartedEventListener {
     private final RMIClient rmiClient;
@@ -65,6 +67,19 @@ public class JoinGameController implements GameStartedEventListener {
                 FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
                 Stage gameScreenStage = new Stage();
                 gameScreenStage.show();
+                
+             
+                    
+                    gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        public void handle(WindowEvent we) {
+                        
+                        gameScreenStage.close();
+                        Platform.exit();
+                        System.exit(0);
+                        }
+                    });        
+                    
+                
                 gameScreenStage.setMaximized(true);
 
                 try {
