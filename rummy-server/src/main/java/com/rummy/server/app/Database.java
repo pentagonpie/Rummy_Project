@@ -245,8 +245,11 @@ public class Database {
       else if(choice.equals("creategame")){
         System.out.println("playerID:");
         String id = myObj.nextLine();  // Read user input
+        
+        System.out.println("game name:");
+        String gameName = myObj.nextLine();  // Read user input
 
-        System.out.println("result: "  +      createGame(Integer.parseInt(id)) );
+        System.out.println("result: "  +      createGame(Integer.parseInt(id),gameName) );
       }
       
         else if(choice.equals("deletegame")){
@@ -504,7 +507,7 @@ public class Database {
    
 
    
-   public static int createGame(int playerID){
+   public static int createGame(int playerID, String gameName){
        Connection connection = null;
 
         int newId = getGamesNum();     
@@ -529,15 +532,33 @@ public class Database {
             while(resultSet.next()){
                
                foundPlayer=true;
-            }
-            
-            if(foundPlayer){
                 System.out.println("found game with player, not creating game");
                 return -1;
             }
             
- 
+            //Check if player exists
+             selectString =
+            "SELECT * FROM players where id = ?";
+
+
+            selectPlayer = connection.prepareStatement(selectString);
+        
+            resultSet = null;
+            selectPlayer.setInt(1, playerID);
             
+            resultSet=selectPlayer.executeQuery();
+            foundPlayer = false;
+            while(resultSet.next()){
+               
+               foundPlayer=true;
+                
+            }
+            
+            if(!foundPlayer){
+                System.out.println("Did not found player for creating game");
+                return -1;
+            }
+      
             //First create gameState
             Statement ps = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             ResultSet uprs = ps.executeQuery("SELECT * FROM gameState");
@@ -559,6 +580,7 @@ public class Database {
             uprs.updateInt("active", 0);
             uprs.updateInt("id", newId);
             uprs.updateInt("player1", playerID);
+            uprs.updateString("name", gameName);
             uprs.updateInt("winner", -1);
             uprs.insertRow();
             uprs.beforeFirst();
