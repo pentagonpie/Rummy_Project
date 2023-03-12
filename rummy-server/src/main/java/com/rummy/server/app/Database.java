@@ -760,6 +760,42 @@ public class Database {
        return result;
    }
    
+   public static int getID(String name){
+        Connection connection = null;  
+        ResultSet resultSet = null;
+
+        int result = -1;
+        try{
+
+            String selectString =
+            "SELECT * FROM players where name = ?";
+
+            connection=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
+            PreparedStatement selectPlayer = connection.prepareStatement(selectString);
+
+            selectPlayer.setString(1, name);
+            resultSet=selectPlayer.executeQuery();
+            while(resultSet.next()){    
+               result = resultSet.getInt("id");
+
+            }
+
+      }catch(SQLException e){
+        System.out.println(e.getMessage());
+
+      }finally{
+        try{
+            if(resultSet != null) resultSet.close();
+            
+            if(connection != null) connection.close();
+        }catch(SQLException ex){}
+
+        } 
+
+       return result;
+   }
+   
+   
    public static int setWinner(int gameID, int playerID){
         Connection connection = null;
 
