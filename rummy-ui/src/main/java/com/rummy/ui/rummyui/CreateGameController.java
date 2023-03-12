@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.EventListener;
+import javafx.event.EventHandler;
+import javafx.stage.WindowEvent;
 
 public class CreateGameController implements GameStartedEventListener {
     private final RMIClient rmiClient;
@@ -60,10 +62,25 @@ public class CreateGameController implements GameStartedEventListener {
                 Stage gameScreenStage = new Stage();
                 gameScreenStage.show();
                 gameScreenStage.setMaximized(true);
+                
+        
+
+
 
                 try {
                     gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
                     Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
+                    
+                    
+                    gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        public void handle(WindowEvent we) {
+                        
+                        Platform.exit();
+                        System.exit(0);
+                        }
+                    });        
+                    
+                    
                     primaryStage.close();
                 } catch (IOException e) {
                     e.printStackTrace();
