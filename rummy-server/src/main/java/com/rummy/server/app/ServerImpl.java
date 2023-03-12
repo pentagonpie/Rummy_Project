@@ -1,8 +1,6 @@
 package com.rummy.server.app;
 
-import com.rummy.shared.Game;
-import com.rummy.shared.RummyClient;
-import com.rummy.shared.RummyServer;
+import com.rummy.shared.*;
 
 import java.util.*;
 import java.rmi.RemoteException;
@@ -47,6 +45,29 @@ public class ServerImpl implements RummyServer {
     @Override
     public void logout(String userId) throws RemoteException {}
 
+    private ArrayList<Card> suffle(ArrayList<Card> cards) {
+        Random random = new Random();
+        for (int i = 0; i < cards.size(); i++) {
+            int randomIndex = random.nextInt(cards.size());
+            Card temp = cards.get(i);
+            cards.set(i, cards.get(randomIndex));
+            cards.set(randomIndex, temp);
+        }
+
+        return cards;
+    }
+
+    private ArrayList<Card> generateDeck() {
+        ArrayList<Card> dock = new ArrayList<>();
+        for (int cardValue = 1; cardValue <= 13; cardValue++) {
+            for (Suit suit : Suit.values()) {
+                dock.add(new Card(cardValue, suit));
+            }
+        }
+
+        return suffle(dock);
+    }
+
     @Override
     public Game createNewGame(String gameName, String playerId) throws RemoteException {
         Player creator = this._connectedPlayers.get(playerId);
@@ -55,7 +76,16 @@ public class ServerImpl implements RummyServer {
             return null;
         }
 
-        Game createdGame = new Game(gameName, creator.getUserName());
+        final int CARDS_PER_PLAYER = 14;
+
+        ArrayList<Card> deck = generateDeck();
+        ArrayList<Card> player1Cards = new ArrayList<>(deck.subList(0, CARDS_PER_PLAYER));
+        ArrayList<Card> player2Cards = new ArrayList<>(deck.subList(CARDS_PER_PLAYER, CARDS_PER_PLAYER * 2));
+        deck = new ArrayList<>(deck.subList(CARDS_PER_PLAYER * 2, deck.size()));
+        ArrayList<ArrayList<Card>> board = new ArrayList<>();
+
+        GameState gameState = new GameState(deck, player1Cards, player2Cards, board);
+        Game createdGame = new Game(gameName, creator.getUserId(), gameState);
         createdGame.addPlayer(creator.getUserId());
         this._games.put(createdGame.getId(), createdGame);
 

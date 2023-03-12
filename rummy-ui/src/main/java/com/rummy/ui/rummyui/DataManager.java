@@ -5,7 +5,6 @@ import com.rummy.shared.Game;
 public class DataManager {
     static private String userName;
     static private String playerId;
-
     static private Game game;
 
     static void setUserName(String userName) {
