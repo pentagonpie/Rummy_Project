@@ -19,6 +19,7 @@ class deck{
         //Create array of numbers, each one representing a different card
         this.cards = new int[52];
         this.amount = 52;
+        
         //Shuffel array of cards
         for(int i = 1;i<53;i++){
         cards[i-1]=i;
@@ -58,6 +59,52 @@ class deck{
         //for(int i = 0;i<52;i++){
         //    System.out.printf("Card %d: %d %d %d\n", i, this.originals[i][0],this.originals[i][1],this.originals[i][2] );
         //}
+    }
+    
+    //return name of card based on id, which corresponds to the name
+    //of image file
+    public String getNameCard(int id){
+        String result = "";
+        
+        int num = this.originals[id][0];
+        
+        int suit = this.originals[id][1];
+        
+        if(num<10){
+            result += num+1;
+        }else if(num==10){
+            result += "jack";
+        }else if(num==11){
+            result += "queen";
+        }else if(num==12){
+            result += "king";
+        }else if(num==13){
+            result += "ace";
+        }
+        
+        result += "_of_";
+        
+        switch(suit){
+            case 0:
+                result += "hearts";
+                break;
+            
+            case 1:
+                result += "diamonds";
+                break;
+
+            case 2:
+                result += "spades";
+                break;
+
+            case 3:
+                result += "clubs";
+                break;
+            
+                
+        }
+        
+        return result;
     }
    
     public String getCards(){
@@ -155,10 +202,12 @@ public class Database {
       
       if(choice.equals("addplayer")){
         
-        
         System.out.println("name:");
         String name = myObj.nextLine();  // Read user input
-        createPlayer( name);
+        
+        System.out.println("result: "+ createPlayer( name));
+
+        
       }
       
       else if(choice.equals("exit")){
@@ -197,7 +246,7 @@ public class Database {
         System.out.println("playerID:");
         String id = myObj.nextLine();  // Read user input
 
-        createGame(Integer.parseInt(id));
+        System.out.println("result: "  +      createGame(Integer.parseInt(id)) );
       }
       
         else if(choice.equals("deletegame")){
@@ -265,6 +314,33 @@ public class Database {
             statement=connection.createStatement();
 
 
+            
+            //Check if game with this player already exists
+            String selectString =
+            "SELECT * FROM players where name = ? ";
+
+
+            PreparedStatement selectPlayer = connection.prepareStatement(selectString);
+        
+
+            selectPlayer.setString(1, name);
+
+            resultSet=selectPlayer.executeQuery();
+            boolean foundPlayer = false;
+            while(resultSet.next()){
+               
+               foundPlayer=true;
+            }
+            
+            if(foundPlayer){
+                return -1;
+            }
+            
+            
+
+            
+            
+            
             resultSet=statement.executeQuery
                ("SELECT * FROM players");
             
@@ -399,21 +475,24 @@ public class Database {
 
    }
    
+   //0 - offline
+   //1 - online
    public static int setPlayerOnline(int id, int online){
         Connection connection = null;
 
         String updateString =
         "update players set online = ? where id = ?";
 
-        try {connection=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
-                PreparedStatement updatePlayer = connection.prepareStatement(updateString);
-         
-        updatePlayer.setInt(1, online);
-        updatePlayer.setInt(2, id);
-        updatePlayer.executeUpdate();
-        System.out.println("updated online");
+        try {
+            connection=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
+            PreparedStatement updatePlayer = connection.prepareStatement(updateString);
 
-        
+            updatePlayer.setInt(1, online);
+            updatePlayer.setInt(2, id);
+            updatePlayer.executeUpdate();
+            System.out.println("updated online");
+
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return -1;
@@ -439,9 +518,31 @@ public class Database {
             connection=DriverManager.getConnection
                (DB_URL,DB_USER,DB_PASSWD);
 
+            //Check if game with this player already exists
+            String selectString =
+            "SELECT * FROM games where player1 = ? OR player2 = ?";
 
-            Statement ps = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            PreparedStatement selectPlayer = connection.prepareStatement(selectString);
+        
+            ResultSet resultSet = null;
+            selectPlayer.setInt(1, playerID);
+            selectPlayer.setInt(2, playerID);
+            resultSet=selectPlayer.executeQuery();
+            boolean foundPlayer = false;
+            while(resultSet.next()){
+               
+               foundPlayer=true;
+            }
+            
+            if(foundPlayer){
+                return -1;
+            }
+            
+ 
+            
             //First create gameState
+            Statement ps = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             ResultSet uprs = ps.executeQuery("SELECT * FROM gameState");
 
             uprs.moveToInsertRow();
@@ -450,7 +551,6 @@ public class Database {
             uprs.updateString("cards1", "");
             uprs.updateString("cards2", "");
             uprs.updateString("cardsDeck", cardDeck.getCards());
-
             uprs.insertRow();
             uprs.beforeFirst();
 
@@ -458,7 +558,6 @@ public class Database {
             
             //Then create the game, refrencing the gameState
             uprs = ps.executeQuery("SELECT * FROM games");
-
             uprs.moveToInsertRow();
             uprs.updateInt("active", 0);
             uprs.updateInt("id", newId);
@@ -480,6 +579,8 @@ public class Database {
 
         }//end of finally
 
+        
+        
     return 1;
    }
    
