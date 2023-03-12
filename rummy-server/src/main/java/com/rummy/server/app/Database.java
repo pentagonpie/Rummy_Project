@@ -335,12 +335,8 @@ public class Database {
             if(foundPlayer){
                 return -1;
             }
-            
-            
 
-            
-            
-            
+            //Otherwise, add new player
             resultSet=statement.executeQuery
                ("SELECT * FROM players");
             
@@ -351,7 +347,7 @@ public class Database {
             uprs.moveToInsertRow();
             uprs.updateString("name", name);
             uprs.updateInt("id", newId);
-            uprs.updateInt("online", 1);
+            uprs.updateInt("online", 0);
             uprs.updateInt("generalScore", 0);
             uprs.insertRow();
             uprs.beforeFirst();
@@ -536,6 +532,7 @@ public class Database {
             }
             
             if(foundPlayer){
+                System.out.println("found game with player, not creating game");
                 return -1;
             }
             
