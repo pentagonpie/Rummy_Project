@@ -59,6 +59,7 @@ public class CreateGameController implements GameStartedEventListener {
                 FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
                 Stage gameScreenStage = new Stage();
                 gameScreenStage.show();
+                gameScreenStage.setMaximized(true);
 
                 try {
                     gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
@@ -73,24 +74,5 @@ public class CreateGameController implements GameStartedEventListener {
                 }
             }
         });
-//        FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
-//        Stage gameScreenStage = new Stage();
-//
-//        GameController gameController = gameScreenLoader.getController();
-//        gameController.startGame(game);
-//
-//        gameScreenStage.show();
-//
-//        try {
-//            gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
-//            Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
-//            primaryStage.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//            alert.setTitle("IOException");
-//            alert.setHeaderText("Exception at create game screen controller");
-//            alert.show();
-//        }
     }
 }

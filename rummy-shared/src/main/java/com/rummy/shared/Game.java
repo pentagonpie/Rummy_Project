@@ -11,12 +11,15 @@ public class Game implements Serializable {
     private final String _creator;
     private List<String> _playersIds;
 
-    public Game(String name, String creator) {
+    private final GameState _gameState;
+
+    public Game(String name, String creator, GameState gameState) {
         super();
         this._id = UUID.randomUUID().toString();
         this._name = name;
         this._creator = creator;
         this._playersIds = new ArrayList<>();
+        this._gameState = gameState;
     }
 
     public String getName() {
@@ -35,5 +38,9 @@ public class Game implements Serializable {
 
     public String getId() {
         return this._id;
+    }
+
+    public GameState getGameState() {
+        return this._gameState;
     }
 }

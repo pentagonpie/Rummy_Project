@@ -65,6 +65,7 @@ public class JoinGameController implements GameStartedEventListener {
                 FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
                 Stage gameScreenStage = new Stage();
                 gameScreenStage.show();
+                gameScreenStage.setMaximized(true);
 
                 try {
                     gameScreenStage.setScene(new Scene(gameScreenLoader.load()));

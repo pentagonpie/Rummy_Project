@@ -5,26 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0603aebd-e0d0-43a4-9bb8-50b2e9e4613b" name="Changes" comment="pass real creator username">
-      <change afterPath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/Player.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/RummyClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/gameEvents/GameEventsManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/gameEvents/GameStartedEventListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/JoinGameController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/joinGameScreen.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/RummyServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/RummyServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/CreateGameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/CreateGameController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/DataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/DataManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/GameController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/MainScreenController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/MainScreenController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/RMIClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/RMIClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/login.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/mainScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/mainScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/JoinGameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/JoinGameController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/gameScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/gameScreen.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,9 +23,10 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="FxmlFile" />
-        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Enum" />
+        <option value="Record" />
       </list>
     </option>
   </component>
@@ -64,6 +53,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
     &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
@@ -89,6 +79,8 @@
       <recent name="$PROJECT_DIR$/rummy-client/src/main/java/com/rummy/client/app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/Card_files/images" />
+      <recent name="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui" />
       <recent name="$PROJECT_DIR$/rummy-client/src/main/java" />
       <recent name="$PROJECT_DIR$/rummy-client" />
     </key>
@@ -97,8 +89,8 @@
       <recent name="com.rummy.shared" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.rummy.ui.rummyui" />
       <recent name="com.rummy.shared" />
+      <recent name="com.rummy.ui.rummyui" />
     </key>
   </component>
   <component name="RunManager" selected="Application.RummyApplication">
@@ -175,7 +167,21 @@
       <option name="project" value="LOCAL" />
       <updated>1677788875497</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="move cards iages and add back card">
+      <created>1678529023906</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1678529023906</updated>
+    </task>
+    <task id="LOCAL-00004" summary="rename images">
+      <created>1678542246640</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1678542246640</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -190,44 +196,11 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="add basic rmi files" />
     <MESSAGE value="add create game screen" />
-    <option name="LAST_COMMIT_MESSAGE" value="add create game screen" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java</url>
-          <line>71</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java</url>
-          <line>75</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java</url>
-          <line>77</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java</url>
-          <line>78</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java</url>
-          <line>80</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java</url>
-          <line>82</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="move cards iages and add back card" />
+    <MESSAGE value="rename images" />
+    <option name="LAST_COMMIT_MESSAGE" value="rename images" />
   </component>
 </project>
