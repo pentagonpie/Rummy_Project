@@ -5,10 +5,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class LoginController {
     private final RMIClient rmiClient;
@@ -48,6 +51,17 @@ public class LoginController {
                 newStage.setTitle("Welcome to Rummy!");
                 newStage.show();
 
+                
+                newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    public void handle(WindowEvent we) {
+
+                    newStage.close();
+                    Platform.exit();
+                    System.exit(0);
+                    }
+                });  
+        
+        
                 //Close login window
                 Stage primaryStage = (Stage) btnLogin.getScene().getWindow();
                 primaryStage.close();
