@@ -70,15 +70,15 @@ public class JoinGameController implements GameStartedEventListener {
                 
              
                     
-                    gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                        public void handle(WindowEvent we) {
-                        
-                        gameScreenStage.close();
-                        Platform.exit();
-                        System.exit(0);
-                        }
-                    });        
-                    
+                gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    public void handle(WindowEvent we) {
+
+                    gameScreenStage.close();
+                    Platform.exit();
+                    System.exit(0);
+                    }
+                });        
+
                 
                 gameScreenStage.setMaximized(true);
 
