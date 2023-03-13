@@ -504,8 +504,45 @@ public class Database {
      return 1;
    }
    
-   
+ 
+public static int getGameID(String name){
+       Connection connection = null;
+        
+        ResultSet resultSet = null;
+        int result = -1;
+        try{
+            
+            
+            String selectString =
+            "SELECT * FROM games where name = ?";
 
+            connection=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
+                    PreparedStatement selectGame = connection.prepareStatement(selectString);
+
+            selectGame.setString(1, name);
+            resultSet=selectGame.executeQuery();
+            while(resultSet.next()){
+               
+               result = resultSet.getInt("id");
+
+
+         }
+
+      }catch(SQLException e){
+        System.out.println(e.getMessage());
+
+      }finally{
+        try{
+            if(resultSet != null) resultSet.close();
+            
+            if(connection != null) connection.close();
+        }catch(SQLException ex){}
+
+        } 
+        return result;
+
+   }
+   
    
    public static int createGame(int playerID, String gameName){
        Connection connection = null;

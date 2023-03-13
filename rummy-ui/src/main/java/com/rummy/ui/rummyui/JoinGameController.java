@@ -60,6 +60,7 @@ public class JoinGameController implements GameStartedEventListener {
 
     @Override
     public void onGameStarted(Game game) {
+        System.out.println("from onGameStarted, game id is " + game.getId());
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -69,7 +70,7 @@ public class JoinGameController implements GameStartedEventListener {
                 gameScreenStage.show();
                 
              
-                    
+                //Close app after closing window
                 gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                     public void handle(WindowEvent we) {
 

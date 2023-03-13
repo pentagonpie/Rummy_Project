@@ -13,15 +13,25 @@ public class Game implements Serializable {
 
     private final GameState _gameState;
 
-    public Game(String name, String creator, GameState gameState) {
+    public Game(String name, String creator, GameState gameState,String id) {
         super();
-        this._id = UUID.randomUUID().toString();
+        this._id = id;
         this._name = name;
         this._creator = creator;
         this._playersIds = new ArrayList<>();
         this._gameState = gameState;
     }
 
+    //Used for returning null game for error indication
+    public Game(String name, String creator,String id){
+        super();
+        this._id = id;
+        this._name = name;
+        this._creator = creator;
+        this._gameState = null;
+    
+    }
+    
     public String getName() {
         return this._name;
     }
