@@ -7,12 +7,7 @@
     <list default="true" id="0603aebd-e0d0-43a4-9bb8-50b2e9e4613b" name="Changes" comment="pass real creator username">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-server/src/main/java/com/rummy/server/app/ServerImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-shared/src/main/java/com/rummy/shared/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/CreateGameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/CreateGameController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/DataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/DataManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/GameController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/JoinGameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/java/com/rummy/ui/rummyui/JoinGameController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/gameScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/rummy-ui/src/main/resources/com/rummy/ui/rummyui/gameScreen.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

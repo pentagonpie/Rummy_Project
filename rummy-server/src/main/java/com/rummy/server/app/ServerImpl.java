@@ -98,11 +98,17 @@ public class ServerImpl implements RummyServer {
         
 
         
-        System.out.println(playerId);
+        System.out.println("playerID from createnewgame: " + playerId);
         System.out.println("hello createNewGame2");
-        Database.createGame(Integer.parseInt(playerId));
-        //Database.createGame(1);
-        
+
+        if(Database.createGame(Integer.parseInt(playerId),gameName) == -1){
+            System.out.println("Error creating game");
+            return new Game(gameName, creator.getUserId(), "-1" );
+        }
+        int gameID = Database.getGameID(gameName);
+        System.out.println("in createnewgame getting from database gameid "+gameID);
+
+
         ArrayList<Card> deck = generateDeck();
         ArrayList<Card> player1Cards = new ArrayList<>(deck.subList(0, CARDS_PER_PLAYER));
         ArrayList<Card> player2Cards = new ArrayList<>(deck.subList(CARDS_PER_PLAYER, CARDS_PER_PLAYER * 2));
@@ -117,6 +123,7 @@ public class ServerImpl implements RummyServer {
         return createdGame;
     }
 
+    @Override
     public void joinGame(String gameName, String playerId) throws RemoteException {
         Player player = this._connectedPlayers.get(playerId);
         Game game = this._games.values().stream()
@@ -129,6 +136,8 @@ public class ServerImpl implements RummyServer {
         }
 
         game.addPlayer(player.getUserId());
+        System.out.println("adding player to game from joinGame");
+        Database.addPlayerGame( Integer.parseInt(playerId), Database.getGameID(gameName) );
 
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);
