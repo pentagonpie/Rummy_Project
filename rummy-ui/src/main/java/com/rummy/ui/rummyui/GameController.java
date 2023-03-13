@@ -15,6 +15,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 public class GameController {
     private Game game;
@@ -40,6 +42,11 @@ public class GameController {
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Constants.CARD_IMAGE_HEIGHT);
         imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
+        
+        imageView.setOnMousePressed(e -> {
+        pressedImage(e, imageFileName);
+        });
+        
         stackPane.getChildren().add(imageView);
         StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_MARGIN));
         hbox.getChildren().add(stackPane);
@@ -57,10 +64,54 @@ public class GameController {
         });
     }
 
+    
+    double x = 0.0, y = 0.0;  
+    
+    public void pressedImage(MouseEvent e,String imageFileName){
+        System.out.println(imageFileName);
+    }
+    
+    public void updateMousePosition(MouseEvent e){
+       
+        
+        System.out.println("Mouse press:");
+        x = e.getSceneX();
+        y = e.getSceneY();
+        System.out.println(x);
+        System.out.println(y);
+        
+        
+        double maxX,maxY,minX,minY;
+        maxX = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxX();
+        maxY = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxY();
+        minX = hboxOpponentCards.boundsInLocalProperty().getValue().getMinX();
+        minY = hboxOpponentCards.boundsInLocalProperty().getValue().getMinY();
+        //System.out.println("getMaxX" + maxX);
+        //System.out.println("getMaxY" + maxY);
+        //System.out.println("getMinX" + minX);
+        //System.out.println("getMinY" + minY);
+        hboxOpponentCards.onMousePressedProperty();
+        if(x > minX && x < maxX && y > minY && y < maxY){
+            //System.out.println("Inside");
+        }else{
+            //System.out.println("outside");
+        }
+        
+        
+    }
+    
     @FXML
     void initialize() {
         this.game = DataManager.getGame();
 
+        
+        mainGrid.setOnMousePressed(e -> {
+        updateMousePosition(e);
+        });
+
+        //hboxOpponentCards.onMousePressedProperty()
+
+                
         Platform.runLater(() -> {
             Stage primaryStage = (Stage) mainGrid.getScene().getWindow();
             primaryStage.setMaximized(true);
@@ -76,6 +127,15 @@ public class GameController {
 
             ArrayList<Card> opponentCards = isGameCreator ? gameState.getCards2() : gameState.getCards1();
             this.addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
+            
+            
+
+            
+
+            
         });
+        
+        
+        
     }
 }

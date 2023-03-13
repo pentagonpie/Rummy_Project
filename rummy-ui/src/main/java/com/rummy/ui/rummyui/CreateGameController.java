@@ -45,6 +45,15 @@ public class CreateGameController implements GameStartedEventListener {
     protected void onCreateNewGameClick() {
         final String playerId = DataManager.getPlayerId();
         final Game createdGame = this.rmiClient.createGame(gameName.getText(), playerId);
+        System.out.println("After final Game createdGame in onCreateNewGameClick");
+        if(createdGame.getId().equals("-1")){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("IOException");
+            alert.setHeaderText("Can't create game");
+            alert.show();
+            
+            return;
+        }
         String waitingLabel = "Game Name: " + createdGame.getName() + "\n\nWaiting for another player to join...";
 
         this.lblWaitingText.setText(waitingLabel);
@@ -62,10 +71,6 @@ public class CreateGameController implements GameStartedEventListener {
                 Stage gameScreenStage = new Stage();
                 gameScreenStage.show();
                 gameScreenStage.setMaximized(true);
-                
-        
-
-
 
                 try {
                     gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
