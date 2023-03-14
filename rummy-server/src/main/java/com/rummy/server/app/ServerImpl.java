@@ -101,6 +101,8 @@ public class ServerImpl implements RummyServer {
         System.out.println("playerID from createnewgame: " + playerId);
         System.out.println("hello createNewGame2");
 
+
+
         if(Database.createGame(Integer.parseInt(playerId),gameName) == -1){
             System.out.println("Error creating game");
             return new Game(gameName, creator.getUserId(), "-1" );
@@ -116,7 +118,7 @@ public class ServerImpl implements RummyServer {
         ArrayList<ArrayList<Card>> board = new ArrayList<>();
 
         GameState gameState = new GameState(player1Cards, player2Cards, deck, board);
-        Game createdGame = new Game(gameName, creator.getUserId(), gameState);
+        Game createdGame = new Game(gameName, creator.getUserId(), gameState, Integer.toString(gameID) );
         createdGame.addPlayer(creator.getUserId());
         this._games.put(createdGame.getId(), createdGame);
 
