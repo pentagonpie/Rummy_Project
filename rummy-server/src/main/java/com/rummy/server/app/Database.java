@@ -300,6 +300,14 @@ public class Database {
             setGameActive(Integer.parseInt(gameID),Integer.parseInt(active) );
       }
       
+        else if(choice.equals("getplayername")){
+            System.out.println("playerID:");
+            String playerID = myObj.nextLine();  // Read user input
+            System.out.println(         getPlayerName(Integer.parseInt(playerID )));
+      }
+      
+      
+      
 
       }//end of while true
      
@@ -409,32 +417,7 @@ public class Database {
         return result;
    }
    
-    public static int setPlayerScore(int id, int score){
-        Connection connection = null;
-
-        String updateString =
-        "update players set generalScore = ? where id = ?";
-
-        try {connection=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
-                PreparedStatement updatePlayer = connection.prepareStatement(updateString);
-         
-        updatePlayer.setInt(1, score);
-        updatePlayer.setInt(2, id);
-        updatePlayer.executeUpdate();
-        System.out.println("updated score");
-
-        
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return -1;
-        }finally{
-        try{    
-            if(connection != null) connection.close();
-        }catch(SQLException ex){}
-
-      }
-     return 1;
-   } 
+  
    
    public static int getPlayerOnline(int id){
        Connection connection = null;
@@ -839,6 +822,42 @@ public static int getGameID(String name){
             resultSet=selectPlayer.executeQuery();
             while(resultSet.next()){    
                result = resultSet.getInt("id");
+
+            }
+
+      }catch(SQLException e){
+        System.out.println(e.getMessage());
+
+      }finally{
+        try{
+            if(resultSet != null) resultSet.close();
+            
+            if(connection != null) connection.close();
+        }catch(SQLException ex){}
+
+        } 
+
+       return result;
+   }
+   
+   
+    public static String getPlayerName(int ID){
+        Connection connection = null;  
+        ResultSet resultSet = null;
+
+        String result = "null";
+        try{
+
+            String selectString =
+            "SELECT * FROM players where id = ?";
+
+            connection=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
+            PreparedStatement selectPlayer = connection.prepareStatement(selectString);
+
+            selectPlayer.setInt(1, ID);
+            resultSet=selectPlayer.executeQuery();
+            while(resultSet.next()){    
+               result = resultSet.getString("name");
 
             }
 
