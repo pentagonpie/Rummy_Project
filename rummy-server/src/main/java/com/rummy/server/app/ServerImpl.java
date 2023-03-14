@@ -1,6 +1,6 @@
 package com.rummy.server.app;
 
-import static com.rummy.server.app.Database.createGame;
+
 import com.rummy.shared.*;
 
 import java.util.*;
@@ -15,6 +15,14 @@ public class ServerImpl implements RummyServer {
         UnicastRemoteObject.exportObject(this, 0);
         this._games = new HashMap<>();
         this._connectedPlayers = new HashMap<>();
+    }
+    
+
+    @Override
+    public String getPlayerName(String id) throws RemoteException{
+        
+        return this._connectedPlayers.get(id).getUserName();
+        
     }
 
     @Override

@@ -13,6 +13,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+
 public class RMIClient implements Serializable, RummyClient {
     private final RummyServer server;
     private static RMIClient rmiClient;
@@ -50,6 +51,17 @@ public class RMIClient implements Serializable, RummyClient {
         }
     }
 
+    public String getPlayerName(String id){
+        try {
+            return server.getPlayerName(id);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        
+    }
+
+    
     public ArrayList<Game> getGames() {
         try {
             return server.getGames();

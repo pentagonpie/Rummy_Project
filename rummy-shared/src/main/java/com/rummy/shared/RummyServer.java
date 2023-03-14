@@ -9,5 +9,6 @@ public interface RummyServer extends Remote {
     void logout(String userId) throws RemoteException;
     Game createNewGame(String gameName, String playerId) throws RemoteException;
     void joinGame(String gameName, String playerId) throws RemoteException;
+    String getPlayerName(String id) throws RemoteException;
     ArrayList<Game> getGames() throws RemoteException;
 }

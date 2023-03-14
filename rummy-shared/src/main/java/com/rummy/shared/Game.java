@@ -10,6 +10,7 @@ public class Game implements Serializable {
     private final String _name;
     private final String _creator;
     private List<String> _playersIds;
+    private  String _secondPlayer;
 
     private final GameState _gameState;
 
@@ -20,6 +21,7 @@ public class Game implements Serializable {
         this._creator = creator;
         this._playersIds = new ArrayList<>();
         this._gameState = gameState;
+        this._secondPlayer = "";
     }
 
     //Used for returning null game for error indication
@@ -43,7 +45,12 @@ public class Game implements Serializable {
     public List<String> getPlayersIds() { return this._playersIds; }
 
     public void addPlayer(String playerId) {
+        this._secondPlayer=playerId;
         this._playersIds.add(playerId);
+    }
+    
+    public String getSecondPlayer(){
+        return this._secondPlayer;
     }
 
     public String getId() {
