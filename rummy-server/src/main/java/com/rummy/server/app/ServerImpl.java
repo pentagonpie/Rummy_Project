@@ -158,9 +158,57 @@ public class ServerImpl implements RummyServer {
             }
         });
     }
+    
+    
+    @Override
+    public void exitGame(String gameName, String playerId) throws RemoteException {
+        Player player = this._connectedPlayers.get(playerId);
+        Game game = this._games.values().stream()
+                .filter(g -> g.getName().equals(gameName))
+                .findFirst()
+                .orElse(null);
+
+        if (game == null || player == null) {
+            return;
+        }
+
+        game.getPlayersIds().forEach(_playerId -> {
+            Player playerToNotify = this._connectedPlayers.get(_playerId);
+            try {
+                playerToNotify.getClient().handleGameEnd(game);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
     @Override
     public ArrayList<Game> getGames() throws RemoteException {
         return new ArrayList<>(this._games.values());
+    }
+    
+    @Override
+    public void deleteGame(Game game) throws RemoteException {
+        
+        Database.deleteGame(Integer.parseInt(game.getId()));
+        this._games.remove(game.getId());
+    }
+    
+    @Override
+    public void nextTurn(Game game) throws RemoteException{
+        System.out.println("Sending to all user signal next turn");
+
+        if (game == null ) {
+            return;
+        }
+
+        game.getPlayersIds().forEach(_playerId -> {
+            Player playerToNotify = this._connectedPlayers.get(_playerId);
+            try {
+                playerToNotify.getClient().handleNextTurn(game);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

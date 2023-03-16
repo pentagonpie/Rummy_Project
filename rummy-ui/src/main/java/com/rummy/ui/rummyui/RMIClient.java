@@ -61,6 +61,15 @@ public class RMIClient implements Serializable, RummyClient {
         
     }
 
+    public void deleteGame(Game game){
+        try {
+            server.deleteGame(game);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
     
     public ArrayList<Game> getGames() {
         try {
@@ -75,7 +84,37 @@ public class RMIClient implements Serializable, RummyClient {
         GameEventsManager.emitGameStartEvent(game);
     }
 
+    @Override
+    public void handleGameEnd(Game game) throws RemoteException {
+        GameEventsManager.emitGameEndEvent(game);
+    }
+    
+    //@Override
+    public void handleNextTurn(Game game) throws RemoteException {
+        GameEventsManager.emitNextTurn(game);
+    }
+
+    public void exitGame(String gameName, String playerId){
+       try {
+            server.exitGame(gameName,playerId );
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+    
     public void joinGame(String id, String playerId) throws RemoteException {
         this.server.joinGame(id, playerId);
     }
+    
+    public void nextTurn(Game game){
+        try {
+            this.server.nextTurn(game);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    
 }
