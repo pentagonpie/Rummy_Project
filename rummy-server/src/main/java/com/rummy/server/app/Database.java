@@ -245,8 +245,11 @@ public class Database {
       else if(choice.equals("creategame")){
         System.out.println("playerID:");
         String id = myObj.nextLine();  // Read user input
+        
+        System.out.println("game name:");
+        String gameName = myObj.nextLine();  // Read user input
 
-        System.out.println("result: "  +      createGame(Integer.parseInt(id)) );
+        System.out.println("result: "  +      createGame(Integer.parseInt(id),gameName) );
       }
       
         else if(choice.equals("deletegame")){
@@ -297,6 +300,13 @@ public class Database {
             setGameActive(Integer.parseInt(gameID),Integer.parseInt(active) );
       }
       
+      
+        else if(choice.equals("getplayername")){
+            System.out.println("playerID:");
+            String playerID = myObj.nextLine();  // Read user input
+            System.out.println(         getPlayerName(Integer.parseInt(playerID )));
+      }
+      
 
       }//end of while true
      
@@ -335,12 +345,8 @@ public class Database {
             if(foundPlayer){
                 return -1;
             }
-            
-            
 
-            
-            
-            
+            //Otherwise, add new player
             resultSet=statement.executeQuery
                ("SELECT * FROM players");
             
@@ -351,7 +357,7 @@ public class Database {
             uprs.moveToInsertRow();
             uprs.updateString("name", name);
             uprs.updateInt("id", newId);
-            uprs.updateInt("online", 1);
+            uprs.updateInt("online", 0);
             uprs.updateInt("generalScore", 0);
             uprs.insertRow();
             uprs.beforeFirst();
@@ -409,6 +415,9 @@ public class Database {
         } 
         return result;
    }
+   
+   
+   
    
     public static int setPlayerScore(int id, int score){
         Connection connection = null;
@@ -505,10 +514,47 @@ public class Database {
      return 1;
    }
    
-   
+ 
+public static int getGameID(String name){
+       Connection connection = null;
+        
+        ResultSet resultSet = null;
+        int result = -1;
+        try{
+            
+            
+            String selectString =
+            "SELECT * FROM games where name = ?";
 
+            connection=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
+                    PreparedStatement selectGame = connection.prepareStatement(selectString);
+
+            selectGame.setString(1, name);
+            resultSet=selectGame.executeQuery();
+            while(resultSet.next()){
+               
+               result = resultSet.getInt("id");
+
+
+         }
+
+      }catch(SQLException e){
+        System.out.println(e.getMessage());
+
+      }finally{
+        try{
+            if(resultSet != null) resultSet.close();
+            
+            if(connection != null) connection.close();
+        }catch(SQLException ex){}
+
+        } 
+        return result;
+
+   }
    
-   public static int createGame(int playerID){
+   
+   public static int createGame(int playerID, String gameName){
        Connection connection = null;
 
         int newId = getGamesNum();     
@@ -533,14 +579,33 @@ public class Database {
             while(resultSet.next()){
                
                foundPlayer=true;
-            }
-            
-            if(foundPlayer){
+                System.out.println("found game with player, not creating game");
                 return -1;
             }
             
- 
+            //Check if player exists
+             selectString =
+            "SELECT * FROM players where id = ?";
+
+
+            selectPlayer = connection.prepareStatement(selectString);
+        
+            resultSet = null;
+            selectPlayer.setInt(1, playerID);
             
+            resultSet=selectPlayer.executeQuery();
+            foundPlayer = false;
+            while(resultSet.next()){
+               
+               foundPlayer=true;
+                
+            }
+            
+            if(!foundPlayer){
+                System.out.println("Did not found player for creating game");
+                return -1;
+            }
+      
             //First create gameState
             Statement ps = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             ResultSet uprs = ps.executeQuery("SELECT * FROM gameState");
@@ -562,6 +627,7 @@ public class Database {
             uprs.updateInt("active", 0);
             uprs.updateInt("id", newId);
             uprs.updateInt("player1", playerID);
+            uprs.updateString("name", gameName);
             uprs.updateInt("winner", -1);
             uprs.insertRow();
             uprs.beforeFirst();
@@ -621,6 +687,9 @@ public class Database {
 
     return 1;
    }
+   
+   
+   
    
    public static int addPlayerGame(int playerID, int gameID){
         Connection connection = null;
@@ -763,6 +832,42 @@ public class Database {
        return result;
    }
    
+   public static int getID(String name){
+        Connection connection = null;  
+        ResultSet resultSet = null;
+
+        int result = -1;
+        try{
+
+            String selectString =
+            "SELECT * FROM players where name = ?";
+
+            connection=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
+            PreparedStatement selectPlayer = connection.prepareStatement(selectString);
+
+            selectPlayer.setString(1, name);
+            resultSet=selectPlayer.executeQuery();
+            while(resultSet.next()){    
+               result = resultSet.getInt("id");
+
+            }
+
+      }catch(SQLException e){
+        System.out.println(e.getMessage());
+
+      }finally{
+        try{
+            if(resultSet != null) resultSet.close();
+            
+            if(connection != null) connection.close();
+        }catch(SQLException ex){}
+
+        } 
+
+       return result;
+   }
+   
+   
    public static int setWinner(int gameID, int playerID){
         Connection connection = null;
 
@@ -794,6 +899,43 @@ public class Database {
      
         return 1;
    }
+
+
+    public static String getPlayerName(int ID){
+        Connection connection = null;  
+        ResultSet resultSet = null;
+
+        String result = "null";
+        try{
+
+            String selectString =
+            "SELECT * FROM players where id = ?";
+
+            connection=DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
+            PreparedStatement selectPlayer = connection.prepareStatement(selectString);
+
+            selectPlayer.setInt(1, ID);
+            resultSet=selectPlayer.executeQuery();
+            while(resultSet.next()){    
+               result = resultSet.getString("name");
+
+            }
+
+      }catch(SQLException e){
+        System.out.println(e.getMessage());
+
+      }finally{
+        try{
+            if(resultSet != null) resultSet.close();
+            
+            if(connection != null) connection.close();
+        }catch(SQLException ex){}
+
+        } 
+
+       return result;
+   }
+   
 
         
 }

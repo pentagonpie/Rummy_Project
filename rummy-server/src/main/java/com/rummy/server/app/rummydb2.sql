@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS `rummydb`.`games` (
   `active` INT NOT NULL,
   `player1` INT NOT NULL,
   `player2` INT NULL,
+  `name` VARCHAR(45) NULL,
   `winner` TINYINT(1) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,

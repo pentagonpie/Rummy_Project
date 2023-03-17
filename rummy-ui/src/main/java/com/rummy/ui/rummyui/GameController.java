@@ -1,8 +1,13 @@
 package com.rummy.ui.rummyui;
 
+
+
 import com.rummy.shared.Card;
 import com.rummy.shared.Game;
 import com.rummy.shared.GameState;
+import com.rummy.ui.gameEvents.GameEventsManager;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -15,6 +20,11 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.List;
+import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 
 public class GameController {
     private Game game;
@@ -26,6 +36,12 @@ public class GameController {
     protected AnchorPane anchorPane;
 
     @FXML
+    protected Label label_opponent;
+    
+    @FXML
+    protected Label label_user;
+    
+    @FXML
     protected HBox hboxMyCards;
 
     @FXML
@@ -33,6 +49,14 @@ public class GameController {
 
     @FXML
     protected HBox hboxDeckCards;
+    
+    
+    private final RMIClient rmiClient;
+
+    public GameController() throws NotBoundException, RemoteException {
+        this.rmiClient = RMIClient.getInstance();
+        //GameEventsManager.register((EventListener) this);
+    }
 
     private void addImageToHBox(HBox hbox, String imageFileName) {
         StackPane stackPane = new StackPane();
@@ -40,6 +64,11 @@ public class GameController {
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Constants.CARD_IMAGE_HEIGHT);
         imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
+        
+        imageView.setOnMousePressed(e -> {
+        pressedImage(e, imageFileName);
+        });
+        
         stackPane.getChildren().add(imageView);
         StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_MARGIN));
         hbox.getChildren().add(stackPane);
@@ -57,10 +86,61 @@ public class GameController {
         });
     }
 
+    
+    double x = 0.0, y = 0.0;  
+    
+    //print to screen name of pressed image
+    public void pressedImage(MouseEvent e,String imageFileName){
+        System.out.println(imageFileName);
+    }
+    
+    private void setLabelUser(Label label_name, String user){
+        System.out.println("setting username textbox");
+        label_name.setText(user);
+    }
+
+    
+    public void updateMousePosition(MouseEvent e){
+       
+        
+        System.out.println("Mouse press:");
+        x = e.getSceneX();
+        y = e.getSceneY();
+        System.out.println(x);
+        System.out.println(y);
+        
+        
+        double maxX,maxY,minX,minY;
+        maxX = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxX();
+        maxY = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxY();
+        minX = hboxOpponentCards.boundsInLocalProperty().getValue().getMinX();
+        minY = hboxOpponentCards.boundsInLocalProperty().getValue().getMinY();
+        //System.out.println("getMaxX" + maxX);
+        //System.out.println("getMaxY" + maxY);
+        //System.out.println("getMinX" + minX);
+        //System.out.println("getMinY" + minY);
+        hboxOpponentCards.onMousePressedProperty();
+        if(x > minX && x < maxX && y > minY && y < maxY){
+            //System.out.println("Inside");
+        }else{
+            //System.out.println("outside");
+        }
+        
+        
+    }
+    
     @FXML
     void initialize() {
         this.game = DataManager.getGame();
 
+        
+        mainGrid.setOnMousePressed(e -> {
+        updateMousePosition(e);
+        });
+
+        //hboxOpponentCards.onMousePressedProperty()
+
+                
         Platform.runLater(() -> {
             Stage primaryStage = (Stage) mainGrid.getScene().getWindow();
             primaryStage.setMaximized(true);
@@ -76,6 +156,19 @@ public class GameController {
 
             ArrayList<Card> opponentCards = isGameCreator ? gameState.getCards2() : gameState.getCards1();
             this.addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
+
+            String secondPlayerName = this.rmiClient.getPlayerName( game.getSecondPlayer());
+            String createrName = this.rmiClient.getPlayerName(game.getCreator());
+            this.setLabelUser(label_opponent, isGameCreator ? secondPlayerName :   createrName  );
+            this.setLabelUser(label_user, DataManager.getUserName() );
+            
+
+            
+
+            
         });
+        
+        
+        
     }
 }

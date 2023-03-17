@@ -5,12 +5,15 @@
 package com.rummy.ui.rummyui;
 
 import java.io.IOException;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
@@ -38,6 +41,9 @@ public class MainScreenController {
             newStage.setTitle("Create new game");
             newStage.setScene(createGameScene);
             newStage.show();
+
+            handleCloseProgram(newStage);
+            
             Stage primaryStage = (Stage) btnNewGame.getScene().getWindow();
             primaryStage.close();
         } catch (IOException ex) {
@@ -58,6 +64,9 @@ public class MainScreenController {
             newStage.setTitle("Join A Game");
             newStage.setScene(joinGameScene);
             newStage.show();
+            
+            handleCloseProgram(newStage);
+            
             Stage primaryStage = (Stage) btnNewGame.getScene().getWindow();
             primaryStage.close();
         } catch (IOException ex) {
@@ -79,6 +88,9 @@ public class MainScreenController {
             newStage.setScene(scene);
             newStage.show();
 
+            
+            
+            
             //Close login window
             Stage primaryStage = (Stage) btnLogout.getScene().getWindow();
             primaryStage.close();
@@ -88,6 +100,16 @@ public class MainScreenController {
             alert.setHeaderText("Exception at main screen controller");
             alert.show();
         }
+    }
+    
+    protected void handleCloseProgram(Stage newStage){
+        newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        public void handle(WindowEvent we) {
+            newStage.close();
+            Platform.exit();
+            System.exit(0);
+        }
+    });  
     }
 }
 
