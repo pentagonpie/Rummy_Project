@@ -36,4 +36,11 @@ public class GameEventsManager {
     }
     }
 
+    public static void emitGameMoveEvent(Game game) {
+        for(EventListener listener: listeners){
+            if (listener instanceof GameMoveEventListener) {
+                ((GameMoveEventListener) listener).onGameMove(game);
+            }
+        }
+    }
 }

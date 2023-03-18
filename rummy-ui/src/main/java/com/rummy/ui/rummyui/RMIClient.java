@@ -94,6 +94,11 @@ public class RMIClient implements Serializable, RummyClient {
         GameEventsManager.emitNextTurn(game);
     }
 
+    @Override
+    public void handleGameMove(Game game) throws RemoteException {
+        GameEventsManager.emitGameMoveEvent(game);
+    }
+
     public void exitGame(String gameName, String playerId){
        try {
             server.exitGame(gameName,playerId );

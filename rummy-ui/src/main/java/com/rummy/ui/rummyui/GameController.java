@@ -1,17 +1,18 @@
 package com.rummy.ui.rummyui;
 
 
-
 import com.rummy.shared.Card;
 import com.rummy.shared.Game;
 import com.rummy.shared.GameState;
 import com.rummy.ui.gameEvents.GameEndedEventListener;
 import com.rummy.ui.gameEvents.GameEventsManager;
+import com.rummy.ui.gameEvents.GameMoveEventListener;
 import com.rummy.ui.gameEvents.nextTurnEventListener;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -35,7 +36,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
-public class GameController implements GameEndedEventListener, nextTurnEventListener {
+public class GameController implements GameEndedEventListener, nextTurnEventListener, GameMoveEventListener {
     private Game game;
 
     @FXML
@@ -46,10 +47,10 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
 
     @FXML
     protected Label label_opponent;
-    
+
     @FXML
     protected Label label_user;
-    
+
     @FXML
     protected HBox hboxMyCards;
 
@@ -75,22 +76,23 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Constants.CARD_IMAGE_HEIGHT);
         imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
-        
+
         imageView.setOnMousePressed(e -> {
-        pressedImage(e, imageFileName);
+            pressedImage(e, imageFileName);
         });
-        
+
         stackPane.getChildren().add(imageView);
         StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_MARGIN));
         hbox.getChildren().add(stackPane);
-        
-        if(mine){
-        imageView.setOnMousePressed(e -> {
-        pressedImage(e, imageFileName);
-        });
+
+        if (mine) {
+            imageView.setOnMousePressed(e -> {
+                pressedImage(e, imageFileName);
+            });
         }
 
     }
+
     private void addMyCardsToBoard(HBox hbox, ArrayList<Card> cards) {
         cards.forEach(card -> {
             final String fileName = card.getValue() + "_" + card.getSuit();
@@ -104,10 +106,10 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         });
     }
 
-    
-    double x = 0.0, y = 0.0;  
-    
-    public boolean myTurn(Game game){
+
+    double x = 0.0, y = 0.0;
+
+    public boolean myTurn(Game game) {
 
         GameState gameState = game.getGameState();
         int turn = gameState.getTurn();
@@ -115,24 +117,24 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         boolean myTurn = false;
 
         //creator turn
-        if(turn == 0){
-            if(isGameCreator){
+        if (turn == 0) {
+            if (isGameCreator) {
                 myTurn = true;
             }
         }
         //second player turn
-        else{
-            if(!isGameCreator){
+        else {
+            if (!isGameCreator) {
                 myTurn = true;
             }
         }
-        System.out.println("creator: "+ isGameCreator + " myTurn " + myTurn);
+        System.out.println("creator: " + isGameCreator + " myTurn " + myTurn);
         return myTurn;
     }
 
 
     //print to screen name of pressed image
-    public void pressedImage(MouseEvent e, String imageFileName){
+    public void pressedImage(MouseEvent e, String imageFileName) {
         System.out.println(imageFileName);
         //Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
         //ImageView imageView = new ImageView(image);
@@ -143,7 +145,7 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         GameState gameState = game.getGameState();
         System.out.println("now turn is " + gameState.getTurn());
 
-        if(myTurn(game)){
+        if (myTurn(game)) {
             setBorderOpponent();
 
             DataManager.nextTurn();
@@ -154,25 +156,25 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
 
     }
 
-    public void setMyBorder(){
+    public void setMyBorder() {
         System.out.println("setMyBorder");
         hboxMyCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
-        + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-        + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
+                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+                + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
         hboxOpponentCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
-        + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-        + "-fx-border-radius: 5;" + "-fx-border-color: green;");
+                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+                + "-fx-border-radius: 5;" + "-fx-border-color: green;");
 
     }
 
-    public void setBorderOpponent(){
+    public void setBorderOpponent() {
         System.out.println("setBorderOpponent");
         hboxMyCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
-        + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-        + "-fx-border-radius: 5;" + "-fx-border-color: green;");
+                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+                + "-fx-border-radius: 5;" + "-fx-border-color: green;");
         hboxOpponentCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
-        + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
-        + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
+                + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
+                + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
 
     }
 
@@ -183,7 +185,7 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
             @Override
             public void run() {
                 System.out.println("got next turn in game controller ");
-                if(myTurn( game)){
+                if (myTurn(game)) {
                     System.out.println("got my turn!");
                     setMyBorder();
                     DataManager.setGame(game);
@@ -196,23 +198,23 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
     }
 
 
-    private void setLabelUser(Label label_name, String user){
-        
+    private void setLabelUser(Label label_name, String user) {
+
         label_name.setText(user);
     }
 
-    
-    public void updateMousePosition(MouseEvent e){
-       
-        
+
+    public void updateMousePosition(MouseEvent e) {
+
+
         //System.out.println("Mouse press:");
         x = e.getSceneX();
         y = e.getSceneY();
         //System.out.println(x);
         //System.out.println(y);
-        
-        
-        double maxX,maxY,minX,minY;
+
+
+        double maxX, maxY, minX, minY;
         maxX = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxX();
         maxY = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxY();
         minX = hboxOpponentCards.boundsInLocalProperty().getValue().getMinX();
@@ -222,9 +224,9 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         //System.out.println("getMinX" + minX);
         //System.out.println("getMinY" + minY);
         hboxOpponentCards.onMousePressedProperty();
-        if(x > minX && x < maxX && y > minY && y < maxY){
+        if (x > minX && x < maxX && y > minY && y < maxY) {
             //System.out.println("Inside");
-        }else{
+        } else {
             //System.out.println("outside");
         }
     }
@@ -232,7 +234,7 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
     @FXML
     private Button exitButton;
 
-    private void initDiscardPile(ArrayList<Card> discardPile) {
+    private void setDiscardPile(ArrayList<Card> discardPile) {
         Card discardCard = discardPile.get(discardPile.size() - 1);
         String imageFileName = discardCard.getValue() + "_" + discardCard.getSuit();
         Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
@@ -243,14 +245,14 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
     void initialize() {
         this.game = DataManager.getGame();
 
-        
+
         mainGrid.setOnMousePressed(e -> {
-        updateMousePosition(e);
+            updateMousePosition(e);
         });
 
         //hboxOpponentCards.onMousePressedProperty()
 
-                
+
         Platform.runLater(() -> {
             Stage primaryStage = (Stage) mainGrid.getScene().getWindow();
             primaryStage.setMaximized(true);
@@ -267,12 +269,12 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
             ArrayList<Card> opponentCards = isGameCreator ? gameState.getCards2() : gameState.getCards1();
             this.addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
 
-            this.initDiscardPile(gameState.getDiscardPile());
+            this.setDiscardPile(gameState.getDiscardPile());
 
-            String secondPlayerName = this.rmiClient.getPlayerName( game.getSecondPlayer());
+            String secondPlayerName = this.rmiClient.getPlayerName(game.getSecondPlayer());
             String createrName = this.rmiClient.getPlayerName(game.getCreator());
-            this.setLabelUser(label_opponent, isGameCreator ? secondPlayerName :   createrName  );
-            this.setLabelUser(label_user, DataManager.getUserName() );
+            this.setLabelUser(label_opponent, isGameCreator ? secondPlayerName : createrName);
+            this.setLabelUser(label_user, DataManager.getUserName());
         });
     }
 
@@ -298,6 +300,32 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
                     alert.setTitle("IOException");
                     alert.setHeaderText("Exception at game screen controller");
                     alert.show();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onGameMove(Game game) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("got onGameMove in game controller ");
+                DataManager.setGame(game);
+                GameState gameState = game.getGameState();
+                final boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
+                ArrayList<Card> myCards = isGameCreator ? gameState.getCards1() : gameState.getCards2();
+                ArrayList<Card> opponentCards = isGameCreator ? gameState.getCards2() : gameState.getCards1();
+                hboxMyCards.getChildren().clear();
+                hboxOpponentCards.getChildren().clear();
+                addMyCardsToBoard(hboxMyCards, myCards);
+                addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
+                setDiscardPile(gameState.getDiscardPile());
+                if (myTurn(game)) {
+                    setMyBorder();
+                } else {
+                    setBorderOpponent();
                 }
             }
         });
