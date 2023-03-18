@@ -122,10 +122,11 @@ public class ServerImpl implements RummyServer {
         ArrayList<Card> deck = generateDeck();
         ArrayList<Card> player1Cards = new ArrayList<>(deck.subList(0, CARDS_PER_PLAYER));
         ArrayList<Card> player2Cards = new ArrayList<>(deck.subList(CARDS_PER_PLAYER, CARDS_PER_PLAYER * 2));
-        deck = new ArrayList<>(deck.subList(CARDS_PER_PLAYER * 2, deck.size()));
+        ArrayList<Card> discardPile = new ArrayList<>(deck.subList(CARDS_PER_PLAYER * 2, CARDS_PER_PLAYER * 2 + 1));
+        deck = new ArrayList<>(deck.subList(CARDS_PER_PLAYER * 2 + 1, deck.size()));
         ArrayList<ArrayList<Card>> board = new ArrayList<>();
 
-        GameState gameState = new GameState(player1Cards, player2Cards, deck, board);
+        GameState gameState = new GameState(player1Cards, player2Cards, deck, discardPile, board);
         Game createdGame = new Game(gameName, creator.getUserId(), gameState, Integer.toString(gameID) );
         createdGame.addPlayer(creator.getUserId());
         this._games.put(createdGame.getId(), createdGame);

@@ -57,9 +57,11 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
     protected HBox hboxOpponentCards;
 
     @FXML
-    protected HBox hboxDeckCards;
-    
-    
+    protected ImageView imgDeck;
+
+    @FXML
+    protected ImageView imgDiscardPile;
+
     private final RMIClient rmiClient;
 
     public GameController() throws NotBoundException, RemoteException {
@@ -225,12 +227,17 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         }else{
             //System.out.println("outside");
         }
-        
-        
     }
 
     @FXML
     private Button exitButton;
+
+    private void initDiscardPile(ArrayList<Card> discardPile) {
+        Card discardCard = discardPile.get(discardPile.size() - 1);
+        String imageFileName = discardCard.getValue() + "_" + discardCard.getSuit();
+        Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
+        this.imgDiscardPile.setImage(image);
+    }
 
     @FXML
     void initialize() {
@@ -260,13 +267,14 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
             ArrayList<Card> opponentCards = isGameCreator ? gameState.getCards2() : gameState.getCards1();
             this.addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
 
+            this.initDiscardPile(gameState.getDiscardPile());
+
             String secondPlayerName = this.rmiClient.getPlayerName( game.getSecondPlayer());
             String createrName = this.rmiClient.getPlayerName(game.getCreator());
             this.setLabelUser(label_opponent, isGameCreator ? secondPlayerName :   createrName  );
             this.setLabelUser(label_user, DataManager.getUserName() );
         });
     }
-
 
     @Override
     public void onGameEnded(Game game) {
@@ -284,11 +292,6 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
                     mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
                     Stage primaryStage = (Stage) exitButton.getScene().getWindow();
                     primaryStage.close();
-
-
-
-
-
                 } catch (IOException e) {
                     e.printStackTrace();
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
