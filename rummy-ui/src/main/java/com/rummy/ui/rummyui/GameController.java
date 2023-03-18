@@ -4,6 +4,8 @@ package com.rummy.ui.rummyui;
 import com.rummy.shared.Card;
 import com.rummy.shared.Game;
 import com.rummy.shared.GameState;
+import com.rummy.shared.gameMove.GameMove;
+import com.rummy.shared.gameMove.GameMoveEventType;
 import com.rummy.ui.gameEvents.GameEndedEventListener;
 import com.rummy.ui.gameEvents.GameEventsManager;
 import com.rummy.ui.gameEvents.GameMoveEventListener;
@@ -62,6 +64,12 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
 
     @FXML
     protected ImageView imgDiscardPile;
+
+    @FXML
+    protected Button btnDrawFromDeck;
+
+    @FXML
+    protected Button btnDrawFromDiscardPile;
 
     private final RMIClient rmiClient;
 
@@ -145,13 +153,13 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         GameState gameState = game.getGameState();
         System.out.println("now turn is " + gameState.getTurn());
 
-        if (myTurn(game)) {
-            setBorderOpponent();
-
-            DataManager.nextTurn();
-
-            this.rmiClient.nextTurn(game);
-        }
+//        if (myTurn(game)) {
+//            setBorderOpponent();
+//
+//            DataManager.nextTurn();
+//
+//            this.rmiClient.nextTurn(game);
+//        }
 
 
     }
@@ -235,6 +243,10 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
     private Button exitButton;
 
     private void setDiscardPile(ArrayList<Card> discardPile) {
+        if (discardPile.size() == 0) {
+            this.imgDiscardPile.setImage(null);
+        }
+
         Card discardCard = discardPile.get(discardPile.size() - 1);
         String imageFileName = discardCard.getValue() + "_" + discardCard.getSuit();
         Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
@@ -275,6 +287,12 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
             String createrName = this.rmiClient.getPlayerName(game.getCreator());
             this.setLabelUser(label_opponent, isGameCreator ? secondPlayerName : createrName);
             this.setLabelUser(label_user, DataManager.getUserName());
+
+            if (myTurn(game)) {
+                setMyBorder();
+            } else {
+                setBorderOpponent();
+            }
         });
     }
 
@@ -303,7 +321,38 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
                 }
             }
         });
+    }
 
+    @FXML
+    void onDrawFromDeck() {
+        System.out.println("draw from deck");
+        if (myTurn(DataManager.getGame())) {
+            try {
+                String playerId = DataManager.getPlayerId();
+                String gameId = DataManager.getGame().getId();
+
+                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DECK,null, null, gameId);
+                rmiClient.addGameMove(gameMove);
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    void onDrawFromDiscardPile() {
+        System.out.println("draw from discard pile");
+        if (myTurn(DataManager.getGame())) {
+            try {
+                String playerId = DataManager.getPlayerId();
+                String gameId = DataManager.getGame().getId();
+
+                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DISCARD,null, null, gameId);
+                rmiClient.addGameMove(gameMove);
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
