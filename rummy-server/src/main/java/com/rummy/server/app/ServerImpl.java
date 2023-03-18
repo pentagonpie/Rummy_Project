@@ -1,7 +1,10 @@
 package com.rummy.server.app;
 
 
+import com.rummy.server.app.helpers.GameMoveExecutor;
+import com.rummy.server.app.helpers.GameMoveValidator;
 import com.rummy.shared.*;
+import com.rummy.shared.gameMove.GameMove;
 
 import java.util.*;
 import java.rmi.RemoteException;
@@ -187,7 +190,29 @@ public class ServerImpl implements RummyServer {
     public ArrayList<Game> getGames() throws RemoteException {
         return new ArrayList<>(this._games.values());
     }
-    
+
+    @Override
+    public void addGameMove(GameMove gameMove) throws RemoteException {
+        Game game = this._games.get(gameMove.getGameId());
+
+        boolean isValidMove = GameMoveValidator.isValidMove(game, gameMove);
+
+        if (!isValidMove) {
+            return;
+        }
+
+        Game gameAfterMove = GameMoveExecutor.executeGameMove(game, gameMove);
+
+        game.getPlayersIds().forEach(_playerId -> {
+            Player playerToNotify = this._connectedPlayers.get(_playerId);
+            try {
+                playerToNotify.getClient().handleGameMove(gameAfterMove);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     @Override
     public void deleteGame(Game game) throws RemoteException {
         
