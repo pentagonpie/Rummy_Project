@@ -7,8 +7,8 @@ public class GameState implements Serializable {
     private ArrayList<Card> _cards1;
     private ArrayList<Card> _cards2;
     private ArrayList<Card> _deck;
-
     private ArrayList<ArrayList<Card>> _board;
+    private int _turn;
 
     public GameState(ArrayList<Card> cards1, ArrayList<Card> cards2, ArrayList<Card> deck, ArrayList<ArrayList<Card>> board) {
         super();
@@ -48,6 +48,18 @@ public class GameState implements Serializable {
 
     public void setBoard(ArrayList<ArrayList<Card>> board) {
         this._board = board;
+    }
+
+    public int getTurn() {
+        return this._turn;
+    }
+
+    public void nextTurn() {
+        if (this._turn == 0) {
+            this._turn = 1;
+        } else {
+            this._turn = 0;
+        }
     }
 
 

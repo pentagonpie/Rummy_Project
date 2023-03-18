@@ -20,4 +20,20 @@ public class GameEventsManager {
         }
     }
 
+    public static void emitGameEndEvent(Game game){
+    for(EventListener listener: listeners){
+        if (listener instanceof GameEndedEventListener) {
+            ((GameEndedEventListener) listener).onGameEnded(game);
+        }
+    }
+    }
+
+    public static void emitNextTurn(Game game){
+    for(EventListener listener: listeners){
+        if (listener instanceof nextTurnEventListener) {
+            ((nextTurnEventListener) listener).onNextTurn(game);
+        }
+    }
+    }
+
 }

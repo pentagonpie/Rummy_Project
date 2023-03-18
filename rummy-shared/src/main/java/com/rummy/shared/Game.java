@@ -14,7 +14,7 @@ public class Game implements Serializable {
 
     private final GameState _gameState;
 
-    public Game(String name, String creator, GameState gameState,String id) {
+    public Game(String name, String creator, GameState gameState, String id) {
         super();
         this._id = id;
         this._name = name;
@@ -59,5 +59,9 @@ public class Game implements Serializable {
 
     public GameState getGameState() {
         return this._gameState;
+    }
+    
+    public void nextTurn(){
+        this._gameState.nextTurn();
     }
 }
