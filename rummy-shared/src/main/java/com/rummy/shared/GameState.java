@@ -9,13 +9,15 @@ public class GameState implements Serializable {
     private ArrayList<Card> _deck;
     private ArrayList<ArrayList<Card>> _board;
     private int _turn;
+    private ArrayList<Card> _discardPile;
 
-    public GameState(ArrayList<Card> cards1, ArrayList<Card> cards2, ArrayList<Card> deck, ArrayList<ArrayList<Card>> board) {
+    public GameState(ArrayList<Card> cards1, ArrayList<Card> cards2, ArrayList<Card> deck, ArrayList<Card> discardPile, ArrayList<ArrayList<Card>> board) {
         super();
         this._cards1 = cards1;
         this._cards2 = cards2;
         this._deck = deck;
         this._board = board;
+        this._discardPile = discardPile;
     }
 
     public ArrayList<Card> getCards1() {
@@ -60,6 +62,14 @@ public class GameState implements Serializable {
         } else {
             this._turn = 0;
         }
+    }
+
+    public ArrayList<Card> getDiscardPile() {
+        return this._discardPile;
+    }
+
+    public void setDiscardPile(ArrayList<Card> discardPile) {
+        this._discardPile = discardPile;
     }
 
 
