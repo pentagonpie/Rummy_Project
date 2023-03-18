@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -53,6 +54,8 @@
                                  </image>
                               </ImageView>
                               <ImageView fx:id="imgDiscardPile" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button fx:id="btnDrawFromDeck" mnemonicParsing="false" onAction="#onDrawFromDeck" text="Draw" GridPane.rowIndex="2" />
+                              <Button fx:id="btnDrawFromDiscardPile" mnemonicParsing="false" onAction="#onDrawFromDiscardPile" text="Draw" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                      </children>
