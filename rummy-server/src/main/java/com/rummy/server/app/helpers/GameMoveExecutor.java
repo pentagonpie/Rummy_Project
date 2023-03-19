@@ -2,7 +2,6 @@ package com.rummy.server.app.helpers;
 
 import com.rummy.shared.Card;
 import com.rummy.shared.Game;
-import com.rummy.shared.GameState;
 import com.rummy.shared.gameMove.GameMove;
 import com.rummy.shared.gameMove.GameMoveEventType;
 
@@ -49,10 +48,13 @@ public class GameMoveExecutor {
 
     private static Game handleDiscardCard(Game game, GameMove gameMove) {
         ArrayList<Card> playerCards = getPlayerCards(game, gameMove);
-        playerCards.remove(gameMove.getCardsToMove().get(0));
+        Card cardToDiscard = gameMove.getCardsToMove().get(0);
+
+        Card playerCardToRemove = playerCards.stream().filter(card -> card.getSuit() == cardToDiscard.getSuit() && card.getValue() == cardToDiscard.getValue()).findFirst().get();
+        playerCards.remove(playerCardToRemove);
 
         ArrayList<Card> discardPile = game.getGameState().getDiscardPile();
-        discardPile.add(0, gameMove.getCardsToMove().get(0));
+        discardPile.add(0, cardToDiscard);
 
         return game;
     }

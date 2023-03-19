@@ -4,6 +4,8 @@ package com.rummy.ui.rummyui;
 import com.rummy.shared.Card;
 import com.rummy.shared.Game;
 import com.rummy.shared.GameState;
+import com.rummy.shared.gameMove.GameMove;
+import com.rummy.shared.gameMove.GameMoveEventType;
 import com.rummy.ui.gameEvents.GameEndedEventListener;
 import com.rummy.ui.gameEvents.GameEventsManager;
 import com.rummy.ui.gameEvents.GameMoveEventListener;
@@ -37,8 +39,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
 public class GameController implements GameEndedEventListener, nextTurnEventListener, GameMoveEventListener {
-    private Game game;
-
     @FXML
     protected GridPane mainGrid;
 
@@ -63,46 +63,67 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
     @FXML
     protected ImageView imgDiscardPile;
 
+    @FXML
+    protected Button btnDrawFromDeck;
+
+    @FXML
+    protected Button btnDrawFromDiscardPile;
+
+    @FXML
+    protected Button btnDiscard;
+
     private final RMIClient rmiClient;
+
+    private ArrayList<Card> selectedCards;
 
     public GameController() throws NotBoundException, RemoteException {
         this.rmiClient = RMIClient.getInstance();
         GameEventsManager.register((EventListener) this);
+        selectedCards = new ArrayList<>();
     }
 
-    private void addImageToHBox(HBox hbox, String imageFileName, boolean mine) {
+    private void onSelectMyCard(ImageView imageView, Card card) {
+        if (!this.canSelectCards()) {
+            return;
+        }
+
+        if (selectedCards.contains(card)) {
+            selectedCards.remove(card);
+            StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_MARGIN));
+        } else {
+            selectedCards.add(card);
+            StackPane.setMargin(imageView, new Insets(0, 0, 50, Constants.CARD_IMAGE_MARGIN));
+        }
+    }
+
+    private void addImageToHBox(HBox hbox, String imageFileName, boolean mine, Card card) {
         StackPane stackPane = new StackPane();
         Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Constants.CARD_IMAGE_HEIGHT);
         imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
 
-        imageView.setOnMousePressed(e -> {
-            pressedImage(e, imageFileName);
-        });
-
         stackPane.getChildren().add(imageView);
         StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_MARGIN));
         hbox.getChildren().add(stackPane);
 
         if (mine) {
-            imageView.setOnMousePressed(e -> {
-                pressedImage(e, imageFileName);
+            stackPane.setOnMousePressed(e -> {
+                onSelectMyCard(imageView, card);
             });
         }
-
     }
 
     private void addMyCardsToBoard(HBox hbox, ArrayList<Card> cards) {
         cards.forEach(card -> {
             final String fileName = card.getValue() + "_" + card.getSuit();
-            this.addImageToHBox(hbox, fileName, true);
+            this.addImageToHBox(hbox, fileName, true, card);
         });
     }
 
     private void addOpponentCardsToBoard(HBox hbox, ArrayList<Card> cards) {
         cards.forEach(card -> {
-            this.addImageToHBox(hbox, "back", false);
+            this.addImageToHBox(hbox, "back", false, card);
         });
     }
 
@@ -132,6 +153,21 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         return myTurn;
     }
 
+    private boolean canSelectCards() {
+        Game game = DataManager.getGame();
+        boolean isMyTurn = myTurn(game);
+        boolean isFirstMoveInTheGame = game.getGameState().getLastMove() == null;
+
+        if (!isMyTurn || isFirstMoveInTheGame) {
+            return false;
+        }
+
+        GameMoveEventType lastMoveType = game.getGameState().getLastMove().getGameMoveEventType();
+        boolean lastMoveWasDraw = lastMoveType == GameMoveEventType.DRAW_FROM_DECK || lastMoveType == GameMoveEventType.DRAW_FROM_DISCARD;
+
+        return lastMoveWasDraw;
+    }
+
 
     //print to screen name of pressed image
     public void pressedImage(MouseEvent e, String imageFileName) {
@@ -145,13 +181,13 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         GameState gameState = game.getGameState();
         System.out.println("now turn is " + gameState.getTurn());
 
-        if (myTurn(game)) {
-            setBorderOpponent();
-
-            DataManager.nextTurn();
-
-            this.rmiClient.nextTurn(game);
-        }
+//        if (myTurn(game)) {
+//            setBorderOpponent();
+//
+//            DataManager.nextTurn();
+//
+//            this.rmiClient.nextTurn(game);
+//        }
 
 
     }
@@ -235,6 +271,11 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
     private Button exitButton;
 
     private void setDiscardPile(ArrayList<Card> discardPile) {
+        if (discardPile.size() == 0) {
+            this.imgDiscardPile.setImage(null);
+            return;
+        }
+
         Card discardCard = discardPile.get(discardPile.size() - 1);
         String imageFileName = discardCard.getValue() + "_" + discardCard.getSuit();
         Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
@@ -243,9 +284,6 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
 
     @FXML
     void initialize() {
-        this.game = DataManager.getGame();
-
-
         mainGrid.setOnMousePressed(e -> {
             updateMousePosition(e);
         });
@@ -275,6 +313,12 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
             String createrName = this.rmiClient.getPlayerName(game.getCreator());
             this.setLabelUser(label_opponent, isGameCreator ? secondPlayerName : createrName);
             this.setLabelUser(label_user, DataManager.getUserName());
+
+            if (myTurn(game)) {
+                setMyBorder();
+            } else {
+                setBorderOpponent();
+            }
         });
     }
 
@@ -303,7 +347,55 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
                 }
             }
         });
+    }
 
+    @FXML
+    void onDrawFromDeck() {
+        System.out.println("draw from deck");
+        if (myTurn(DataManager.getGame())) {
+            try {
+                String playerId = DataManager.getPlayerId();
+                String gameId = DataManager.getGame().getId();
+
+                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DECK, null, null, gameId);
+                rmiClient.addGameMove(gameMove);
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    void onDrawFromDiscardPile() {
+        System.out.println("draw from discard pile");
+        if (myTurn(DataManager.getGame())) {
+            try {
+                String playerId = DataManager.getPlayerId();
+                String gameId = DataManager.getGame().getId();
+
+                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DISCARD, null, null, gameId);
+                rmiClient.addGameMove(gameMove);
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    public void onDiscard() {
+        if (!myTurn(DataManager.getGame()) || selectedCards.size() != 1) {
+            return;
+        }
+
+        try {
+            String playerId = DataManager.getPlayerId();
+            String gameId = DataManager.getGame().getId();
+
+            GameMove gameMove = new GameMove(playerId, GameMoveEventType.DISCARD, selectedCards, null, gameId);
+            rmiClient.addGameMove(gameMove);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

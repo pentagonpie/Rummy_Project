@@ -3,6 +3,7 @@ package com.rummy.ui.rummyui;
 import com.rummy.shared.Game;
 import com.rummy.shared.RummyClient;
 import com.rummy.shared.RummyServer;
+import com.rummy.shared.gameMove.GameMove;
 import com.rummy.ui.gameEvents.GameEventsManager;
 
 import java.io.Serializable;
@@ -102,6 +103,15 @@ public class RMIClient implements Serializable, RummyClient {
     public void exitGame(String gameName, String playerId){
        try {
             server.exitGame(gameName,playerId );
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addGameMove(GameMove gameMove){
+        try {
+            this.server.addGameMove(gameMove);
         } catch (RemoteException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
