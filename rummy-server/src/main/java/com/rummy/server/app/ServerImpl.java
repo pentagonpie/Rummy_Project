@@ -202,6 +202,7 @@ public class ServerImpl implements RummyServer {
         }
 
         Game gameAfterMove = GameMoveExecutor.executeGameMove(game, gameMove);
+        gameAfterMove.getGameState().setLastMove(gameMove);
 
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);

@@ -39,8 +39,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
 public class GameController implements GameEndedEventListener, nextTurnEventListener, GameMoveEventListener {
-    private Game game;
-
     @FXML
     protected GridPane mainGrid;
 
@@ -71,46 +69,61 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
     @FXML
     protected Button btnDrawFromDiscardPile;
 
+    @FXML
+    protected Button btnDiscard;
+
     private final RMIClient rmiClient;
+
+    private ArrayList<Card> selectedCards;
 
     public GameController() throws NotBoundException, RemoteException {
         this.rmiClient = RMIClient.getInstance();
         GameEventsManager.register((EventListener) this);
+        selectedCards = new ArrayList<>();
     }
 
-    private void addImageToHBox(HBox hbox, String imageFileName, boolean mine) {
+    private void onSelectMyCard(ImageView imageView, Card card) {
+        if (!this.canSelectCards()) {
+            return;
+        }
+
+        if (selectedCards.contains(card)) {
+            selectedCards.remove(card);
+            StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_MARGIN));
+        } else {
+            selectedCards.add(card);
+            StackPane.setMargin(imageView, new Insets(0, 0, 50, Constants.CARD_IMAGE_MARGIN));
+        }
+    }
+
+    private void addImageToHBox(HBox hbox, String imageFileName, boolean mine, Card card) {
         StackPane stackPane = new StackPane();
         Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Constants.CARD_IMAGE_HEIGHT);
         imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
 
-        imageView.setOnMousePressed(e -> {
-            pressedImage(e, imageFileName);
-        });
-
         stackPane.getChildren().add(imageView);
         StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_MARGIN));
         hbox.getChildren().add(stackPane);
 
         if (mine) {
-            imageView.setOnMousePressed(e -> {
-                pressedImage(e, imageFileName);
+            stackPane.setOnMousePressed(e -> {
+                onSelectMyCard(imageView, card);
             });
         }
-
     }
 
     private void addMyCardsToBoard(HBox hbox, ArrayList<Card> cards) {
         cards.forEach(card -> {
             final String fileName = card.getValue() + "_" + card.getSuit();
-            this.addImageToHBox(hbox, fileName, true);
+            this.addImageToHBox(hbox, fileName, true, card);
         });
     }
 
     private void addOpponentCardsToBoard(HBox hbox, ArrayList<Card> cards) {
         cards.forEach(card -> {
-            this.addImageToHBox(hbox, "back", false);
+            this.addImageToHBox(hbox, "back", false, card);
         });
     }
 
@@ -138,6 +151,21 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         }
         System.out.println("creator: " + isGameCreator + " myTurn " + myTurn);
         return myTurn;
+    }
+
+    private boolean canSelectCards() {
+        Game game = DataManager.getGame();
+        boolean isMyTurn = myTurn(game);
+        boolean isFirstMoveInTheGame = game.getGameState().getLastMove() == null;
+
+        if (!isMyTurn || isFirstMoveInTheGame) {
+            return false;
+        }
+
+        GameMoveEventType lastMoveType = game.getGameState().getLastMove().getGameMoveEventType();
+        boolean lastMoveWasDraw = lastMoveType == GameMoveEventType.DRAW_FROM_DECK || lastMoveType == GameMoveEventType.DRAW_FROM_DISCARD;
+
+        return lastMoveWasDraw;
     }
 
 
@@ -245,6 +273,7 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
     private void setDiscardPile(ArrayList<Card> discardPile) {
         if (discardPile.size() == 0) {
             this.imgDiscardPile.setImage(null);
+            return;
         }
 
         Card discardCard = discardPile.get(discardPile.size() - 1);
@@ -255,9 +284,6 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
 
     @FXML
     void initialize() {
-        this.game = DataManager.getGame();
-
-
         mainGrid.setOnMousePressed(e -> {
             updateMousePosition(e);
         });
@@ -331,7 +357,7 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
                 String playerId = DataManager.getPlayerId();
                 String gameId = DataManager.getGame().getId();
 
-                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DECK,null, null, gameId);
+                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DECK, null, null, gameId);
                 rmiClient.addGameMove(gameMove);
             } catch (RuntimeException e) {
                 e.printStackTrace();
@@ -347,11 +373,28 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
                 String playerId = DataManager.getPlayerId();
                 String gameId = DataManager.getGame().getId();
 
-                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DISCARD,null, null, gameId);
+                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DISCARD, null, null, gameId);
                 rmiClient.addGameMove(gameMove);
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @FXML
+    public void onDiscard() {
+        if (!myTurn(DataManager.getGame()) || selectedCards.size() != 1) {
+            return;
+        }
+
+        try {
+            String playerId = DataManager.getPlayerId();
+            String gameId = DataManager.getGame().getId();
+
+            GameMove gameMove = new GameMove(playerId, GameMoveEventType.DISCARD, selectedCards, null, gameId);
+            rmiClient.addGameMove(gameMove);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
     }
 
