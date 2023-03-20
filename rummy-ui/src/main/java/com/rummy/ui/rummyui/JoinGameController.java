@@ -58,6 +58,13 @@ public class JoinGameController implements GameStartedEventListener {
     @FXML
     private VBox vboxGames;
 
+    public void deleteGame(Game game){
+
+        this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
+        this.rmiClient.deleteGame(game);
+    }
+    
+    
     @Override
     public void onGameStarted(Game game) {
         System.out.println("from onGameStarted, game id is " + game.getId());
@@ -68,20 +75,18 @@ public class JoinGameController implements GameStartedEventListener {
                 FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
                 Stage gameScreenStage = new Stage();
                 gameScreenStage.show();
-                
+                gameScreenStage.setMaximized(true);
              
                 //Close app after closing window
                 gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                     public void handle(WindowEvent we) {
-
+                    deleteGame(game);
                     gameScreenStage.close();
-                    Platform.exit();
-                    System.exit(0);
+                    //Platform.exit();
+                    //System.exit(0);
                     }
                 });        
-
-                
-                gameScreenStage.setMaximized(true);
+    
 
                 try {
                     gameScreenStage.setScene(new Scene(gameScreenLoader.load()));

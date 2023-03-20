@@ -293,6 +293,16 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 Stage mainScreenStage = new Stage();
                 mainScreenStage.show();
                 mainScreenStage.setMaximized(true);
+                
+                mainScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent we) {
+                    
+                    
+                    Platform.exit();
+                    System.exit(0);
+                }
+                }); 
 
                 try {
                     mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
@@ -358,34 +368,38 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
     }
     
+    public void deleteGame(Game game){
+
+        this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
+        this.rmiClient.deleteGame(game);
+    }
+    
     @FXML
     public void onBackButtonClick(){
             Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 
-                
+                Game game = DataManager.getGame();
                 FXMLLoader mainScreenLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
                 Stage mainScreenStage = new Stage();
                 mainScreenStage.show();
                 mainScreenStage.setMaximized(true);
-                
+                deleteGame(game);
 
+                mainScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent we) {
+                        Platform.exit();
+                        System.exit(0);
+                    }
+                });        
+                
                 try {
                     mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
                     Stage primaryStage = (Stage) backButton.getScene().getWindow();
-                    
-                    
-                    mainScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                        public void handle(WindowEvent we) {
-                        
-                        Platform.exit();
-                        System.exit(0);
-                        }
-                    });        
-                    
-                    
                     primaryStage.close();
+                    
                 } catch (IOException e) {
                     e.printStackTrace();
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
