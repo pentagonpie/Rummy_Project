@@ -38,7 +38,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
-public class GameController implements GameEndedEventListener, nextTurnEventListener, GameMoveEventListener {
+public class GameController implements GameEndedEventListener, GameMoveEventListener {
     @FXML
     protected GridPane mainGrid;
 
@@ -214,26 +214,6 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
 
     }
 
-    @Override
-    public void onNextTurn(Game game) {
-        //System.out.println("got onNextTurn in game control");
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("got next turn in game controller ");
-                if (myTurn(game)) {
-                    System.out.println("got my turn!");
-                    setMyBorder();
-                    DataManager.setGame(game);
-                }
-
-
-            }
-        });
-
-    }
-
-
     private void setLabelUser(Label label_name, String user) {
 
         label_name.setText(user);
@@ -287,9 +267,6 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
         mainGrid.setOnMousePressed(e -> {
             updateMousePosition(e);
         });
-
-        //hboxOpponentCards.onMousePressedProperty()
-
 
         Platform.runLater(() -> {
             Stage primaryStage = (Stage) mainGrid.getScene().getWindow();
@@ -414,6 +391,8 @@ public class GameController implements GameEndedEventListener, nextTurnEventList
                 addMyCardsToBoard(hboxMyCards, myCards);
                 addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
                 setDiscardPile(gameState.getDiscardPile());
+                selectedCards.clear();
+
                 if (myTurn(game)) {
                     setMyBorder();
                 } else {
