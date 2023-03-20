@@ -70,10 +70,16 @@
                                     <Button fx:id="btnDiscard" mnemonicParsing="false" onAction="#onDiscard" text="Discard" />
                                  </children>
                               </HBox>
+                              <HBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <children>
+                                    <Button fx:id="btnMeld" mnemonicParsing="false" onAction="#onMeld" text="Meld" />
+                                 </children>
+                              </HBox>
                            </children>
                         </GridPane>
                      </children>
                   </HBox>
+                  <HBox fx:id="hboxCardBoard" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" />
                </children>
             </GridPane>
             <HBox fx:id="hboxOpponentCards" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">

@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.EventListener;
+
 import javafx.event.EventHandler;
 
 import javafx.fxml.FXMLLoader;
@@ -55,6 +56,9 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     protected HBox hboxMyCards;
+    
+    @FXML
+    protected HBox hboxCardBoard;
 
     @FXML
     protected HBox hboxOpponentCards;
@@ -73,6 +77,9 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     protected Button btnDiscard;
+    
+    @FXML
+    protected Button btnMeld;
     
     @FXML
     private Button backButton;
@@ -125,6 +132,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             this.addImageToHBox(hbox, fileName, true, card);
         });
     }
+    
+    
 
     private void addOpponentCardsToBoard(HBox hbox, ArrayList<Card> cards) {
         cards.forEach(card -> {
@@ -132,6 +141,16 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         });
     }
 
+    private void addCardsToBoard(HBox hbox, ArrayList<ArrayList<Card>> listSeries) {
+        System.out.println("addCardsToBoard");
+        listSeries.forEach(series -> {
+            series.forEach(card -> {
+            final String fileName = card.getValue() + "_" + card.getSuit();
+            this.addImageToHBox(hbox, fileName, true, card);
+                System.out.println("adding to board " + fileName);
+        });
+        });
+    }
 
 
     //Check which player turn is it, if this player, return true
@@ -368,6 +387,31 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
     }
     
+     @FXML
+    public void onMeld() {
+        System.out.println("meld pressed");
+        if (!myTurn(DataManager.getGame())) {
+            return;
+        }
+
+        try {
+            String playerId = DataManager.getPlayerId();
+            String gameId = DataManager.getGame().getId();
+
+            System.out.println("in onMeld,selectedCards is  " + selectedCards);
+            GameMove gameMove = new GameMove(playerId, GameMoveEventType.MELD, selectedCards, null, gameId);
+            rmiClient.addGameMove(gameMove);
+//            try {
+//                //rmiClient.handleNextTurn(DataManager.getGame());
+//            } catch (RemoteException e) {
+//                e.printStackTrace();
+//            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
     public void deleteGame(Game game){
 
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
@@ -422,10 +466,16 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 final boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
                 ArrayList<Card> myCards = isGameCreator ? gameState.getCards1() : gameState.getCards2();
                 ArrayList<Card> opponentCards = isGameCreator ? gameState.getCards2() : gameState.getCards1();
+                
+                ArrayList<ArrayList<Card>> boardCards =  gameState.getBoard();
                 hboxMyCards.getChildren().clear();
                 hboxOpponentCards.getChildren().clear();
+                hboxCardBoard.getChildren().clear();
+                
                 addMyCardsToBoard(hboxMyCards, myCards);
+                addCardsToBoard(hboxCardBoard, boardCards);
                 addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
+                
                 setDiscardPile(gameState.getDiscardPile());
                 selectedCards.clear();
 
