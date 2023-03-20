@@ -198,6 +198,7 @@ public class ServerImpl implements RummyServer {
 
         boolean isValidMove = GameMoveValidator.isValidMove(game, gameMove);
 
+        System.out.println("move valid: " + isValidMove);
         if (!isValidMove) {
             return;
         }
@@ -207,6 +208,10 @@ public class ServerImpl implements RummyServer {
 
 
         if (gameMove.getGameMoveEventType() == GameMoveEventType.DISCARD) {
+            gameAfterMove.nextTurn();
+        }
+        
+        if (gameMove.getGameMoveEventType() == GameMoveEventType.MELD) {
             gameAfterMove.nextTurn();
         }
 
