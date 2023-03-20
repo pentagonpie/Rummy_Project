@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.EventListener;
+import javafx.event.EventHandler;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -37,6 +38,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.WindowEvent;
 
 public class GameController implements GameEndedEventListener, GameMoveEventListener {
     @FXML
@@ -71,6 +73,9 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     protected Button btnDiscard;
+    
+    @FXML
+    private Button backButton;
 
     private final RMIClient rmiClient;
 
@@ -128,8 +133,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     }
 
 
-    double x = 0.0, y = 0.0;
 
+    //Check which player turn is it, if this player, return true
     public boolean myTurn(Game game) {
 
         GameState gameState = game.getGameState();
@@ -172,26 +177,15 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     //print to screen name of pressed image
     public void pressedImage(MouseEvent e, String imageFileName) {
         System.out.println(imageFileName);
-        //Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
-        //ImageView imageView = new ImageView(image);
-        //stackPane.getChildren().remove(imageView);
-        //hbox.getChildren().add(stackPane);
 
         Game game = DataManager.getGame();
         GameState gameState = game.getGameState();
         System.out.println("now turn is " + gameState.getTurn());
 
-//        if (myTurn(game)) {
-//            setBorderOpponent();
-//
-//            DataManager.nextTurn();
-//
-//            this.rmiClient.nextTurn(game);
-//        }
-
 
     }
 
+    //Create box around my cards when it is my turn to emphesize it visually
     public void setMyBorder() {
         System.out.println("setMyBorder");
         hboxMyCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
@@ -203,6 +197,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     }
 
+    //Create box around opponent cards when it is my turn to emphesize it visually
     public void setBorderOpponent() {
         System.out.println("setBorderOpponent");
         hboxMyCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
@@ -214,6 +209,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     }
 
+    //Set labels with names of players for me and opponent
     private void setLabelUser(Label label_name, String user) {
 
         label_name.setText(user);
@@ -221,13 +217,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
 
     public void updateMousePosition(MouseEvent e) {
-
-
         //System.out.println("Mouse press:");
-        x = e.getSceneX();
-        y = e.getSceneY();
-        //System.out.println(x);
-        //System.out.println(y);
+
 
 
         double maxX, maxY, minX, minY;
@@ -235,20 +226,11 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         maxY = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxY();
         minX = hboxOpponentCards.boundsInLocalProperty().getValue().getMinX();
         minY = hboxOpponentCards.boundsInLocalProperty().getValue().getMinY();
-        //System.out.println("getMaxX" + maxX);
-        //System.out.println("getMaxY" + maxY);
-        //System.out.println("getMinX" + minX);
-        //System.out.println("getMinY" + minY);
         hboxOpponentCards.onMousePressedProperty();
-        if (x > minX && x < maxX && y > minY && y < maxY) {
-            //System.out.println("Inside");
-        } else {
-            //System.out.println("outside");
-        }
+
     }
 
-    @FXML
-    private Button exitButton;
+
 
     private void setDiscardPile(ArrayList<Card> discardPile) {
         if (discardPile.size() == 0) {
@@ -275,6 +257,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             mainGrid.prefWidthProperty().bind(anchorPane.widthProperty());
             Game game = DataManager.getGame();
             GameState gameState = game.getGameState();
+   
 
             final boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
 
@@ -313,7 +296,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
                 try {
                     mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
-                    Stage primaryStage = (Stage) exitButton.getScene().getWindow();
+                    Stage primaryStage = (Stage) backButton.getScene().getWindow();
                     primaryStage.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -374,7 +357,46 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             e.printStackTrace();
         }
     }
+    
+    @FXML
+    public void onBackButtonClick(){
+            Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                
+                
+                FXMLLoader mainScreenLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
+                Stage mainScreenStage = new Stage();
+                mainScreenStage.show();
+                mainScreenStage.setMaximized(true);
+                
 
+                try {
+                    mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
+                    Stage primaryStage = (Stage) backButton.getScene().getWindow();
+                    
+                    
+                    mainScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        public void handle(WindowEvent we) {
+                        
+                        Platform.exit();
+                        System.exit(0);
+                        }
+                    });        
+                    
+                    
+                    primaryStage.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("IOException");
+                    alert.setHeaderText("Exception at create game screen controller");
+                    alert.show();
+                }
+            }
+        });
+    }
+    
     @Override
     public void onGameMove(Game game) {
         Platform.runLater(new Runnable() {
