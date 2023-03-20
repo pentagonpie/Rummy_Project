@@ -5,6 +5,7 @@ import com.rummy.server.app.helpers.GameMoveExecutor;
 import com.rummy.server.app.helpers.GameMoveValidator;
 import com.rummy.shared.*;
 import com.rummy.shared.gameMove.GameMove;
+import com.rummy.shared.gameMove.GameMoveEventType;
 
 import java.util.*;
 import java.rmi.RemoteException;
@@ -204,6 +205,11 @@ public class ServerImpl implements RummyServer {
         Game gameAfterMove = GameMoveExecutor.executeGameMove(game, gameMove);
         gameAfterMove.getGameState().setLastMove(gameMove);
 
+
+        if (gameMove.getGameMoveEventType() == GameMoveEventType.DISCARD) {
+            gameAfterMove.nextTurn();
+        }
+
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);
             try {
@@ -212,6 +218,7 @@ public class ServerImpl implements RummyServer {
                 throw new RuntimeException(e);
             }
         });
+
     }
 
     @Override
