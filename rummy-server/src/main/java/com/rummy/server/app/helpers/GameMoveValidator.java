@@ -2,6 +2,7 @@ package com.rummy.server.app.helpers;
 
 import com.rummy.shared.Card;
 import com.rummy.shared.Game;
+import com.rummy.shared.GameState;
 import com.rummy.shared.Suit;
 import com.rummy.shared.gameMove.GameMove;
 import com.rummy.shared.gameMove.GameMoveEventType;
@@ -13,13 +14,10 @@ public class GameMoveValidator {
     private static boolean isValidDraw(Game game, GameMove gameMove) {
         GameMove lastGameMove = game.getGameState().getLastMove();
         boolean lastMoveDoneByOpponent = !lastGameMove.getPlayerId().equals(gameMove.getPlayerId());
-        boolean lastMoveWasDiscard = lastGameMove.getGameMoveEventType() == GameMoveEventType.DISCARD;
-
-        if (lastMoveDoneByOpponent && lastMoveWasDiscard) {
-            return true;
-        }
-
-        return false;
+        //boolean lastMoveWasDiscard = lastGameMove.getGameMoveEventType() == GameMoveEventType.DISCARD;
+        GameState state = game.getGameState();
+        boolean discardPileEmpty = state.getDiscardPile().isEmpty();
+        return lastMoveDoneByOpponent && !discardPileEmpty;
     }
 
     private static boolean isValidDiscard(Game game, GameMove gameMove) {
@@ -122,6 +120,7 @@ public class GameMoveValidator {
     }
 
     public static boolean isValidMove(Game game, GameMove gameMove) {
+        System.out.println("checking if valid move");
         if (gameMove == null || game == null || !game.getPlayersIds().contains(gameMove.getPlayerId())) {
             return false;
         }
