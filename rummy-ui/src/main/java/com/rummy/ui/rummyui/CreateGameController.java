@@ -60,6 +60,16 @@ public class CreateGameController implements GameStartedEventListener {
         this.createNewGameContainer.setVisible(false);
         this.lblWaitingText.setVisible(true);
     }
+    
+    public void deleteGame(Game game){
+
+        this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
+        this.rmiClient.deleteGame(game);
+    }
+    
+    //public void closeGameScreen(){
+    //    this.gameScreenStage.close();
+    //}
 
     @Override
     public void onGameStarted(Game game) {
@@ -71,22 +81,11 @@ public class CreateGameController implements GameStartedEventListener {
                 Stage gameScreenStage = new Stage();
                 gameScreenStage.show();
                 gameScreenStage.setMaximized(true);
-
+                Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
                 try {
                     gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
-                    Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
-                    
-                    
-                    gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                        public void handle(WindowEvent we) {
-                        
-                        Platform.exit();
-                        System.exit(0);
-                        }
-                    });        
-                    
-                    
                     primaryStage.close();
+                    
                 } catch (IOException e) {
                     e.printStackTrace();
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -94,6 +93,16 @@ public class CreateGameController implements GameStartedEventListener {
                     alert.setHeaderText("Exception at create game screen controller");
                     alert.show();
                 }
+                
+                gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent we) {
+                    deleteGame(game);
+                    gameScreenStage.close();
+                    //Platform.exit();
+                    //System.exit(0);
+                }
+                });  
             }
         });
     }

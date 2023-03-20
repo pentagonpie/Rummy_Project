@@ -18,4 +18,11 @@ public class Card implements Serializable {
     public Suit getSuit() {
         return suit;
     }
+    
+    public String toString(){
+        String result = "";
+        result+=this.getValue();
+        result+=this.getSuit().name();
+        return result;
+    }
 }

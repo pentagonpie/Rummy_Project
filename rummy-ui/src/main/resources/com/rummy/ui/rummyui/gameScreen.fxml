@@ -13,7 +13,7 @@
 
 <AnchorPane fx:id="anchorPane" minHeight="300.0" minWidth="600.0" prefHeight="796.0" prefWidth="1128.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rummy.ui.rummyui.GameController">
    <children>
-      <GridPane fx:id="mainGrid" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="796.0" prefWidth="1128.0" style="-fx-background-color: green;">
+      <GridPane fx:id="mainGrid" layoutY="39.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="757.0" prefWidth="1128.0" style="-fx-background-color: green;">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -70,10 +70,16 @@
                                     <Button fx:id="btnDiscard" mnemonicParsing="false" onAction="#onDiscard" text="Discard" />
                                  </children>
                               </HBox>
+                              <HBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <children>
+                                    <Button fx:id="btnMeld" mnemonicParsing="false" onAction="#onMeld" text="Meld" />
+                                 </children>
+                              </HBox>
                            </children>
                         </GridPane>
                      </children>
                   </HBox>
+                  <HBox fx:id="hboxCardBoard" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" />
                </children>
             </GridPane>
             <HBox fx:id="hboxOpponentCards" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
@@ -95,5 +101,10 @@
             </HBox>
          </children>
       </GridPane>
+      <HBox prefHeight="40.0" prefWidth="1128.0" style="-fx-background-color: green;">
+         <children>
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#onBackButtonClick" text="Back" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
