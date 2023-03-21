@@ -14,13 +14,10 @@ public class GameMoveValidator {
     private static boolean isValidDraw(Game game, GameMove gameMove) {
         GameMove lastGameMove = game.getGameState().getLastMove();
         boolean lastMoveDoneByOpponent = !lastGameMove.getPlayerId().equals(gameMove.getPlayerId());
-        boolean lastMoveWasDiscard = lastGameMove.getGameMoveEventType() == GameMoveEventType.DISCARD;
-
-        if (lastMoveDoneByOpponent && lastMoveWasDiscard) {
-            return true;
-        }
-
-        return false;
+        //boolean lastMoveWasDiscard = lastGameMove.getGameMoveEventType() == GameMoveEventType.DISCARD;
+        GameState state = game.getGameState();
+        boolean discardPileEmpty = state.getDiscardPile().isEmpty();
+        return lastMoveDoneByOpponent && !discardPileEmpty;
     }
 
     private static boolean isValidDiscard(Game game, GameMove gameMove) {
@@ -95,7 +92,7 @@ public class GameMoveValidator {
     private static boolean isValidMeld(Game game, GameMove gameMove) {
         GameMove lastGameMove = game.getGameState().getLastMove();
         boolean lastMoveDoneByCurrPlayer = lastGameMove.getPlayerId().equals(gameMove.getPlayerId());
-        boolean lastMoveWasDraw = lastGameMove.getGameMoveEventType() == GameMoveEventType.DRAW_FROM_DECK || lastGameMove.getGameMoveEventType() == GameMoveEventType.DRAW_FROM_DISCARD;
+        boolean lastMoveWasDraw = lastGameMove.getGameMoveEventType() == GameMoveEventType.DRAW_FROM_DECK;
 
         if (!lastMoveDoneByCurrPlayer || !lastMoveWasDraw) {
             return false;

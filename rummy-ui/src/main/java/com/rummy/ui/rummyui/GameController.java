@@ -187,9 +187,9 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
 
         GameMoveEventType lastMoveType = game.getGameState().getLastMove().getGameMoveEventType();
-        boolean lastMoveWasDiscard = lastMoveType == GameMoveEventType.DISCARD;
+        boolean lastMoveWasDraw = lastMoveType == GameMoveEventType.DRAW_FROM_DECK || lastMoveType == GameMoveEventType.DRAW_FROM_DISCARD;
 
-        return !lastMoveWasDiscard;
+        return lastMoveWasDraw;
     }
 
 
@@ -401,6 +401,11 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             System.out.println("in onMeld,selectedCards is  " + selectedCards);
             GameMove gameMove = new GameMove(playerId, GameMoveEventType.MELD, selectedCards, null, gameId);
             rmiClient.addGameMove(gameMove);
+//            try {
+//                //rmiClient.handleNextTurn(DataManager.getGame());
+//            } catch (RemoteException e) {
+//                e.printStackTrace();
+//            }
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -408,6 +413,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     
     
     public void deleteGame(Game game){
+
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
         this.rmiClient.deleteGame(game);
     }
