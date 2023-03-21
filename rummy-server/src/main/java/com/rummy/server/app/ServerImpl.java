@@ -211,10 +211,6 @@ public class ServerImpl implements RummyServer {
             gameAfterMove.nextTurn();
         }
         
-        if (gameMove.getGameMoveEventType() == GameMoveEventType.MELD) {
-            gameAfterMove.nextTurn();
-        }
-
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);
             try {
