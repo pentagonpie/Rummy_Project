@@ -6,6 +6,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+
 public interface RummyServer extends Remote {
     String login(String username, String password, RummyClient client) throws RemoteException;
     void logout(String userId) throws RemoteException;
@@ -16,5 +17,5 @@ public interface RummyServer extends Remote {
     void deleteGame(Game game) throws RemoteException;
     void nextTurn(Game game) throws RemoteException;
     ArrayList<Game> getGames() throws RemoteException;
-    void addGameMove(GameMove gameMove) throws RemoteException;
+    MoveValidationResult addGameMove(GameMove gameMove) throws RemoteException;
 }

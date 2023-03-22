@@ -3,6 +3,7 @@ package com.rummy.server.app;
 
 import com.rummy.server.app.helpers.GameMoveExecutor;
 import com.rummy.server.app.helpers.GameMoveValidator;
+import com.rummy.shared.MoveValidationResult;
 import com.rummy.shared.*;
 import com.rummy.shared.gameMove.GameMove;
 import com.rummy.shared.gameMove.GameMoveEventType;
@@ -191,16 +192,18 @@ public class ServerImpl implements RummyServer {
     public ArrayList<Game> getGames() throws RemoteException {
         return new ArrayList<>(this._games.values());
     }
+    
+    
 
     @Override
-    public void addGameMove(GameMove gameMove) throws RemoteException {
+    public MoveValidationResult addGameMove(GameMove gameMove) throws RemoteException {
         Game game = this._games.get(gameMove.getGameId());
 
-        boolean isValidMove = GameMoveValidator.isValidMove(game, gameMove);
+        MoveValidationResult isValidMove = GameMoveValidator.isValidMove(game, gameMove);
 
         System.out.println("move valid: " + isValidMove);
-        if (!isValidMove) {
-            return;
+        if (!isValidMove.isValid()) {
+            return isValidMove;
         }
 
         Game gameAfterMove = GameMoveExecutor.executeGameMove(game, gameMove);
@@ -211,6 +214,10 @@ public class ServerImpl implements RummyServer {
             gameAfterMove.nextTurn();
         }
         
+        if (gameMove.getGameMoveEventType() == GameMoveEventType.MELD) {
+            gameAfterMove.nextTurn();
+        }
+
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);
             try {
@@ -219,7 +226,7 @@ public class ServerImpl implements RummyServer {
                 throw new RuntimeException(e);
             }
         });
-
+        return new MoveValidationResult(true,0);
     }
 
     @Override

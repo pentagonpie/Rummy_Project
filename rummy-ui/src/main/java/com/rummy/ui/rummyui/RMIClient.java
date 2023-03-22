@@ -1,6 +1,7 @@
 package com.rummy.ui.rummyui;
 
 import com.rummy.shared.Game;
+import com.rummy.shared.MoveValidationResult;
 import com.rummy.shared.RummyClient;
 import com.rummy.shared.RummyServer;
 import com.rummy.shared.gameMove.GameMove;
@@ -122,12 +123,9 @@ public class RMIClient implements Serializable, RummyClient {
         }
     }
 
-    public void addGameMove(GameMove gameMove) {
-        try {
-            this.server.addGameMove(gameMove);
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
-        }
+    public MoveValidationResult addGameMove(GameMove gameMove) throws RemoteException{
+        
+        return this.server.addGameMove(gameMove);
+
     }
 }

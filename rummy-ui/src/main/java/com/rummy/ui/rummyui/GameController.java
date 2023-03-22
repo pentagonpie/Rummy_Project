@@ -4,6 +4,7 @@ package com.rummy.ui.rummyui;
 import com.rummy.shared.Card;
 import com.rummy.shared.Game;
 import com.rummy.shared.GameState;
+import com.rummy.shared.MoveValidationResult;
 import com.rummy.shared.gameMove.GameMove;
 import com.rummy.shared.gameMove.GameMoveEventType;
 import com.rummy.ui.gameEvents.GameEndedEventListener;
@@ -29,6 +30,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.EventListener;
 
+
 import javafx.event.EventHandler;
 
 import javafx.fxml.FXMLLoader;
@@ -53,6 +55,11 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     protected Label label_user;
+    
+    @FXML
+    protected Label helpLabel;
+    
+    
 
     @FXML
     protected HBox hboxMyCards;
@@ -187,9 +194,9 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
 
         GameMoveEventType lastMoveType = game.getGameState().getLastMove().getGameMoveEventType();
-        boolean lastMoveWasDiscard = lastMoveType == GameMoveEventType.DISCARD;
+        boolean lastMoveWasDraw = lastMoveType == GameMoveEventType.DRAW_FROM_DECK || lastMoveType == GameMoveEventType.DRAW_FROM_DISCARD;
 
-        return !lastMoveWasDiscard;
+        return lastMoveWasDraw;
     }
 
 
@@ -213,6 +220,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         hboxOpponentCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;" + "-fx-border-color: green;");
+        
+        helpLabel.setText("Your Turn:");
 
     }
 
@@ -225,6 +234,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         hboxOpponentCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
+        helpLabel.setText("Opponent turn");
 
     }
 
@@ -347,7 +357,14 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 String gameId = DataManager.getGame().getId();
 
                 GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DECK, null, null, gameId);
-                rmiClient.addGameMove(gameMove);
+                MoveValidationResult result = new MoveValidationResult(true,0);
+                try {
+                    result = rmiClient.addGameMove(gameMove);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                updateHelpLabel(result);
+                
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
@@ -362,14 +379,53 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 String playerId = DataManager.getPlayerId();
                 String gameId = DataManager.getGame().getId();
 
+                
                 GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DISCARD, null, null, gameId);
-                rmiClient.addGameMove(gameMove);
+                
+                
+                MoveValidationResult result = new MoveValidationResult(true,0);
+                try {
+                    result = rmiClient.addGameMove(gameMove);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                
+                updateHelpLabel(result);
+                
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    public void updateHelpLabel(MoveValidationResult result){
+        if(!result.isValid()){
+            System.out.println("setting new help text");
+            switch(result.getErrorCode()){
+                case 1 -> helpLabel.setText("Invalid move");
+                case 2 -> helpLabel.setText("Invalid draw");
+                case 3 -> helpLabel.setText("trying to discard twice in row");
+                case 4 -> helpLabel.setText("Invalid meld");
+                case 5 -> helpLabel.setText("Not your turn");
+                case 6 -> helpLabel.setText("Cannot discard");
+                case 7 -> helpLabel.setText("Cards not same value");
+                case 8 -> helpLabel.setText("Cards not same suit");
+                case 9 -> helpLabel.setText("Series not raising value");
+            }
+
+        }
+    }
+    
+    //1-general invalid move
+    //2-invalid draw
+    //3-trying to discard twice in row
+    //4-invalid meld
+    //5-not your turn
+    //6 -cannot discard
+    //7 - cards not same value
+    //8 - cards not same suit
+    //9 - series not raising values
+    
     @FXML
     public void onDiscard() {
         if (!myTurn(DataManager.getGame()) || selectedCards.size() != 1) {
@@ -381,7 +437,17 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             String gameId = DataManager.getGame().getId();
 
             GameMove gameMove = new GameMove(playerId, GameMoveEventType.DISCARD, selectedCards, null, gameId);
-            rmiClient.addGameMove(gameMove);
+            
+            MoveValidationResult result = new MoveValidationResult(true,0);
+            try {
+                result = rmiClient.addGameMove(gameMove);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+
+            updateHelpLabel(result);
+            
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -400,7 +466,17 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
             System.out.println("in onMeld,selectedCards is  " + selectedCards);
             GameMove gameMove = new GameMove(playerId, GameMoveEventType.MELD, selectedCards, null, gameId);
-            rmiClient.addGameMove(gameMove);
+            
+            MoveValidationResult result = new MoveValidationResult(true,0);
+            try {
+                result = rmiClient.addGameMove(gameMove);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+
+            updateHelpLabel(result);
+
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -408,6 +484,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     
     
     public void deleteGame(Game game){
+
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
         this.rmiClient.deleteGame(game);
     }

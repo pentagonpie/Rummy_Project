@@ -13,20 +13,6 @@ public class GameMoveExecutor {
         return isGameCreator ? game.getGameState().getCards1() : game.getGameState().getCards2();
     }
 
-    private static void removeCardFromPlayer(Game game, GameMove gameMove, Card cardToRemove) {
-        ArrayList<Card> playerCards = getPlayerCards(game, gameMove);
-        Card playerCardToRemove = playerCards.stream().filter(card -> card.getSuit() == cardToRemove.getSuit() && card.getValue() == cardToRemove.getValue()).findFirst().get();
-        playerCards.remove(playerCardToRemove);
-    }
-
-    private static void removeCardsFromPlayer(Game game, GameMove gameMove, ArrayList<Card> cardsToRemove) {
-        for (Card cardToRemove : cardsToRemove) {
-            removeCardFromPlayer(game, gameMove, cardToRemove);
-        }
-    }
-
-
-
     private static Game handleDrawCardFromDeck(Game game, GameMove gameMove) {
         ArrayList<Card> deck = game.getGameState().getDeck();
         Card drawCard = deck.get(0);
@@ -51,9 +37,8 @@ public class GameMoveExecutor {
 
     private static Game handleDrawCardFromDiscard(Game game, GameMove gameMove) {
         ArrayList<Card> discardPile = game.getGameState().getDiscardPile();
-        int lastDiscardPileIndex = discardPile.size() - 1;
-        Card drawCard = discardPile.get(lastDiscardPileIndex);
-        discardPile.remove(lastDiscardPileIndex);
+        Card drawCard = discardPile.get(0);
+        discardPile.remove(0);
 
         ArrayList<Card> playerCards = getPlayerCards(game, gameMove);
         playerCards.add(drawCard);
@@ -62,12 +47,14 @@ public class GameMoveExecutor {
     }
 
     private static Game handleDiscardCard(Game game, GameMove gameMove) {
+        ArrayList<Card> playerCards = getPlayerCards(game, gameMove);
         Card cardToDiscard = gameMove.getCardsToMove().get(0);
 
-        removeCardFromPlayer(game, gameMove, cardToDiscard);
+        Card playerCardToRemove = playerCards.stream().filter(card -> card.getSuit() == cardToDiscard.getSuit() && card.getValue() == cardToDiscard.getValue()).findFirst().get();
+        playerCards.remove(playerCardToRemove);
 
         ArrayList<Card> discardPile = game.getGameState().getDiscardPile();
-        discardPile.add(cardToDiscard);
+        discardPile.add(0, cardToDiscard);
 
         return game;
     }
@@ -88,8 +75,6 @@ public class GameMoveExecutor {
         } else {
             board.add(gameMove.getCardsToMove());
         }
-
-        removeCardsFromPlayer(game, gameMove, gameMove.getCardsToMove());
 
         return game;
     }
