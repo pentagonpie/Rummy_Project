@@ -21,31 +21,31 @@ public class ServerImpl implements RummyServer {
         this._games = new HashMap<>();
         this._connectedPlayers = new HashMap<>();
     }
-    
+
 
     @Override
-    public String getPlayerName(String id) throws RemoteException{
-        
+    public String getPlayerName(String id) throws RemoteException {
+
         return this._connectedPlayers.get(id).getUserName();
-        
+
     }
 
     @Override
     public String login(String username, String password, RummyClient client) throws RemoteException {
-        
-        String userId1,userId2;
-        
+
+        String userId1, userId2;
+
         int id1 = Database.getID("nadav");
         int id2 = Database.getID("tom");
         userId1 = Integer.toString(id1);
         userId2 = Integer.toString(id2);
-        
-        
-        if(id1 == -1){
+
+
+        if (id1 == -1) {
             userId1 = UUID.randomUUID().toString();
         }
-        
-        if(id2 == -1){
+
+        if (id2 == -1) {
             userId2 = UUID.randomUUID().toString();
         }
 
@@ -55,8 +55,8 @@ public class ServerImpl implements RummyServer {
                 userId2, new User(userId2, "tom", "123456")
         );
 
-        System.out.println("username "+ username + " id " +  Database.getID(username) );
-        
+        System.out.println("username " + username + " id " + Database.getID(username));
+
         User user = usersMap.values().stream()
                 .filter(u -> u.getUserName().equals(username) && u.getPassword().equals(password))
                 .findFirst()
@@ -74,9 +74,10 @@ public class ServerImpl implements RummyServer {
     }
 
     @Override
-    public void logout(String userId) throws RemoteException {}
+    public void logout(String userId) throws RemoteException {
+    }
 
-    private ArrayList<Card> suffle(ArrayList<Card> cards) {
+    private ArrayList<Card> shuffle(ArrayList<Card> cards) {
         Random random = new Random();
         for (int i = 0; i < cards.size(); i++) {
             int randomIndex = random.nextInt(cards.size());
@@ -96,7 +97,7 @@ public class ServerImpl implements RummyServer {
             }
         }
 
-        return suffle(deck);
+        return shuffle(deck);
     }
 
     @Override
@@ -108,20 +109,18 @@ public class ServerImpl implements RummyServer {
         }
 
         final int CARDS_PER_PLAYER = 14;
-        
 
-        
+
         System.out.println("playerID from createnewgame: " + playerId);
         System.out.println("hello createNewGame2");
 
 
-
-        if(Database.createGame(Integer.parseInt(playerId),gameName) == -1){
+        if (Database.createGame(Integer.parseInt(playerId), gameName) == -1) {
             System.out.println("Error creating game");
-            return new Game(gameName, creator.getUserId(), "-1" );
+            return new Game(gameName, creator.getUserId(), "-1");
         }
         int gameID = Database.getGameID(gameName);
-        System.out.println("in createnewgame getting from database gameid "+gameID);
+        System.out.println("in createnewgame getting from database gameid " + gameID);
 
 
         ArrayList<Card> deck = generateDeck();
@@ -132,7 +131,7 @@ public class ServerImpl implements RummyServer {
         ArrayList<ArrayList<Card>> board = new ArrayList<>();
 
         GameState gameState = new GameState(player1Cards, player2Cards, deck, discardPile, board);
-        Game createdGame = new Game(gameName, creator.getUserId(), gameState, Integer.toString(gameID) );
+        Game createdGame = new Game(gameName, creator.getUserId(), gameState, Integer.toString(gameID));
         createdGame.addPlayer(creator.getUserId());
         this._games.put(createdGame.getId(), createdGame);
 
@@ -153,7 +152,7 @@ public class ServerImpl implements RummyServer {
 
         game.addPlayer(player.getUserId());
         System.out.println("adding player to game from joinGame");
-        Database.addPlayerGame( Integer.parseInt(playerId), Database.getGameID(gameName) );
+        Database.addPlayerGame(Integer.parseInt(playerId), Database.getGameID(gameName));
 
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);
@@ -164,8 +163,8 @@ public class ServerImpl implements RummyServer {
             }
         });
     }
-    
-    
+
+
     @Override
     public void exitGame(String gameName, String playerId) throws RemoteException {
         Player player = this._connectedPlayers.get(playerId);
@@ -181,7 +180,7 @@ public class ServerImpl implements RummyServer {
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);
             try {
-                playerToNotify.getClient().handleGameEnd(game);
+                playerToNotify.getClient().handleGameEnd(game, GameEndReason.PLAYER_DISCONNECTED);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -192,18 +191,21 @@ public class ServerImpl implements RummyServer {
     public ArrayList<Game> getGames() throws RemoteException {
         return new ArrayList<>(this._games.values());
     }
-    
-    
+
+    private boolean isGameEnded(Game game) {
+        return game.getGameState().getCards1().size() == 0 || game.getGameState().getCards2().size() == 0;
+    }
 
     @Override
     public MoveValidationResult addGameMove(GameMove gameMove) throws RemoteException {
         Game game = this._games.get(gameMove.getGameId());
 
-        MoveValidationResult isValidMove = GameMoveValidator.isValidMove(game, gameMove);
+        MoveValidationResult moveValidationResult = GameMoveValidator.isValidMove(game, gameMove);
 
-        System.out.println("move valid: " + isValidMove);
-        if (!isValidMove.isValid()) {
-            return isValidMove;
+        System.out.println("move valid: " + moveValidationResult);
+
+        if (!moveValidationResult.isValid()) {
+            return moveValidationResult;
         }
 
         Game gameAfterMove = GameMoveExecutor.executeGameMove(game, gameMove);
@@ -213,7 +215,7 @@ public class ServerImpl implements RummyServer {
         if (gameMove.getGameMoveEventType() == GameMoveEventType.DISCARD) {
             gameAfterMove.nextTurn();
         }
-        
+
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);
             try {
@@ -222,21 +224,33 @@ public class ServerImpl implements RummyServer {
                 throw new RuntimeException(e);
             }
         });
-        return new MoveValidationResult(true,0);
+
+        if (isGameEnded(gameAfterMove)) {
+            game.getPlayersIds().forEach(_playerId -> {
+                Player playerToNotify = this._connectedPlayers.get(_playerId);
+                try {
+                    playerToNotify.getClient().handleGameEnd(gameAfterMove, GameEndReason.PLAYER_WON);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        return new MoveValidationResult(true, 0);
     }
 
     @Override
     public void deleteGame(Game game) throws RemoteException {
-        
+
         Database.deleteGame(Integer.parseInt(game.getId()));
         this._games.remove(game.getId());
     }
-    
+
     @Override
-    public void nextTurn(Game game) throws RemoteException{
+    public void nextTurn(Game game) throws RemoteException {
         System.out.println("Sending to all user signal next turn");
 
-        if (game == null ) {
+        if (game == null) {
             return;
         }
 

@@ -1,6 +1,7 @@
 package com.rummy.ui.gameEvents;
 
 import com.rummy.shared.Game;
+import com.rummy.shared.GameEndReason;
 
 import java.util.ArrayList;
 import java.util.EventListener;
@@ -20,10 +21,10 @@ public class GameEventsManager {
         }
     }
 
-    public static void emitGameEndEvent(Game game){
+    public static void emitGameEndEvent(Game game, GameEndReason gameEndReason){
     for(EventListener listener: listeners){
         if (listener instanceof GameEndedEventListener) {
-            ((GameEndedEventListener) listener).onGameEnded(game);
+            ((GameEndedEventListener) listener).onGameEnded(game, gameEndReason);
         }
     }
     }
