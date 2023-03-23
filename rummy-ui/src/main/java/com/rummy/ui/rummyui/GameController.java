@@ -154,26 +154,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     private void addSeriesToBoard(HBox hbox, ArrayList<Card> series) {
         boolean first = true;
 
-
-        // PRINT LEFT POINT OF HBOX
-        System.out.println("hbox.getBoundsInParent(): " + hbox.getBoundsInParent());
-        System.out.println("hbox.getBoundsInLocal(): " + hbox.getBoundsInLocal());
-        System.out.println("hbox.getBoundsInParent(): " + hbox.getBoundsInParent());
-        System.out.println("hbox.getLayoutBounds(): " + hbox.getLayoutBounds());
-        System.out.println("hbox.getLayoutX(): " + hbox.getLayoutX());
-        System.out.println("hbox.getLayoutY(): " + hbox.getLayoutY());
-
-//        if (hbox.getChildren().size() > 0) {
-//
-//            Node lastHboxChild = hbox.getChildren().get(hbox.getChildren().size() - 1);
-//
-//            System.out.println("lastHboxChild.getBoundsInParent(): " + lastHboxChild.getBoundsInParent());
-//            System.out.println("lastHboxChild.getBoundsInLocal(): " + lastHboxChild.getBoundsInLocal());
-//            System.out.println("lastHboxChild.getBoundsInParent(): " + lastHboxChild.getBoundsInParent());
-//            System.out.println("lastHboxChild.getLayoutBounds(): " + lastHboxChild.getLayoutBounds());
-//            System.out.println("lastHboxChild.getLayoutX(): " + lastHboxChild.getLayoutX());
-//            System.out.println("lastHboxChild.getLayoutY(): " + lastHboxChild.getLayoutY());
-//        }
         for (Card card : series) {
             final String fileName = card.getValue() + "_" + card.getSuit();
             double leftMargin = first ? Constants.MARGIN_BETWEEN_SERIES : Constants.CARD_IMAGE_LEFT_MARGIN_IN_SERIES;
