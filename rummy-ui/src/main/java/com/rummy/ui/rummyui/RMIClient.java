@@ -1,9 +1,6 @@
 package com.rummy.ui.rummyui;
 
-import com.rummy.shared.Game;
-import com.rummy.shared.MoveValidationResult;
-import com.rummy.shared.RummyClient;
-import com.rummy.shared.RummyServer;
+import com.rummy.shared.*;
 import com.rummy.shared.gameMove.GameMove;
 import com.rummy.ui.gameEvents.GameEventsManager;
 
@@ -87,8 +84,8 @@ public class RMIClient implements Serializable, RummyClient {
     }
 
     @Override
-    public void handleGameEnd(Game game) throws RemoteException {
-        GameEventsManager.emitGameEndEvent(game);
+    public void handleGameEnd(Game game, GameEndReason gameEndReason) throws RemoteException {
+        GameEventsManager.emitGameEndEvent(game, gameEndReason);
     }
     
     //@Override

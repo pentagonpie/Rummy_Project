@@ -1,10 +1,7 @@
 package com.rummy.ui.rummyui;
 
 
-import com.rummy.shared.Card;
-import com.rummy.shared.Game;
-import com.rummy.shared.GameState;
-import com.rummy.shared.MoveValidationResult;
+import com.rummy.shared.*;
 import com.rummy.shared.gameMove.GameMove;
 import com.rummy.shared.gameMove.GameMoveEventType;
 import com.rummy.ui.gameEvents.GameEndedEventListener;
@@ -55,15 +52,14 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     protected Label label_user;
-    
+
     @FXML
     protected Label helpLabel;
-    
-    
+
 
     @FXML
     protected HBox hboxMyCards;
-    
+
     @FXML
     protected HBox hboxCardBoard1;
 
@@ -87,10 +83,10 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     protected Button btnDiscard;
-    
+
     @FXML
     protected Button btnMeld;
-    
+
     @FXML
     private Button backButton;
 
@@ -136,17 +132,16 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
     }
 
-    private void addMyCardsToBoard(HBox hbox, ArrayList<Card> cards) {
-        cards.forEach(card -> {
+    private void addMyCardsToBoard(HBox hbox) {
+        getMyCards().forEach(card -> {
             final String fileName = card.getValue() + "_" + card.getSuit();
             this.addImageToHBox(hbox, fileName, true, card, Constants.CARD_IMAGE_LEFT_MARGIN);
         });
     }
-    
-    
 
-    private void addOpponentCardsToBoard(HBox hbox, ArrayList<Card> cards) {
-        cards.forEach(card -> {
+
+    private void addOpponentCardsToBoard(HBox hbox) {
+        getOpponentCards().forEach(card -> {
             this.addImageToHBox(hbox, "back", false, card, Constants.CARD_IMAGE_LEFT_MARGIN);
         });
     }
@@ -237,7 +232,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         hboxOpponentCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;" + "-fx-border-color: green;");
-        
+
         helpLabel.setText("Your Turn:");
 
     }
@@ -266,7 +261,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         //System.out.println("Mouse press:");
 
 
-
         double maxX, maxY, minX, minY;
         maxX = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxX();
         maxY = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxY();
@@ -275,7 +269,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         hboxOpponentCards.onMousePressedProperty();
 
     }
-
 
 
     private void setDiscardPile(ArrayList<Card> discardPile) {
@@ -303,17 +296,14 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             mainGrid.prefWidthProperty().bind(anchorPane.widthProperty());
             Game game = DataManager.getGame();
             GameState gameState = game.getGameState();
-   
 
-            final boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
+            this.addMyCardsToBoard(hboxMyCards);
 
-            ArrayList<Card> myCards = isGameCreator ? gameState.getCards1() : gameState.getCards2();
-            this.addMyCardsToBoard(hboxMyCards, myCards);
-
-            ArrayList<Card> opponentCards = isGameCreator ? gameState.getCards2() : gameState.getCards1();
-            this.addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
+            this.addOpponentCardsToBoard(hboxOpponentCards);
 
             this.setDiscardPile(gameState.getDiscardPile());
+
+            boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
 
             String secondPlayerName = this.rmiClient.getPlayerName(game.getSecondPlayer());
             String createrName = this.rmiClient.getPlayerName(game.getCreator());
@@ -328,38 +318,57 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         });
     }
 
+    private void closeAndBackToMainScreen() {
+        FXMLLoader mainScreenLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
+        Stage mainScreenStage = new Stage();
+        mainScreenStage.show();
+        mainScreenStage.setMaximized(true);
+
+        mainScreenStage.setOnCloseRequest(we -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        try {
+            mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
+            Stage primaryStage = (Stage) backButton.getScene().getWindow();
+            primaryStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("IOException");
+            alert.setHeaderText("Exception at game screen controller");
+            alert.show();
+        }
+    }
+
     @Override
-    public void onGameEnded(Game game) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("got onGameEnded in game controller ");
+    public void onGameEnded(Game game, GameEndReason gameEndReason) {
+        Platform.runLater(() -> {
+            System.out.println("got onGameEnded in game controller ");
 
-                FXMLLoader mainScreenLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
-                Stage mainScreenStage = new Stage();
-                mainScreenStage.show();
-                mainScreenStage.setMaximized(true);
-                
-                mainScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent we) {
-                    
-                    
-                    Platform.exit();
-                    System.exit(0);
-                }
-                }); 
+            if (gameEndReason == GameEndReason.PLAYER_DISCONNECTED) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Game ended");
+                alert.setHeaderText("Opponent disconnected");
+                alert.showAndWait();
 
-                try {
-                    mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
-                    Stage primaryStage = (Stage) backButton.getScene().getWindow();
-                    primaryStage.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                closeAndBackToMainScreen();
+
+                return;
+            }
+
+            if (gameEndReason == GameEndReason.PLAYER_WON) {
+                if (getMyCards().size() == 0) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("IOException");
-                    alert.setHeaderText("Exception at game screen controller");
-                    alert.show();
+                    alert.setTitle("Game ended, You won!");
+                    alert.setHeaderText("Game ended, You won! 🎉🙌");
+                    alert.showAndWait();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Game ended, You lost! :(");
+                    alert.setHeaderText("Game ended, You lost! :(");
+                    alert.showAndWait();
                 }
             }
         });
@@ -374,14 +383,14 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 String gameId = DataManager.getGame().getId();
 
                 GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DECK, null, null, gameId);
-                MoveValidationResult result = new MoveValidationResult(true,0);
+                MoveValidationResult result = new MoveValidationResult(true, 0);
                 try {
                     result = rmiClient.addGameMove(gameMove);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
                 updateHelpLabel(result);
-                
+
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
@@ -396,29 +405,29 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 String playerId = DataManager.getPlayerId();
                 String gameId = DataManager.getGame().getId();
 
-                
+
                 GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DISCARD, null, null, gameId);
-                
-                
-                MoveValidationResult result = new MoveValidationResult(true,0);
+
+
+                MoveValidationResult result = new MoveValidationResult(true, 0);
                 try {
                     result = rmiClient.addGameMove(gameMove);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-                
+
                 updateHelpLabel(result);
-                
+
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void updateHelpLabel(MoveValidationResult result){
-        if(!result.isValid()){
+    public void updateHelpLabel(MoveValidationResult result) {
+        if (!result.isValid()) {
             System.out.println("setting new help text");
-            switch(result.getErrorCode()){
+            switch (result.getErrorCode()) {
                 case 1 -> helpLabel.setText("Invalid move");
                 case 2 -> helpLabel.setText("Invalid draw");
                 case 3 -> helpLabel.setText("trying to discard twice in row");
@@ -432,7 +441,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
         }
     }
-    
+
     //1-general invalid move
     //2-invalid draw
     //3-trying to discard twice in row
@@ -442,7 +451,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     //7 - cards not same value
     //8 - cards not same suit
     //9 - series not raising values
-    
+
     @FXML
     public void onDiscard() {
         if (!myTurn(DataManager.getGame()) || selectedCards.size() != 1) {
@@ -454,8 +463,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             String gameId = DataManager.getGame().getId();
 
             GameMove gameMove = new GameMove(playerId, GameMoveEventType.DISCARD, selectedCards, null, gameId);
-            
-            MoveValidationResult result = new MoveValidationResult(true,0);
+
+            MoveValidationResult result = new MoveValidationResult(true, 0);
             try {
                 result = rmiClient.addGameMove(gameMove);
             } catch (RemoteException e) {
@@ -464,13 +473,13 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
 
             updateHelpLabel(result);
-            
+
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
     }
-    
-     @FXML
+
+    @FXML
     public void onMeld() {
         System.out.println("meld pressed");
         if (!myTurn(DataManager.getGame())) {
@@ -483,14 +492,13 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
             System.out.println("in onMeld,selectedCards is  " + selectedCards);
             GameMove gameMove = new GameMove(playerId, GameMoveEventType.MELD, selectedCards, null, gameId);
-            
-            MoveValidationResult result = new MoveValidationResult(true,0);
+
+            MoveValidationResult result = new MoveValidationResult(true, 0);
             try {
                 result = rmiClient.addGameMove(gameMove);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-
 
             updateHelpLabel(result);
 
@@ -498,20 +506,20 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             e.printStackTrace();
         }
     }
-    
-    
-    public void deleteGame(Game game){
+
+
+    public void deleteGame(Game game) {
 
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
         this.rmiClient.deleteGame(game);
     }
-    
+
     @FXML
-    public void onBackButtonClick(){
-            Platform.runLater(new Runnable() {
+    public void onBackButtonClick() {
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                
+
                 Game game = DataManager.getGame();
                 FXMLLoader mainScreenLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
                 Stage mainScreenStage = new Stage();
@@ -525,13 +533,13 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                         Platform.exit();
                         System.exit(0);
                     }
-                });        
-                
+                });
+
                 try {
                     mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
                     Stage primaryStage = (Stage) backButton.getScene().getWindow();
                     primaryStage.close();
-                    
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -542,7 +550,21 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             }
         });
     }
-    
+
+    private ArrayList<Card> getMyCards() {
+        Game game = DataManager.getGame();
+        final boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
+        ArrayList<Card> myCards = isGameCreator ? game.getGameState().getCards1() : game.getGameState().getCards2();
+        return myCards;
+    }
+
+    private ArrayList<Card> getOpponentCards() {
+        Game game = DataManager.getGame();
+        final boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
+        ArrayList<Card> opponentCards = isGameCreator ? game.getGameState().getCards2() : game.getGameState().getCards1();
+        return opponentCards;
+    }
+
     @Override
     public void onGameMove(Game game) {
         Platform.runLater(new Runnable() {
@@ -551,20 +573,17 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 System.out.println("got onGameMove in game controller ");
                 DataManager.setGame(game);
                 GameState gameState = game.getGameState();
-                final boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
-                ArrayList<Card> myCards = isGameCreator ? gameState.getCards1() : gameState.getCards2();
-                ArrayList<Card> opponentCards = isGameCreator ? gameState.getCards2() : gameState.getCards1();
-                
-                ArrayList<ArrayList<Card>> boardCards =  gameState.getBoard();
+
+                ArrayList<ArrayList<Card>> boardCards = gameState.getBoard();
                 hboxMyCards.getChildren().clear();
                 hboxOpponentCards.getChildren().clear();
                 hboxCardBoard1.getChildren().clear();
                 hboxCardBoard2.getChildren().clear();
-                
-                addMyCardsToBoard(hboxMyCards, myCards);
+
+                addMyCardsToBoard(hboxMyCards);
                 addCardsToBoard(boardCards);
-                addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
-                
+                addOpponentCardsToBoard(hboxOpponentCards);
+
                 setDiscardPile(gameState.getDiscardPile());
                 selectedCards.clear();
 
