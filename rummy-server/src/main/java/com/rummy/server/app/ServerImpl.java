@@ -89,14 +89,14 @@ public class ServerImpl implements RummyServer {
     }
 
     private ArrayList<Card> generateDeck() {
-        ArrayList<Card> dock = new ArrayList<>();
+        ArrayList<Card> deck = new ArrayList<>();
         for (int cardValue = 1; cardValue <= 13; cardValue++) {
             for (Suit suit : Suit.values()) {
-                dock.add(new Card(cardValue, suit));
+                deck.add(new Card(cardValue, suit));
             }
         }
 
-        return dock;// suffle(dock);
+        return suffle(deck);
     }
 
     @Override
