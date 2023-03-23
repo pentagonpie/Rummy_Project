@@ -284,7 +284,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             return;
         }
 
-        Card discardCard = discardPile.get(discardPile.size() - 1);
+        Card discardCard = discardPile.get(0);
         String imageFileName = discardCard.getValue() + "_" + discardCard.getSuit();
         Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
         this.imgDiscardPile.setImage(image);
