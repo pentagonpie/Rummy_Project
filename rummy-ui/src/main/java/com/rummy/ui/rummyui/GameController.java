@@ -10,7 +10,6 @@ import com.rummy.shared.gameMove.GameMoveEventType;
 import com.rummy.ui.gameEvents.GameEndedEventListener;
 import com.rummy.ui.gameEvents.GameEventsManager;
 import com.rummy.ui.gameEvents.GameMoveEventListener;
-import com.rummy.ui.gameEvents.nextTurnEventListener;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -19,6 +18,7 @@ import java.rmi.RemoteException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -65,7 +65,10 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     protected HBox hboxMyCards;
     
     @FXML
-    protected HBox hboxCardBoard;
+    protected HBox hboxCardBoard1;
+
+    @FXML
+    protected HBox hboxCardBoard2;
 
     @FXML
     protected HBox hboxOpponentCards;
@@ -108,14 +111,14 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
         if (selectedCards.contains(card)) {
             selectedCards.remove(card);
-            StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_MARGIN));
+            StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_LEFT_MARGIN));
         } else {
             selectedCards.add(card);
-            StackPane.setMargin(imageView, new Insets(0, 0, 50, Constants.CARD_IMAGE_MARGIN));
+            StackPane.setMargin(imageView, new Insets(0, 0, 50, Constants.CARD_IMAGE_LEFT_MARGIN));
         }
     }
 
-    private void addImageToHBox(HBox hbox, String imageFileName, boolean mine, Card card) {
+    private void addImageToHBox(HBox hbox, String imageFileName, boolean mine, Card card, double leftMargin) {
         StackPane stackPane = new StackPane();
         Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
         ImageView imageView = new ImageView(image);
@@ -123,7 +126,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
 
         stackPane.getChildren().add(imageView);
-        StackPane.setMargin(imageView, new Insets(0, 0, 0, Constants.CARD_IMAGE_MARGIN));
+        StackPane.setMargin(imageView, new Insets(0, 0, 0, leftMargin));
         hbox.getChildren().add(stackPane);
 
         if (mine) {
@@ -136,7 +139,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     private void addMyCardsToBoard(HBox hbox, ArrayList<Card> cards) {
         cards.forEach(card -> {
             final String fileName = card.getValue() + "_" + card.getSuit();
-            this.addImageToHBox(hbox, fileName, true, card);
+            this.addImageToHBox(hbox, fileName, true, card, Constants.CARD_IMAGE_LEFT_MARGIN);
         });
     }
     
@@ -144,21 +147,55 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     private void addOpponentCardsToBoard(HBox hbox, ArrayList<Card> cards) {
         cards.forEach(card -> {
-            this.addImageToHBox(hbox, "back", false, card);
+            this.addImageToHBox(hbox, "back", false, card, Constants.CARD_IMAGE_LEFT_MARGIN);
         });
     }
 
-    private void addCardsToBoard(HBox hbox, ArrayList<ArrayList<Card>> listSeries) {
-        System.out.println("addCardsToBoard");
-        listSeries.forEach(series -> {
-            series.forEach(card -> {
+    private void addSeriesToBoard(HBox hbox, ArrayList<Card> series) {
+        boolean first = true;
+
+
+        // PRINT LEFT POINT OF HBOX
+        System.out.println("hbox.getBoundsInParent(): " + hbox.getBoundsInParent());
+        System.out.println("hbox.getBoundsInLocal(): " + hbox.getBoundsInLocal());
+        System.out.println("hbox.getBoundsInParent(): " + hbox.getBoundsInParent());
+        System.out.println("hbox.getLayoutBounds(): " + hbox.getLayoutBounds());
+        System.out.println("hbox.getLayoutX(): " + hbox.getLayoutX());
+        System.out.println("hbox.getLayoutY(): " + hbox.getLayoutY());
+
+//        if (hbox.getChildren().size() > 0) {
+//
+//            Node lastHboxChild = hbox.getChildren().get(hbox.getChildren().size() - 1);
+//
+//            System.out.println("lastHboxChild.getBoundsInParent(): " + lastHboxChild.getBoundsInParent());
+//            System.out.println("lastHboxChild.getBoundsInLocal(): " + lastHboxChild.getBoundsInLocal());
+//            System.out.println("lastHboxChild.getBoundsInParent(): " + lastHboxChild.getBoundsInParent());
+//            System.out.println("lastHboxChild.getLayoutBounds(): " + lastHboxChild.getLayoutBounds());
+//            System.out.println("lastHboxChild.getLayoutX(): " + lastHboxChild.getLayoutX());
+//            System.out.println("lastHboxChild.getLayoutY(): " + lastHboxChild.getLayoutY());
+//        }
+        for (Card card : series) {
             final String fileName = card.getValue() + "_" + card.getSuit();
-            this.addImageToHBox(hbox, fileName, true, card);
-                System.out.println("adding to board " + fileName);
-        });
-        });
+            double leftMargin = first ? Constants.MARGIN_BETWEEN_SERIES : Constants.CARD_IMAGE_LEFT_MARGIN_IN_SERIES;
+            first = false;
+            this.addImageToHBox(hbox, fileName, false, card, leftMargin);
+        }
     }
 
+    private void addCardsToBoard(ArrayList<ArrayList<Card>> listSeries) {
+        System.out.println("addCardsToBoard");
+        final int MAX_CARDS_PER_HBOX = 20;
+
+
+        for (ArrayList<Card> series : listSeries) {
+            boolean isHboxCardBoard1Full = hboxCardBoard1.getChildren().size() + series.size() > MAX_CARDS_PER_HBOX;
+            if (isHboxCardBoard1Full) {
+                addSeriesToBoard(hboxCardBoard2, series);
+            } else {
+                addSeriesToBoard(hboxCardBoard1, series);
+            }
+        }
+    }
 
     //Check which player turn is it, if this player, return true
     public boolean myTurn(Game game) {
@@ -194,9 +231,9 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
 
         GameMoveEventType lastMoveType = game.getGameState().getLastMove().getGameMoveEventType();
-        boolean lastMoveWasDraw = lastMoveType == GameMoveEventType.DRAW_FROM_DECK || lastMoveType == GameMoveEventType.DRAW_FROM_DISCARD;
+        boolean lastMoveWasDiscard = lastMoveType == GameMoveEventType.DISCARD;
 
-        return lastMoveWasDraw;
+        return !lastMoveWasDiscard;
     }
 
 
@@ -541,10 +578,11 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 ArrayList<ArrayList<Card>> boardCards =  gameState.getBoard();
                 hboxMyCards.getChildren().clear();
                 hboxOpponentCards.getChildren().clear();
-                hboxCardBoard.getChildren().clear();
+                hboxCardBoard1.getChildren().clear();
+                hboxCardBoard2.getChildren().clear();
                 
                 addMyCardsToBoard(hboxMyCards, myCards);
-                addCardsToBoard(hboxCardBoard, boardCards);
+                addCardsToBoard(boardCards);
                 addOpponentCardsToBoard(hboxOpponentCards, opponentCards);
                 
                 setDiscardPile(gameState.getDiscardPile());

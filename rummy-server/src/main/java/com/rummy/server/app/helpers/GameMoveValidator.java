@@ -103,9 +103,9 @@ public class GameMoveValidator {
         System.out.println("checking meld");
         GameMove lastGameMove = game.getGameState().getLastMove();
         boolean lastMoveDoneByCurrPlayer = lastGameMove.getPlayerId().equals(gameMove.getPlayerId());
-        boolean lastMoveWasDraw = lastGameMove.getGameMoveEventType() == GameMoveEventType.DRAW_FROM_DECK;
+        boolean lastMoveWasDiscard = lastGameMove.getGameMoveEventType() == GameMoveEventType.DISCARD;
 
-        if (!lastMoveDoneByCurrPlayer || !lastMoveWasDraw) {
+        if (!lastMoveDoneByCurrPlayer || lastMoveWasDiscard) {
             return new MoveValidationResult(false,4);
         }
 
