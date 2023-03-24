@@ -90,9 +90,14 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     @FXML
     private Button backButton;
 
+    @FXML
+    private Button btnAddToSeries;
+
     private final RMIClient rmiClient;
 
     private ArrayList<Card> selectedCards;
+
+    private boolean isAddToSeriesMode = false;
 
     public GameController() throws NotBoundException, RemoteException {
         this.rmiClient = RMIClient.getInstance();
@@ -132,6 +137,39 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
     }
 
+    private void addSelectedCardsToSeries(Card pressedCard) {
+        if (selectedCards.size() == 0) {
+            return;
+        }
+
+        try {
+            String playerId = DataManager.getPlayerId();
+            String gameId = DataManager.getGame().getId();
+            GameMove gameMove = new GameMove(playerId, GameMoveEventType.MELD, this.selectedCards, pressedCard, gameId);
+            rmiClient.addGameMove(gameMove);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addImageToBoardHBox(HBox hbox, String imageFileName, Card card, double leftMargin) {
+        StackPane stackPane = new StackPane();
+        Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(Constants.CARD_IMAGE_HEIGHT);
+        imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
+
+        stackPane.getChildren().add(imageView);
+        StackPane.setMargin(imageView, new Insets(0, 0, 0, leftMargin));
+        hbox.getChildren().add(stackPane);
+
+        stackPane.setOnMousePressed(e -> {
+            if (this.isAddToSeriesMode) {
+                addSelectedCardsToSeries(card);
+            }
+        });
+    }
+
     private void addMyCardsToBoard(HBox hbox) {
         getMyCards().forEach(card -> {
             final String fileName = card.getValue() + "_" + card.getSuit();
@@ -153,7 +191,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             final String fileName = card.getValue() + "_" + card.getSuit();
             double leftMargin = first ? Constants.MARGIN_BETWEEN_SERIES : Constants.CARD_IMAGE_LEFT_MARGIN_IN_SERIES;
             first = false;
-            this.addImageToHBox(hbox, fileName, false, card, leftMargin);
+            this.addImageToBoardHBox(hbox, fileName, card, leftMargin);
         }
     }
 
@@ -173,8 +211,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     }
 
     //Check which player turn is it, if this player, return true
-    public boolean myTurn(Game game) {
-
+    public boolean myTurn() {
+        Game game = DataManager.getGame();
         GameState gameState = game.getGameState();
         int turn = gameState.getTurn();
         final boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
@@ -198,7 +236,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     private boolean canSelectCards() {
         Game game = DataManager.getGame();
-        boolean isMyTurn = myTurn(game);
+        boolean isMyTurn = myTurn();
         boolean isFirstMoveInTheGame = game.getGameState().getLastMove() == null;
 
         if (!isMyTurn || isFirstMoveInTheGame) {
@@ -209,18 +247,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         boolean lastMoveWasDiscard = lastMoveType == GameMoveEventType.DISCARD;
 
         return !lastMoveWasDiscard;
-    }
-
-
-    //print to screen name of pressed image
-    public void pressedImage(MouseEvent e, String imageFileName) {
-        System.out.println(imageFileName);
-
-        Game game = DataManager.getGame();
-        GameState gameState = game.getGameState();
-        System.out.println("now turn is " + gameState.getTurn());
-
-
     }
 
     //Create box around my cards when it is my turn to emphesize it visually
@@ -257,20 +283,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     }
 
 
-    public void updateMousePosition(MouseEvent e) {
-        //System.out.println("Mouse press:");
-
-
-        double maxX, maxY, minX, minY;
-        maxX = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxX();
-        maxY = hboxOpponentCards.boundsInLocalProperty().getValue().getMaxY();
-        minX = hboxOpponentCards.boundsInLocalProperty().getValue().getMinX();
-        minY = hboxOpponentCards.boundsInLocalProperty().getValue().getMinY();
-        hboxOpponentCards.onMousePressedProperty();
-
-    }
-
-
     private void setDiscardPile(ArrayList<Card> discardPile) {
         if (discardPile.size() == 0) {
             this.imgDiscardPile.setImage(null);
@@ -285,10 +297,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     void initialize() {
-        mainGrid.setOnMousePressed(e -> {
-            updateMousePosition(e);
-        });
-
         Platform.runLater(() -> {
             Stage primaryStage = (Stage) mainGrid.getScene().getWindow();
             primaryStage.setMaximized(true);
@@ -310,12 +318,21 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             this.setLabelUser(label_opponent, isGameCreator ? secondPlayerName : createrName);
             this.setLabelUser(label_user, DataManager.getUserName());
 
-            if (myTurn(game)) {
+            if (myTurn()) {
                 setMyBorder();
             } else {
                 setBorderOpponent();
             }
         });
+    }
+
+    @FXML
+    void onAddToSeriesPressed() {
+        if (!canSelectCards() || !myTurn()) {
+            return;
+        }
+
+        this.isAddToSeriesMode = !this.isAddToSeriesMode;
     }
 
     private void closeAndBackToMainScreen() {
@@ -377,50 +394,54 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     @FXML
     void onDrawFromDeck() {
         System.out.println("draw from deck");
-        if (myTurn(DataManager.getGame())) {
+
+        if (!myTurn() || isAddToSeriesMode) {
+            return;
+        }
+        try {
+            String playerId = DataManager.getPlayerId();
+            String gameId = DataManager.getGame().getId();
+
+            GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DECK, null, null, gameId);
+            MoveValidationResult result = new MoveValidationResult(true, 0);
             try {
-                String playerId = DataManager.getPlayerId();
-                String gameId = DataManager.getGame().getId();
-
-                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DECK, null, null, gameId);
-                MoveValidationResult result = new MoveValidationResult(true, 0);
-                try {
-                    result = rmiClient.addGameMove(gameMove);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                updateHelpLabel(result);
-
-            } catch (RuntimeException e) {
+                result = rmiClient.addGameMove(gameMove);
+            } catch (RemoteException e) {
                 e.printStackTrace();
             }
+            updateHelpLabel(result);
+
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
     }
 
     @FXML
     void onDrawFromDiscardPile() {
         System.out.println("draw from discard pile");
-        if (myTurn(DataManager.getGame())) {
+        if (!myTurn() || isAddToSeriesMode) {
+            return;
+        }
+
+        try {
+            String playerId = DataManager.getPlayerId();
+            String gameId = DataManager.getGame().getId();
+
+
+            GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DISCARD, null, null, gameId);
+
+
+            MoveValidationResult result = new MoveValidationResult(true, 0);
             try {
-                String playerId = DataManager.getPlayerId();
-                String gameId = DataManager.getGame().getId();
-
-
-                GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DISCARD, null, null, gameId);
-
-
-                MoveValidationResult result = new MoveValidationResult(true, 0);
-                try {
-                    result = rmiClient.addGameMove(gameMove);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-
-                updateHelpLabel(result);
-
-            } catch (RuntimeException e) {
+                result = rmiClient.addGameMove(gameMove);
+            } catch (RemoteException e) {
                 e.printStackTrace();
             }
+
+            updateHelpLabel(result);
+
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
     }
 
@@ -454,7 +475,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     public void onDiscard() {
-        if (!myTurn(DataManager.getGame()) || selectedCards.size() != 1) {
+        if (!myTurn() || selectedCards.size() != 1 || isAddToSeriesMode) {
             return;
         }
 
@@ -482,7 +503,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     @FXML
     public void onMeld() {
         System.out.println("meld pressed");
-        if (!myTurn(DataManager.getGame())) {
+        if (!myTurn() || selectedCards.size() == 0 || isAddToSeriesMode) {
             return;
         }
 
@@ -587,7 +608,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 setDiscardPile(gameState.getDiscardPile());
                 selectedCards.clear();
 
-                if (myTurn(game)) {
+                if (myTurn()) {
                     setMyBorder();
                 } else {
                     setBorderOpponent();

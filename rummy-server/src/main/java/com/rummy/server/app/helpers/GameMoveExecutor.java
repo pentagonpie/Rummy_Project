@@ -6,6 +6,7 @@ import com.rummy.shared.gameMove.GameMove;
 import com.rummy.shared.gameMove.GameMoveEventType;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class GameMoveExecutor {
     private static ArrayList<Card> getPlayerCards(Game game, GameMove gameMove) {
@@ -64,6 +65,20 @@ public class GameMoveExecutor {
         return game;
     }
 
+    private static boolean doesSeriesContainCards(ArrayList<Card> series, Card card) {
+        for (Card seriesCard : series) {
+            if (seriesCard.getValue() == card.getValue() && seriesCard.getSuit() == card.getSuit()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void sortCards(ArrayList<Card> cards) {
+        cards.sort(Comparator.comparingInt(Card::getValue));
+    }
+
     private static Game handleMeld(Game game, GameMove gameMove) {
         gameMove.getCardsToMove().forEach(card -> removeCardFromPlayerCards(game, gameMove, card));
 
@@ -71,8 +86,9 @@ public class GameMoveExecutor {
         ArrayList<ArrayList<Card>> board = game.getGameState().getBoard();
         if (destinationCard != null) {
             for (ArrayList<Card> series : board) {
-                if (series.contains(destinationCard)) {
+                if (doesSeriesContainCards(series, destinationCard)) {
                     series.addAll(gameMove.getCardsToMove());
+                    sortCards(series);
                     break;
                 }
             }

@@ -1,6 +1,5 @@
 package com.rummy.server.app;
 
-
 import com.rummy.server.app.helpers.GameMoveExecutor;
 import com.rummy.server.app.helpers.GameMoveValidator;
 import com.rummy.shared.MoveValidationResult;
@@ -22,12 +21,9 @@ public class ServerImpl implements RummyServer {
         this._connectedPlayers = new HashMap<>();
     }
 
-
     @Override
     public String getPlayerName(String id) throws RemoteException {
-
         return this._connectedPlayers.get(id).getUserName();
-
     }
 
     @Override
@@ -97,7 +93,7 @@ public class ServerImpl implements RummyServer {
             }
         }
 
-        return shuffle(deck);
+        return deck;// shuffle(deck);
     }
 
     @Override
