@@ -15,7 +15,6 @@ import java.rmi.RemoteException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -37,7 +36,6 @@ import javafx.scene.control.Alert;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
 
 public class GameController implements GameEndedEventListener, GameMoveEventListener {
@@ -304,25 +302,13 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             mainGrid.prefWidthProperty().bind(anchorPane.widthProperty());
             Game game = DataManager.getGame();
             GameState gameState = game.getGameState();
-
-            this.addMyCardsToBoard(hboxMyCards);
-
-            this.addOpponentCardsToBoard(hboxOpponentCards);
-
-            this.setDiscardPile(gameState.getDiscardPile());
-
-            boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
-
+            String creatorName = this.rmiClient.getPlayerName(game.getCreator());
             String secondPlayerName = this.rmiClient.getPlayerName(game.getSecondPlayer());
-            String createrName = this.rmiClient.getPlayerName(game.getCreator());
-            this.setLabelUser(label_opponent, isGameCreator ? secondPlayerName : createrName);
+            boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
+            this.setLabelUser(label_opponent, isGameCreator ? secondPlayerName : creatorName);
             this.setLabelUser(label_user, DataManager.getUserName());
 
-            if (myTurn()) {
-                setMyBorder();
-            } else {
-                setBorderOpponent();
-            }
+            resetAndInitGameUI();
         });
     }
 
@@ -333,6 +319,13 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
 
         this.isAddToSeriesMode = !this.isAddToSeriesMode;
+        if (isAddToSeriesMode) {
+            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnDiscard, btnMeld);
+            enableButtons(btnAddToSeries);
+        } else {
+            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
+            enableButtons(btnAddToSeries, btnDiscard, btnMeld);
+        }
     }
 
     private void closeAndBackToMainScreen() {
@@ -586,34 +579,82 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         return opponentCards;
     }
 
+    private void disableButtons(Button... buttons) {
+        for (Button button : buttons) {
+            button.setDisable(true);
+        }
+    }
+
+    private void enableButtons(Button... buttons) {
+        for (Button button : buttons) {
+            button.setDisable(false);
+        }
+    }
+
+    private void updateButtonsState() {
+        boolean isMyTurn = myTurn();
+
+        if (!isMyTurn) {
+            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnDiscard, btnMeld, btnAddToSeries);
+            return;
+        }
+
+        if (isAddToSeriesMode) {
+            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnDiscard, btnMeld);
+            enableButtons(btnAddToSeries);
+
+            return;
+        }
+
+        Game game = DataManager.getGame();
+
+        if (game.getGameState().getLastMove() == null) {
+            disableButtons(btnDiscard, btnMeld, btnAddToSeries);
+            enableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
+            return;
+        }
+
+        GameMoveEventType lastMoveType = game.getGameState().getLastMove().getGameMoveEventType();
+
+        if (lastMoveType == GameMoveEventType.DISCARD) {
+            disableButtons(btnDiscard, btnMeld, btnAddToSeries);
+            enableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
+        } else {
+            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
+            enableButtons(btnDiscard, btnMeld, btnAddToSeries);
+        }
+    }
+
+    private void resetAndInitGameUI() {
+        Game game = DataManager.getGame();
+        GameState gameState = game.getGameState();
+        ArrayList<ArrayList<Card>> boardCards = gameState.getBoard();
+        hboxMyCards.getChildren().clear();
+        hboxOpponentCards.getChildren().clear();
+        hboxCardBoard1.getChildren().clear();
+        hboxCardBoard2.getChildren().clear();
+
+        addMyCardsToBoard(hboxMyCards);
+        addCardsToBoard(boardCards);
+        addOpponentCardsToBoard(hboxOpponentCards);
+
+        setDiscardPile(gameState.getDiscardPile());
+        selectedCards.clear();
+        updateButtonsState();
+
+        if (myTurn()) {
+            setMyBorder();
+        } else {
+            setBorderOpponent();
+        }
+    }
+
     @Override
     public void onGameMove(Game game) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("got onGameMove in game controller ");
-                DataManager.setGame(game);
-                GameState gameState = game.getGameState();
-
-                ArrayList<ArrayList<Card>> boardCards = gameState.getBoard();
-                hboxMyCards.getChildren().clear();
-                hboxOpponentCards.getChildren().clear();
-                hboxCardBoard1.getChildren().clear();
-                hboxCardBoard2.getChildren().clear();
-
-                addMyCardsToBoard(hboxMyCards);
-                addCardsToBoard(boardCards);
-                addOpponentCardsToBoard(hboxOpponentCards);
-
-                setDiscardPile(gameState.getDiscardPile());
-                selectedCards.clear();
-
-                if (myTurn()) {
-                    setMyBorder();
-                } else {
-                    setBorderOpponent();
-                }
-            }
+        Platform.runLater(() -> {
+            System.out.println("got onGameMove in game controller ");
+            DataManager.setGame(game);
+            resetAndInitGameUI();
         });
 
     }
