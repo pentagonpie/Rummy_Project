@@ -99,6 +99,16 @@ public class GameMoveValidator {
         return new MoveValidationResult(true,0);
     }
 
+    private static boolean doesSeriesContainCards(ArrayList<Card> series, Card card) {
+        for (Card seriesCard : series) {
+            if (seriesCard.getValue() == card.getValue() && seriesCard.getSuit() == card.getSuit()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static MoveValidationResult isValidMeld(Game game, GameMove gameMove) {
         System.out.println("checking meld");
         GameMove lastGameMove = game.getGameState().getLastMove();
@@ -115,8 +125,8 @@ public class GameMoveValidator {
         if (isAddToExistingSeries) {
             ArrayList<ArrayList<Card>> board = game.getGameState().getBoard();
 
-            for (ArrayList<Card> meld : board) {
-                if (meld.contains(gameMove.getDestinationCard())) {
+            for (ArrayList<Card> series : board) {
+                if (doesSeriesContainCards(series, gameMove.getDestinationCard())) {
                     ArrayList<Card> cardsToCheckAsSeries = new ArrayList<>();
                     cardsToCheckAsSeries.addAll(gameMove.getCardsToMove());
                     cardsToCheckAsSeries.add(gameMove.getDestinationCard());
