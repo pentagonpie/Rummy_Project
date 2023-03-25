@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="anchorPane" minHeight="300.0" minWidth="600.0" prefHeight="796.0" prefWidth="1128.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rummy.ui.rummyui.GameController">
@@ -39,14 +40,14 @@
                         <GridPane prefHeight="425.0" prefWidth="241.0" HBox.hgrow="NEVER">
                           <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="155.0" minWidth="10.0" prefWidth="99.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="155.0" minWidth="10.0" prefWidth="102.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="155.0" minWidth="10.0" prefWidth="97.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="155.0" minWidth="10.0" prefWidth="114.0" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints maxHeight="308.8" minHeight="10.0" prefHeight="177.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="175.0" minHeight="8.0" prefHeight="26.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="257.0" minHeight="10.0" prefHeight="141.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="228.0" minHeight="10.0" prefHeight="135.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="308.8" minHeight="10.0" prefHeight="148.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="175.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="257.0" minHeight="10.0" prefHeight="87.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="241.0" minHeight="10.0" prefHeight="240.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <ImageView fx:id="imgDeck" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
@@ -65,21 +66,16 @@
                                     <Button fx:id="btnDrawFromDiscardPile" mnemonicParsing="false" onAction="#onDrawFromDiscardPile" text="Draw" />
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="104.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="104.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <HBox alignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <children>
-                                    <Button fx:id="btnDiscard" mnemonicParsing="false" onAction="#onDiscard" text="Discard" />
+                                    <Button fx:id="btnAddToSeries" mnemonicParsing="false" onAction="#onAddToSeriesPressed" prefHeight="26.0" prefWidth="105.0" text="Add to Series" />
+                                    <Button fx:id="btnMeld" mnemonicParsing="false" onAction="#onMeld" prefHeight="26.0" prefWidth="141.0" text="Meld" />
+                                    <Button fx:id="btnDiscard" mnemonicParsing="false" onAction="#onDiscard" prefHeight="26.0" prefWidth="111.0" text="Discard" />
                                  </children>
-                              </HBox>
-                              <HBox alignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                 <children>
-                                    <Button fx:id="btnMeld" mnemonicParsing="false" onAction="#onMeld" text="Meld" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                 <children>
-                                    <Button fx:id="btnAddToSeries" mnemonicParsing="false" onAction="#onAddToSeriesPressed" text="Add to Series" />
-                                 </children>
-                              </HBox>
+                              </VBox>
                            </children>
                         </GridPane>
                      </children>
@@ -98,9 +94,9 @@
                             <RowConstraints maxHeight="55.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label fx:id="helpLabel" text="Instructions" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <Label fx:id="helpLabel" prefHeight="40.0" prefWidth="809.0" text="Instructions" textFill="WHITE" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <font>
-                                    <Font size="18.0" />
+                                    <Font name="System Bold" size="27.0" />
                                  </font>
                                  <effect>
                                     <Glow />
@@ -141,7 +137,7 @@
                      </opaqueInsets>
                   </HBox>
                   <Button fx:id="backButton" mnemonicParsing="false" onAction="#onBackButtonClick" text="Back" GridPane.columnIndex="1" />
-                  <Label fx:id="label_opponent" text="Label" GridPane.columnIndex="2">
+                  <Label fx:id="label_opponent" text="Label" textFill="WHITE" GridPane.columnIndex="2">
                      <font>
                         <Font name="System Bold" size="25.0" />
                      </font>
@@ -160,7 +156,7 @@
                <children>
                   <HBox fx:id="hboxMyCards" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
             </HBox>
-                  <Label fx:id="label_user" text="Label" GridPane.columnIndex="1">
+                  <Label fx:id="label_user" text="Label" textFill="WHITE" GridPane.columnIndex="1">
                      <font>
                         <Font name="System Bold" size="25.0" />
                      </font>

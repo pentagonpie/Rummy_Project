@@ -104,7 +104,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     }
 
     private void onSelectMyCard(ImageView imageView, Card card) {
-        if (!this.canSelectCards()) {
+        if (!this.canSelectCards() || isAddToSeriesMode) {
             return;
         }
 
@@ -116,20 +116,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             StackPane.setMargin(imageView, new Insets(0, 0, 50, Constants.CARD_IMAGE_LEFT_MARGIN));
         }
 
-        int selectedCardsCount = selectedCards.size();
-
-        if (selectedCardsCount == 0) {
-            disableButtons(btnMeld, btnDiscard, btnAddToSeries);
-        } else if (selectedCardsCount == 1) {
-            disableButtons(btnMeld);
-            enableButtons(btnDiscard, btnAddToSeries);
-        } else if (selectedCardsCount == 2) {
-            disableButtons(btnMeld, btnDiscard);
-            enableButtons(btnAddToSeries);
-        } else {
-            disableButtons(btnDiscard);
-            enableButtons(btnAddToSeries, btnMeld);
-        }
+        updateButtonsState();
     }
 
     private void addImageToHBox(HBox hbox, String imageFileName, boolean mine, Card card, double leftMargin) {
@@ -272,7 +259,19 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;" + "-fx-border-color: green;");
 
-        helpLabel.setText("Your Turn:");
+        GameMove lastMove = DataManager.getGame().getGameState().getLastMove();
+
+        String moveInstruction = "Your Turn: ";
+
+        if (lastMove == null || lastMove.getGameMoveEventType() == GameMoveEventType.DISCARD) {
+            moveInstruction += "Draw card from deck or discard pile";
+        } else if (isAddToSeriesMode) {
+            moveInstruction += "Click on series to add cards to it";
+        } else {
+            moveInstruction += "Select Cards to meld, add to series, or discard";
+        }
+
+        helpLabel.setText(moveInstruction);
 
     }
 
@@ -334,14 +333,16 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
 
         this.isAddToSeriesMode = !this.isAddToSeriesMode;
+
+        setMyBorder();
+
         if (isAddToSeriesMode) {
-            this.btnAddToSeries.setText("Finish Adding to Series");
+            this.btnAddToSeries.setText("Finish Adding");
             disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnDiscard, btnMeld);
             enableButtons(btnAddToSeries);
         } else {
             this.btnAddToSeries.setText("Add to Series");
-            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
-            enableButtons(btnAddToSeries, btnDiscard, btnMeld);
+            updateButtonsState();
         }
     }
 
@@ -389,7 +390,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 if (getMyCards().size() == 0) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("Game ended, You won!");
-                    alert.setHeaderText("Game ended, You won! 🎉🙌");
+                    alert.setHeaderText("Game ended, You won!");
                     alert.showAndWait();
                 } else {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -397,6 +398,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                     alert.setHeaderText("Game ended, You lost! :(");
                     alert.showAndWait();
                 }
+
+                closeAndBackToMainScreen();
             }
         });
     }
@@ -630,8 +633,17 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         if (lastMove == null || lastMove.getGameMoveEventType() == GameMoveEventType.DISCARD) {
             disableButtons(btnDiscard, btnMeld, btnAddToSeries);
             enableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
-        } else {
+        } else if (selectedCards.size() == 0) {
             disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnDiscard, btnMeld, btnAddToSeries);
+        } else if (selectedCards.size() == 1) {
+            enableButtons(btnDiscard, btnAddToSeries);
+            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnMeld);
+        } else if (selectedCards.size() == 2) {
+            enableButtons(btnAddToSeries);
+            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnDiscard, btnMeld);
+        } else {
+            enableButtons(btnMeld, btnAddToSeries);
+            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnDiscard);
         }
     }
 
