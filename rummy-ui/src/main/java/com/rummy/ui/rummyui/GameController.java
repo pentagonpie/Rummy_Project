@@ -115,6 +115,21 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             selectedCards.add(card);
             StackPane.setMargin(imageView, new Insets(0, 0, 50, Constants.CARD_IMAGE_LEFT_MARGIN));
         }
+
+        int selectedCardsCount = selectedCards.size();
+
+        if (selectedCardsCount == 0) {
+            disableButtons(btnMeld, btnDiscard, btnAddToSeries);
+        } else if (selectedCardsCount == 1) {
+            disableButtons(btnMeld);
+            enableButtons(btnDiscard, btnAddToSeries);
+        } else if (selectedCardsCount == 2) {
+            disableButtons(btnMeld, btnDiscard);
+            enableButtons(btnAddToSeries);
+        } else {
+            disableButtons(btnDiscard);
+            enableButtons(btnAddToSeries, btnMeld);
+        }
     }
 
     private void addImageToHBox(HBox hbox, String imageFileName, boolean mine, Card card, double leftMargin) {
@@ -320,9 +335,11 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
         this.isAddToSeriesMode = !this.isAddToSeriesMode;
         if (isAddToSeriesMode) {
+            this.btnAddToSeries.setText("Finish Adding to Series");
             disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnDiscard, btnMeld);
             enableButtons(btnAddToSeries);
         } else {
+            this.btnAddToSeries.setText("Add to Series");
             disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
             enableButtons(btnAddToSeries, btnDiscard, btnMeld);
         }
@@ -608,20 +625,13 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
         Game game = DataManager.getGame();
 
-        if (game.getGameState().getLastMove() == null) {
-            disableButtons(btnDiscard, btnMeld, btnAddToSeries);
-            enableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
-            return;
-        }
+        GameMove lastMove = game.getGameState().getLastMove();
 
-        GameMoveEventType lastMoveType = game.getGameState().getLastMove().getGameMoveEventType();
-
-        if (lastMoveType == GameMoveEventType.DISCARD) {
+        if (lastMove == null || lastMove.getGameMoveEventType() == GameMoveEventType.DISCARD) {
             disableButtons(btnDiscard, btnMeld, btnAddToSeries);
             enableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
         } else {
-            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile);
-            enableButtons(btnDiscard, btnMeld, btnAddToSeries);
+            disableButtons(btnDrawFromDeck, btnDrawFromDiscardPile, btnDiscard, btnMeld, btnAddToSeries);
         }
     }
 
