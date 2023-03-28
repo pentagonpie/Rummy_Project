@@ -7,119 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
-import java.util.Arrays;
-import java.util.Random;
-
-class deck{
-   int cards[];
-   int amount;
-   int originals[][];
-   
-    deck(){
-        //Create array of numbers, each one representing a different card
-        this.cards = new int[52];
-        this.amount = 52;
-        
-        //Shuffel array of cards
-        for(int i = 1;i<53;i++){
-        cards[i-1]=i;
-         }
-
-        Random rand = new Random();
-
-        for (int i = 0; i < cards.length; i++) {
-                int randomIndexToSwap = rand.nextInt(cards.length);
-                int temp = cards[randomIndexToSwap];
-                cards[randomIndexToSwap] = cards[i];
-                cards[i] = temp;
-        }
 
 
-
-        //Create dictionary of cards based on id
-        this.originals = new int[52][3];
-
-        //originals[x][] = id of card
-        //originals[][0] = number on card, 11=j,12=q,13=k,14=a
-        //originals[][1]= color, 0=red, 1=black
-        //originals[][2]= suit,0=heart, 1=diamond, 2=spade,3=club
-        for(int i = 0;i<4;i++){
-           for(int j = 0;j<13;j++){
-            this.originals[13*i+j][0]=j+1;
-            if(i<2){
-               this.originals[13*i+j][1]=0; 
-            }else{
-               this.originals[13*i+j][1]=1; 
-
-            }
-            this.originals[13*i+j][2]=i; 
-        }
-        }
-
-        //for(int i = 0;i<52;i++){
-        //    System.out.printf("Card %d: %d %d %d\n", i, this.originals[i][0],this.originals[i][1],this.originals[i][2] );
-        //}
-    }
-    
-    //return name of card based on id, which corresponds to the name
-    //of image file
-    public String getNameCard(int id){
-        String result = "";
-        
-        int num = this.originals[id][0];
-        
-        int suit = this.originals[id][1];
-        
-        if(num<10){
-            result += num+1;
-        }else if(num==10){
-            result += "jack";
-        }else if(num==11){
-            result += "queen";
-        }else if(num==12){
-            result += "king";
-        }else if(num==13){
-            result += "ace";
-        }
-        
-        result += "_of_";
-        
-        switch(suit){
-            case 0:
-                result += "hearts";
-                break;
-            
-            case 1:
-                result += "diamonds";
-                break;
-
-            case 2:
-                result += "spades";
-                break;
-
-            case 3:
-                result += "clubs";
-                break;
-            
-                
-        }
-        
-        return result;
-    }
-   
-    public String getCards(){
-        return Arrays.toString(cards);
-    }
-    
-    public int drawCard(){
-        if(this.amount<1){
-            return -1;
-        }
-        
-        return this.cards[--this.amount];
-    }
-
-   }
 
 
 public class Database {
@@ -558,7 +447,7 @@ public static int getGameID(String name){
        Connection connection = null;
 
         int newId = getGamesNum();     
-        deck cardDeck = new deck();
+       
 
         try{
             connection=DriverManager.getConnection
@@ -606,23 +495,11 @@ public static int getGameID(String name){
                 return -1;
             }
       
-            //First create gameState
+          
             Statement ps = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            ResultSet uprs = ps.executeQuery("SELECT * FROM gameState");
 
-            uprs.moveToInsertRow();
-            uprs.updateInt("id", newId);
-            uprs.updateInt("winner", -1);
-            uprs.updateString("cards1", "");
-            uprs.updateString("cards2", "");
-            uprs.updateString("cardsDeck", cardDeck.getCards());
-            uprs.insertRow();
-            uprs.beforeFirst();
-
-            
-            
-            //Then create the game, refrencing the gameState
-            uprs = ps.executeQuery("SELECT * FROM games");
+            //create the game
+            ResultSet uprs = ps.executeQuery("SELECT * FROM games");
             uprs.moveToInsertRow();
             uprs.updateInt("active", 0);
             uprs.updateInt("id", newId);
@@ -663,14 +540,6 @@ public static int getGameID(String name){
             PreparedStatement deleteGame = connection.prepareStatement(deleteString);
             deleteGame.setInt(1, id);
             deleteGame.executeUpdate();
-
-
-            //Delete gamestate
-             deleteString =
-            "DELETE FROM gamestate where id = ?";
-            PreparedStatement deleteGameState = connection.prepareStatement(deleteString);
-            deleteGameState.setInt(1, id);
-            deleteGameState.executeUpdate();
 
 
             System.out.println("Deleted game...");

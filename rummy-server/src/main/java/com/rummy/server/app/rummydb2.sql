@@ -30,19 +30,6 @@ CREATE TABLE IF NOT EXISTS `rummydb`.`players` (
 ENGINE = InnoDB;
 
 
--- -----------------------------------------------------
--- Table `mydb`.`gameState`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `rummydb`.`gameState` (
-  `id` INT NOT NULL,
-  `winner` TINYINT(1) NULL,
-  `cards1` VARCHAR(200) NULL,
-  `cards2` VARCHAR(200) NULL,
-  `cardsDeck` VARCHAR(200) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
-ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `mydb`.`games`
@@ -66,11 +53,6 @@ CREATE TABLE IF NOT EXISTS `rummydb`.`games` (
   CONSTRAINT `player2`
     FOREIGN KEY (`player2`)
     REFERENCES `rummydb`.`players` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `stat`
-    FOREIGN KEY (`id`)
-    REFERENCES `rummydb`.`gameState` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
