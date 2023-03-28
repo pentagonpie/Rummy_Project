@@ -19,6 +19,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.EventListener;
 import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.WindowEvent;
 
 public class CreateGameController implements GameStartedEventListener {
@@ -45,7 +46,7 @@ public class CreateGameController implements GameStartedEventListener {
     protected void onCreateNewGameClick() {
         final String playerId = DataManager.getPlayerId();
         final Game createdGame = this.rmiClient.createGame(gameName.getText(), playerId);
-        System.out.println("After final Game createdGame in onCreateNewGameClick");
+        
         if(createdGame.getId().equals("-1")){
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
@@ -59,6 +60,15 @@ public class CreateGameController implements GameStartedEventListener {
         this.lblWaitingText.setText(waitingLabel);
         this.createNewGameContainer.setVisible(false);
         this.lblWaitingText.setVisible(true);
+    }
+    
+    @FXML
+    protected void checkIfEnterKey(KeyEvent e) {
+        if(e.getCode().toString().equals("ENTER")){
+            onCreateNewGameClick();
+        }
+        
+        
     }
     
     public void deleteGame(Game game){
