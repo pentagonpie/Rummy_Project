@@ -20,6 +20,7 @@
             </Label>
             <Button layoutX="237.0" layoutY="161.0" mnemonicParsing="false" onAction="#onJoinGameClick" text="Join existing game" />
             <Button fx:id="btnLogout" layoutX="29.0" layoutY="340.0" mnemonicParsing="false" onAction="#onLogoutClick" text="Logout" />
+            <Label fx:id="userNameLabel" layoutX="286.0" layoutY="96.0" text="Label" />
          </children>
       </AnchorPane>
    </children>
