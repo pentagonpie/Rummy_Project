@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -93,8 +95,9 @@ public class Database {
         
         System.out.println("name:");
         String name = myObj.nextLine();  // Read user input
-        
-        System.out.println("result: "+ createPlayer( name));
+        System.out.println("password:");
+        String pass = myObj.nextLine();  // Read user input
+        System.out.println("result: "+ createPlayer( name, pass));
 
         
       }
@@ -201,7 +204,71 @@ public class Database {
      
    }//end of main
    
-   public static int createPlayer(String name){   
+   
+    public static boolean checkPassword(String name, String enteredPassword){  
+     Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection=DriverManager.getConnection
+               (DB_URL,DB_USER,DB_PASSWD);
+            statement=connection.createStatement();
+
+
+            
+            //Check if this player exists
+            String selectString =
+            "SELECT * FROM players where name = ? ";
+
+
+            PreparedStatement selectPlayer = connection.prepareStatement(selectString);
+            selectPlayer.setString(1, name);
+            resultSet=selectPlayer.executeQuery();
+            boolean foundPlayer = false;
+            while(resultSet.next()){
+               
+               foundPlayer=true;
+            }
+            
+            if(!foundPlayer){
+                return false;
+            }
+
+         
+            
+            
+            String hash="", salt="";
+            
+            resultSet=selectPlayer.executeQuery();
+            
+            while(resultSet.next()){
+            
+              hash = resultSet.getString("password");
+              salt = resultSet.getString("salt");
+            }
+            
+            
+            
+            return passwordManager.checkPass(enteredPassword,salt,hash);
+            
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }finally{
+          try{
+              if(resultSet != null) resultSet.close();
+              if(statement != null)     statement.close();
+              if(connection != null) connection.close();
+          }catch(SQLException e){}
+
+        }//end of finally
+
+    return false;
+    
+    }
+   
+   //return -1 if error in creating
+   public static int createPlayer(String name, String password){   
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -214,7 +281,7 @@ public class Database {
 
 
             
-            //Check if game with this player already exists
+            //Check if this player already exists
             String selectString =
             "SELECT * FROM players where name = ? ";
 
@@ -236,6 +303,15 @@ public class Database {
             }
 
             //Otherwise, add new player
+            
+            String result[] = new String[2];
+            
+            try {
+                result=passwordManager.storePass(password);
+            } catch (Exception ex) {
+                System.out.println("error in creating user due to password");
+                return -1;
+            }
             resultSet=statement.executeQuery
                ("SELECT * FROM players");
             
@@ -243,8 +319,12 @@ public class Database {
             Statement ps = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             ResultSet uprs = ps.executeQuery("SELECT * FROM players");
 
+            
+            
             uprs.moveToInsertRow();
             uprs.updateString("name", name);
+            uprs.updateString("password", result[0]);
+            uprs.updateString("salt", result[1]);
             uprs.updateInt("id", newId);
             uprs.updateInt("online", 0);
             uprs.updateInt("generalScore", 0);
@@ -701,6 +781,7 @@ public static int getGameID(String name){
        return result;
    }
    
+   //if problem, return -1
    public static int getID(String name){
         Connection connection = null;  
         ResultSet resultSet = null;

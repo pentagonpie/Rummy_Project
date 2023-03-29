@@ -47,6 +47,7 @@
                <Insets top="30.0" />
             </VBox.margin>
          </Button>
+         <Button fx:id="btnCreateUser" defaultButton="true" mnemonicParsing="false" onAction="#onCreateUserClick" prefHeight="26.0" prefWidth="93.0" text="create user" />
       </children>
    </VBox>
 </VBox>

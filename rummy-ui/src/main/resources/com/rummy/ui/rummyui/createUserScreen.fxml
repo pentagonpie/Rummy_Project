@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="300.0" minWidth="600.0" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rummy.ui.rummyui.CreateUserController">
+   <children>
+      <VBox fx:id="createNewGameContainer" layoutX="195.0" layoutY="65.0" prefHeight="178.0" prefWidth="274.0">
+         <children>
+            <Label text="Create a new user">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+            <Label text="Username:">
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin>
+            </Label>
+            <TextField fx:id="usernameInput" prefHeight="26.0" prefWidth="214.0">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </TextField>
+            <Label text="Password:" />
+            <TextField fx:id="passwordInput" prefHeight="26.0" prefWidth="214.0" />
+            <Button fx:id="btnCreateUser" mnemonicParsing="false" onAction="#onCreateNewUserClick" prefHeight="26.0" prefWidth="299.0" text="Create User">
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+      <Label fx:id="lblWaitingText" layoutX="137.0" layoutY="38.0" prefHeight="133.0" prefWidth="327.0" text="Label" visible="false">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnBack" layoutX="14.0" layoutY="24.0" mnemonicParsing="false" onAction="#onBackClick" prefHeight="26.0" prefWidth="92.0" text="Back" />
+   </children>
+</AnchorPane>
