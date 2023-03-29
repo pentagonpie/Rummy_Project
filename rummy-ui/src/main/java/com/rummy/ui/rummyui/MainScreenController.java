@@ -4,10 +4,9 @@
  */
 package com.rummy.ui.rummyui;
 
-import com.rummy.ui.gameEvents.GameEventsManager;
+
 import java.io.IOException;
-import java.rmi.NotBoundException;
-import java.util.EventListener;
+
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -104,9 +103,6 @@ public class MainScreenController {
             newStage.setScene(scene);
             newStage.show();
 
-            
-            
-            
             //Close login window
             Stage primaryStage = (Stage) btnLogout.getScene().getWindow();
             primaryStage.close();
