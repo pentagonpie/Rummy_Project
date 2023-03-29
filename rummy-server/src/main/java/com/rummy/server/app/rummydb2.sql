@@ -23,6 +23,8 @@ USE `rummydb` ;
 CREATE TABLE IF NOT EXISTS `rummydb`.`players` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NULL,
+  `password` VARCHAR(250) NOT NULL,
+  `salt` VARCHAR(250) NOT NULL,
   `online` TINYINT NULL,
   `generalScore` INT NOT NULL,
   PRIMARY KEY (`id`),
