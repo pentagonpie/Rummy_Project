@@ -19,4 +19,5 @@ public interface RummyServer extends Remote {
     ArrayList<Game> getGames() throws RemoteException;
     MoveValidationResult addGameMove(GameMove gameMove) throws RemoteException;
     public int createUser(String name, String password) throws RemoteException;
+    public void increaseScore(String playerId) throws RemoteException;
 }

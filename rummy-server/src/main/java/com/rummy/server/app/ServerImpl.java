@@ -37,7 +37,6 @@ public class ServerImpl implements RummyServer {
     //returns user id if login is correct
     @Override
     public String login(String username, String password, RummyClient client) throws RemoteException {
-
         String userId;
         
         int id = Database.getID(username);
@@ -48,44 +47,13 @@ public class ServerImpl implements RummyServer {
         }
         
         userId = Integer.toString(id);
-        
-        
+
         if(Database.checkPassword(username, password)){
             this._connectedPlayers.put(userId, new Player(userId, username, client));
             return userId;
         }
         return null;
 
-//        if (id1 == -1) {
-//            userId1 = UUID.randomUUID().toString();
-//        }
-//
-//        if (id2 == -1) {
-//            userId2 = UUID.randomUUID().toString();
-//        }
-
-//
-//        Map<String, User> usersMap = Map.of(
-//                userId1, new User(userId1, "nadav", "123456"),
-//                userId2, new User(userId2, "tom", "123456")
-//        );
-
-//        System.out.println("username " + username + " id " + Database.getID(username));
-//
-//        User user = usersMap.values().stream()
-//                .filter(u -> u.getUserName().equals(username) && u.getPassword().equals(password))
-//                .findFirst()
-//                .orElse(null);
-//
-//        boolean isAuthorized = user != null;
-//
-//        if (!isAuthorized) {
-//            return null;
-//        }
-//
-//        this._connectedPlayers.put(user.getId(), new Player(user.getId(), user.getUserName(), client));
-//
-//        return user.getId();
     }
 
     @Override
@@ -178,7 +146,16 @@ public class ServerImpl implements RummyServer {
             }
         });
     }
-
+    
+    
+    
+    @Override
+    public void increaseScore(String playerId) throws RemoteException {
+        int oldScore = Database.getPlayerScore(Integer.parseInt(playerId));
+        Database.setPlayerScore(Integer.parseInt(playerId), oldScore+1);
+    }
+    
+    
 
     @Override
     public void exitGame(String gameName, String playerId) throws RemoteException {

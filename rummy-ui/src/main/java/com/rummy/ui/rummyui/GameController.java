@@ -388,6 +388,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
             if (gameEndReason == GameEndReason.PLAYER_WON) {
                 if (getMyCards().size() == 0) {
+                    this.rmiClient.increaseScore(DataManager.getPlayerId());
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("Game ended, You won!");
                     alert.setHeaderText("Game ended, You won!");
