@@ -55,6 +55,20 @@ public class CreateGameController implements GameStartedEventListener {
             
             return;
         }
+        
+        Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
+        
+        
+        //Close app after closing window
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+            deleteGame(createdGame);
+            
+            Platform.exit();
+            System.exit(0);
+            }
+        });     
+        
         String waitingLabel = "Game Name: " + createdGame.getName() + "\n\nWaiting for another player to join...";
 
         this.lblWaitingText.setText(waitingLabel);
