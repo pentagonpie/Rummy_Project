@@ -30,6 +30,41 @@ public class LoginController {
     private Button btnLogin;
 
     @FXML
+    protected void onCreateUserClick() {
+        FXMLLoader fxmlLoader = new FXMLLoader(RummyApplication.class.getResource("createUserScreen.fxml"));
+
+        Stage newStage = new Stage();
+        newStage.show();
+        
+        newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent we) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });  
+        
+        try {
+            //Open main window            
+            newStage.setScene(new Scene(fxmlLoader.load()));
+            newStage.setTitle("Create user");
+
+            //Close login window
+            Stage primaryStage = (Stage) btnLogin.getScene().getWindow();
+            primaryStage.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("IOException");
+            alert.setHeaderText("Exception at login screen controller");
+            alert.show();
+        }
+
+    }
+    
+    
+    @FXML
     protected void onLoginClick() {
         final String username = this.username.getText();
         final String password = this.password.getText();
@@ -53,9 +88,10 @@ public class LoginController {
 
                 
                 newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
                     public void handle(WindowEvent we) {
 
-                    newStage.close();
+                   
                     Platform.exit();
                     System.exit(0);
                     }

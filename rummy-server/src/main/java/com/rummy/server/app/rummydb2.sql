@@ -23,25 +23,14 @@ USE `rummydb` ;
 CREATE TABLE IF NOT EXISTS `rummydb`.`players` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NULL,
+  `password` VARCHAR(250) NOT NULL,
+  `salt` VARCHAR(250) NOT NULL,
   `online` TINYINT NULL,
   `generalScore` INT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table `mydb`.`gameState`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `rummydb`.`gameState` (
-  `id` INT NOT NULL,
-  `winner` TINYINT(1) NULL,
-  `cards1` VARCHAR(200) NULL,
-  `cards2` VARCHAR(200) NULL,
-  `cardsDeck` VARCHAR(200) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
-ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -66,11 +55,6 @@ CREATE TABLE IF NOT EXISTS `rummydb`.`games` (
   CONSTRAINT `player2`
     FOREIGN KEY (`player2`)
     REFERENCES `rummydb`.`players` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `stat`
-    FOREIGN KEY (`id`)
-    REFERENCES `rummydb`.`gameState` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

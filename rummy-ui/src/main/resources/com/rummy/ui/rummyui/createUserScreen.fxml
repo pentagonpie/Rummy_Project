@@ -8,26 +8,28 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="300.0" minWidth="600.0" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rummy.ui.rummyui.CreateGameController">
+<AnchorPane minHeight="300.0" minWidth="600.0" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rummy.ui.rummyui.CreateUserController">
    <children>
-      <VBox fx:id="createNewGameContainer" layoutX="195.0" layoutY="65.0" prefHeight="165.0" prefWidth="210.0">
+      <VBox fx:id="createNewGameContainer" layoutX="195.0" layoutY="65.0" prefHeight="178.0" prefWidth="274.0">
          <children>
-            <Label text="Create a new game">
+            <Label text="Create a new user">
                <font>
                   <Font size="26.0" />
                </font>
             </Label>
-            <Label text="Game Name:">
+            <Label text="Username:">
                <VBox.margin>
                   <Insets top="30.0" />
                </VBox.margin>
             </Label>
-            <TextField fx:id="gameName" onKeyPressed="#checkIfEnterKey">
+            <TextField fx:id="usernameInput" prefHeight="26.0" prefWidth="214.0">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </TextField>
-            <Button fx:id="btnCreateGame" mnemonicParsing="false" onAction="#onCreateNewGameClick" text="Create Game">
+            <Label text="Password:" />
+            <TextField fx:id="passwordInput" prefHeight="26.0" prefWidth="214.0" />
+            <Button fx:id="btnCreateUser" mnemonicParsing="false" onAction="#onCreateNewUserClick" prefHeight="26.0" prefWidth="299.0" text="Create User">
                <VBox.margin>
                   <Insets top="30.0" />
                </VBox.margin>
@@ -39,5 +41,6 @@
             <Font size="18.0" />
          </font>
       </Label>
+      <Button fx:id="btnBack" layoutX="14.0" layoutY="24.0" mnemonicParsing="false" onAction="#onBackClick" prefHeight="26.0" prefWidth="92.0" text="Back" />
    </children>
 </AnchorPane>

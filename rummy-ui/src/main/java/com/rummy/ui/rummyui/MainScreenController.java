@@ -4,7 +4,9 @@
  */
 package com.rummy.ui.rummyui;
 
+
 import java.io.IOException;
+
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -21,6 +24,8 @@ import javafx.stage.WindowEvent;
  * @author pentagonpie
  */
 public class MainScreenController {
+    
+
 
     /**
      * Initializes the controller class.
@@ -31,6 +36,16 @@ public class MainScreenController {
     @FXML
     private Button btnNewGame;
 
+    @FXML
+    private Label  userNameLabel;
+    
+    @FXML
+    public void initialize() {
+        
+       
+        userNameLabel.setText("User: " + DataManager.getUserName());
+    }
+    
     @FXML
     protected void onCreateNewGameClick() {
         FXMLLoader createGameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("createGameScreen.fxml"));
@@ -88,9 +103,6 @@ public class MainScreenController {
             newStage.setScene(scene);
             newStage.show();
 
-            
-            
-            
             //Close login window
             Stage primaryStage = (Stage) btnLogout.getScene().getWindow();
             primaryStage.close();

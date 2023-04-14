@@ -25,48 +25,67 @@ public class ServerImpl implements RummyServer {
     public String getPlayerName(String id) throws RemoteException {
         return this._connectedPlayers.get(id).getUserName();
     }
+    
+    @Override
+    public int createUser(String name, String password) throws RemoteException {
+        int result = Database.createPlayer(name,password);
+        
+        return result;
+    }
+    
 
+    //returns user id if login is correct
     @Override
     public String login(String username, String password, RummyClient client) throws RemoteException {
 
-        String userId1, userId2;
-
-        int id1 = Database.getID("nadav");
-        int id2 = Database.getID("tom");
-        userId1 = Integer.toString(id1);
-        userId2 = Integer.toString(id2);
-
-
-        if (id1 == -1) {
-            userId1 = UUID.randomUUID().toString();
-        }
-
-        if (id2 == -1) {
-            userId2 = UUID.randomUUID().toString();
-        }
-
-
-        Map<String, User> usersMap = Map.of(
-                userId1, new User(userId1, "nadav", "123456"),
-                userId2, new User(userId2, "tom", "123456")
-        );
-
-        System.out.println("username " + username + " id " + Database.getID(username));
-
-        User user = usersMap.values().stream()
-                .filter(u -> u.getUserName().equals(username) && u.getPassword().equals(password))
-                .findFirst()
-                .orElse(null);
-
-        boolean isAuthorized = user != null;
-
-        if (!isAuthorized) {
+        String userId;
+        
+        int id = Database.getID(username);
+        System.out.println("user id is " + id);
+        //no such user
+        if(id == -1){
             return null;
         }
+        
+        userId = Integer.toString(id);
+        
+        
+        if(Database.checkPassword(username, password)){
+            this._connectedPlayers.put(userId, new Player(userId, username, client));
+            return userId;
+        }
+        return null;
 
-        this._connectedPlayers.put(user.getId(), new Player(user.getId(), user.getUserName(), client));
+//        if (id1 == -1) {
+//            userId1 = UUID.randomUUID().toString();
+//        }
+//
+//        if (id2 == -1) {
+//            userId2 = UUID.randomUUID().toString();
+//        }
 
-        return user.getId();
+//
+//        Map<String, User> usersMap = Map.of(
+//                userId1, new User(userId1, "nadav", "123456"),
+//                userId2, new User(userId2, "tom", "123456")
+//        );
+
+//        System.out.println("username " + username + " id " + Database.getID(username));
+//
+//        User user = usersMap.values().stream()
+//                .filter(u -> u.getUserName().equals(username) && u.getPassword().equals(password))
+//                .findFirst()
+//                .orElse(null);
+//
+//        boolean isAuthorized = user != null;
+//
+//        if (!isAuthorized) {
+//            return null;
+//        }
+//
+//        this._connectedPlayers.put(user.getId(), new Player(user.getId(), user.getUserName(), client));
+//
+//        return user.getId();
     }
 
     @Override
@@ -93,7 +112,7 @@ public class ServerImpl implements RummyServer {
             }
         }
 
-        return shuffle(deck);
+          return deck;// shuffle(deck);
     }
 
     @Override
