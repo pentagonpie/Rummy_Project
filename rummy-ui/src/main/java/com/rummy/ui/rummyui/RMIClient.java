@@ -129,6 +129,14 @@ public class RMIClient implements Serializable, RummyClient {
         }
     }
     
+    public int getScore(String playerId){
+       try {
+            return server.getScore(playerId );
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
    
     
     public void joinGame(String id, String playerId) throws RemoteException {

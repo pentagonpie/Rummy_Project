@@ -155,7 +155,11 @@ public class ServerImpl implements RummyServer {
         Database.setPlayerScore(Integer.parseInt(playerId), oldScore+1);
     }
     
-    
+    @Override
+    public int getScore(String playerId) throws RemoteException {
+        return Database.getPlayerScore(Integer.parseInt(playerId));
+       
+    }
 
     @Override
     public void exitGame(String gameName, String playerId) throws RemoteException {

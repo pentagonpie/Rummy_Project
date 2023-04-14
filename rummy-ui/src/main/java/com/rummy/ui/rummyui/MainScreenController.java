@@ -6,6 +6,8 @@ package com.rummy.ui.rummyui;
 
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -25,7 +27,12 @@ import javafx.stage.WindowEvent;
  */
 public class MainScreenController {
     
+    private final RMIClient rmiClient;
 
+    public MainScreenController() throws NotBoundException, RemoteException {
+        this.rmiClient = RMIClient.getInstance();
+       
+    }
 
     /**
      * Initializes the controller class.
@@ -43,7 +50,8 @@ public class MainScreenController {
     public void initialize() {
         
        
-        userNameLabel.setText("User: " + DataManager.getUserName());
+        userNameLabel.setText("User: " + DataManager.getUserName() + " Score: " + this.rmiClient.getScore(DataManager.getPlayerId()));
+         
     }
     
     @FXML
@@ -68,6 +76,7 @@ public class MainScreenController {
             alert.show();
         }
     }
+    
 
     @FXML
     protected void onJoinGameClick() {
