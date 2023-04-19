@@ -30,8 +30,4 @@ public class DataManager {
     static Game getGame() {
         return DataManager.game;
     }
-    
-    static void nextTurn(){
-        DataManager.game.nextTurn();
-    }
 }

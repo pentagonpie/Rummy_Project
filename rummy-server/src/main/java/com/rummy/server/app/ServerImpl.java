@@ -25,67 +25,34 @@ public class ServerImpl implements RummyServer {
     public String getPlayerName(String id) throws RemoteException {
         return this._connectedPlayers.get(id).getUserName();
     }
-    
+
     @Override
     public int createUser(String name, String password) throws RemoteException {
-        int result = Database.createPlayer(name,password);
-        
+        int result = Database.createPlayer(name, password);
+
         return result;
     }
-    
 
     //returns user id if login is correct
     @Override
     public String login(String username, String password, RummyClient client) throws RemoteException {
 
         String userId;
-        
+
         int id = Database.getID(username);
         System.out.println("user id is " + id);
         //no such user
-        if(id == -1){
+        if (id == -1) {
             return null;
         }
-        
+
         userId = Integer.toString(id);
-        
-        
-        if(Database.checkPassword(username, password)){
+
+        if (Database.checkPassword(username, password)) {
             this._connectedPlayers.put(userId, new Player(userId, username, client));
             return userId;
         }
         return null;
-
-//        if (id1 == -1) {
-//            userId1 = UUID.randomUUID().toString();
-//        }
-//
-//        if (id2 == -1) {
-//            userId2 = UUID.randomUUID().toString();
-//        }
-
-//
-//        Map<String, User> usersMap = Map.of(
-//                userId1, new User(userId1, "nadav", "123456"),
-//                userId2, new User(userId2, "tom", "123456")
-//        );
-
-//        System.out.println("username " + username + " id " + Database.getID(username));
-//
-//        User user = usersMap.values().stream()
-//                .filter(u -> u.getUserName().equals(username) && u.getPassword().equals(password))
-//                .findFirst()
-//                .orElse(null);
-//
-//        boolean isAuthorized = user != null;
-//
-//        if (!isAuthorized) {
-//            return null;
-//        }
-//
-//        this._connectedPlayers.put(user.getId(), new Player(user.getId(), user.getUserName(), client));
-//
-//        return user.getId();
     }
 
     @Override
@@ -112,7 +79,7 @@ public class ServerImpl implements RummyServer {
             }
         }
 
-          return deck;// shuffle(deck);
+        return shuffle(deck);
     }
 
     @Override
@@ -125,10 +92,8 @@ public class ServerImpl implements RummyServer {
 
         final int CARDS_PER_PLAYER = 14;
 
-
         System.out.println("playerID from createnewgame: " + playerId);
         System.out.println("hello createNewGame2");
-
 
         if (Database.createGame(Integer.parseInt(playerId), gameName) == -1) {
             System.out.println("Error creating game");
@@ -136,7 +101,6 @@ public class ServerImpl implements RummyServer {
         }
         int gameID = Database.getGameID(gameName);
         System.out.println("in createnewgame getting from database gameid " + gameID);
-
 
         ArrayList<Card> deck = generateDeck();
         ArrayList<Card> player1Cards = new ArrayList<>(deck.subList(0, CARDS_PER_PLAYER));
@@ -178,7 +142,6 @@ public class ServerImpl implements RummyServer {
             }
         });
     }
-
 
     @Override
     public void exitGame(String gameName, String playerId) throws RemoteException {
@@ -256,26 +219,7 @@ public class ServerImpl implements RummyServer {
 
     @Override
     public void deleteGame(Game game) throws RemoteException {
-
         Database.deleteGame(Integer.parseInt(game.getId()));
         this._games.remove(game.getId());
-    }
-
-    @Override
-    public void nextTurn(Game game) throws RemoteException {
-        System.out.println("Sending to all user signal next turn");
-
-        if (game == null) {
-            return;
-        }
-
-        game.getPlayersIds().forEach(_playerId -> {
-            Player playerToNotify = this._connectedPlayers.get(_playerId);
-            try {
-                playerToNotify.getClient().handleNextTurn(game);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 }

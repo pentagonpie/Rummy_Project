@@ -12,7 +12,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-
 public class RMIClient implements Serializable, RummyClient {
     private final RummyServer server;
     private static RMIClient rmiClient;
@@ -24,10 +23,10 @@ public class RMIClient implements Serializable, RummyClient {
     }
 
     public static synchronized RMIClient getInstance() throws NotBoundException, RemoteException {
-            if (rmiClient == null) {
-                rmiClient = new RMIClient();
-            }
-            return rmiClient;
+        if (rmiClient == null) {
+            rmiClient = new RMIClient();
+        }
+        return rmiClient;
     }
 
     public String login(String username, String password) {
@@ -37,42 +36,42 @@ public class RMIClient implements Serializable, RummyClient {
             throw new RuntimeException(e);
         }
     }
-    
+
     public int createUser(String name, String password) {
         try {
             System.out.println("hello inside RMIclientt, createUser " + name + ", " + password);
-            
+
             return server.createUser(name, password);
         } catch (RemoteException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
-            
+
         }
     }
 
     public Game createGame(String name, String creatorUserName) {
         try {
             System.out.println("hello inside RMIclientt," + name + ", " + creatorUserName);
-            
+
             return server.createNewGame(name, creatorUserName);
         } catch (RemoteException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
-            
+
         }
     }
 
-    public String getPlayerName(String id){
+    public String getPlayerName(String id) {
         try {
             return server.getPlayerName(id);
         } catch (RemoteException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
         }
-        
+
     }
 
-    public void deleteGame(Game game){
+    public void deleteGame(Game game) {
         try {
             server.deleteGame(game);
         } catch (RemoteException e) {
@@ -81,7 +80,6 @@ public class RMIClient implements Serializable, RummyClient {
         }
     }
 
-    
     public ArrayList<Game> getGames() {
         try {
             return server.getGames();
@@ -99,8 +97,8 @@ public class RMIClient implements Serializable, RummyClient {
     public void handleGameEnd(Game game, GameEndReason gameEndReason) throws RemoteException {
         GameEventsManager.emitGameEndEvent(game, gameEndReason);
     }
-    
-    //@Override
+
+    @Override
     public void handleNextTurn(Game game) throws RemoteException {
         GameEventsManager.emitNextTurn(game);
     }
@@ -110,30 +108,21 @@ public class RMIClient implements Serializable, RummyClient {
         GameEventsManager.emitGameMoveEvent(game);
     }
 
-    public void exitGame(String gameName, String playerId){
-       try {
-            server.exitGame(gameName,playerId );
-        } catch (RemoteException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
-    
-    public void joinGame(String id, String playerId) throws RemoteException {
-        this.server.joinGame(id, playerId);
-    }
-    
-    public void nextTurn(Game game){
+    public void exitGame(String gameName, String playerId) {
         try {
-            this.server.nextTurn(game);
+            server.exitGame(gameName, playerId);
         } catch (RemoteException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    public MoveValidationResult addGameMove(GameMove gameMove) throws RemoteException{
-        
+    public void joinGame(String id, String playerId) throws RemoteException {
+        this.server.joinGame(id, playerId);
+    }
+
+    public MoveValidationResult addGameMove(GameMove gameMove) throws RemoteException {
+
         return this.server.addGameMove(gameMove);
 
     }

@@ -3,8 +3,10 @@ package com.rummy.ui.rummyui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -35,17 +37,14 @@ public class LoginController {
 
         Stage newStage = new Stage();
         newStage.show();
-        
-        newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent we) {
-                Platform.exit();
-                System.exit(0);
-            }
-        });  
-        
+
+        newStage.setOnCloseRequest(we -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
         try {
-            //Open main window            
+            //Open main window
             newStage.setScene(new Scene(fxmlLoader.load()));
             newStage.setTitle("Create user");
 
@@ -60,10 +59,8 @@ public class LoginController {
             alert.setHeaderText("Exception at login screen controller");
             alert.show();
         }
-
     }
-    
-    
+
     @FXML
     protected void onLoginClick() {
         final String username = this.username.getText();
@@ -86,18 +83,11 @@ public class LoginController {
                 newStage.setTitle("Welcome to Rummy!");
                 newStage.show();
 
-                
-                newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent we) {
-
-                   
+                newStage.setOnCloseRequest(we -> {
                     Platform.exit();
                     System.exit(0);
-                    }
-                });  
-        
-        
+                });
+
                 //Close login window
                 Stage primaryStage = (Stage) btnLogin.getScene().getWindow();
                 primaryStage.close();

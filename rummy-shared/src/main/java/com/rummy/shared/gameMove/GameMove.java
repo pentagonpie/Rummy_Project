@@ -36,27 +36,7 @@ public class GameMove implements Serializable {
         return _destinationCard;
     }
 
-    public void setPlayerId(String playerId) {
-        _playerId = playerId;
-    }
-
-    public void setGameMoveEventType(GameMoveEventType gameMoveEventType) {
-        this.gameMoveEventType = gameMoveEventType;
-    }
-
-    public void setCardsToMove(ArrayList<Card> cardsToMove) {
-        _cardsToMove = cardsToMove;
-    }
-
-    public void setDestinationCard(Card destinationCard) {
-        _destinationCard = destinationCard;
-    }
-
     public String getGameId() {
         return _gameId;
-    }
-
-    public void setGameId(String gameId) {
-        _gameId = gameId;
     }
 }

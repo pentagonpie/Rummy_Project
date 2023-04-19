@@ -31,8 +31,6 @@ CREATE TABLE IF NOT EXISTS `rummydb`.`players` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
 ENGINE = InnoDB;
 
-
-
 -- -----------------------------------------------------
 -- Table `mydb`.`games`
 -- -----------------------------------------------------

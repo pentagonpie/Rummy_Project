@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -20,8 +19,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.EventListener;
 import java.util.List;
-import javafx.event.EventHandler;
-import javafx.stage.WindowEvent;
 
 public class JoinGameController implements GameStartedEventListener {
     private final RMIClient rmiClient;
@@ -53,52 +50,39 @@ public class JoinGameController implements GameStartedEventListener {
     }
 
     @FXML
-    private HBox hboxGame;
-
-    @FXML
     private VBox vboxGames;
 
-    public void deleteGame(Game game){
-
+    public void deleteGame(Game game) {
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
         this.rmiClient.deleteGame(game);
     }
-    
-    
+
     @Override
     public void onGameStarted(Game game) {
         System.out.println("from onGameStarted, game id is " + game.getId());
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                DataManager.setGame(game);
-                FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
-                Stage gameScreenStage = new Stage();
-                gameScreenStage.show();
-                gameScreenStage.setMaximized(true);
-             
-                //Close app after closing window
-                gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    public void handle(WindowEvent we) {
-                    deleteGame(game);
-                    gameScreenStage.close();
-                    //Platform.exit();
-                    //System.exit(0);
-                    }
-                });        
-    
+        Platform.runLater(() -> {
+            DataManager.setGame(game);
+            FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
+            Stage gameScreenStage = new Stage();
+            gameScreenStage.show();
+            gameScreenStage.setMaximized(true);
 
-                try {
-                    gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
-                    Stage primaryStage = (Stage) vboxGames.getScene().getWindow();
-                    primaryStage.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("IOException");
-                    alert.setHeaderText("Exception at create game screen controller");
-                    alert.show();
-                }
+            //Close app after closing window
+            gameScreenStage.setOnCloseRequest(we -> {
+                deleteGame(game);
+                gameScreenStage.close();
+            });
+
+            try {
+                gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
+                Stage primaryStage = (Stage) vboxGames.getScene().getWindow();
+                primaryStage.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("IOException");
+                alert.setHeaderText("Exception at create game screen controller");
+                alert.show();
             }
         });
     }

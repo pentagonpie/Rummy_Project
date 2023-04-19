@@ -17,17 +17,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.EventListener;
-import javafx.event.EventHandler;
+
 import javafx.scene.input.KeyEvent;
-import javafx.stage.WindowEvent;
 
 public class CreateGameController implements GameStartedEventListener {
     private final RMIClient rmiClient;
 
     public CreateGameController() throws NotBoundException, RemoteException {
         this.rmiClient = RMIClient.getInstance();
-        GameEventsManager.register((EventListener) this);
+        GameEventsManager.register(this);
     }
 
     @FXML
@@ -46,13 +44,13 @@ public class CreateGameController implements GameStartedEventListener {
     protected void onCreateNewGameClick() {
         final String playerId = DataManager.getPlayerId();
         final Game createdGame = this.rmiClient.createGame(gameName.getText(), playerId);
-        
-        if(createdGame.getId().equals("-1")){
+
+        if (createdGame.getId().equals("-1")) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
             alert.setHeaderText("Can't create game");
             alert.show();
-            
+
             return;
         }
         String waitingLabel = "Game Name: " + createdGame.getName() + "\n\nWaiting for another player to join...";
@@ -61,59 +59,45 @@ public class CreateGameController implements GameStartedEventListener {
         this.createNewGameContainer.setVisible(false);
         this.lblWaitingText.setVisible(true);
     }
-    
+
     @FXML
     protected void checkIfEnterKey(KeyEvent e) {
-        if(e.getCode().toString().equals("ENTER")){
+        if (e.getCode().toString().equals("ENTER")) {
             onCreateNewGameClick();
         }
-        
-        
     }
-    
-    public void deleteGame(Game game){
+
+    public void deleteGame(Game game) {
 
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
         this.rmiClient.deleteGame(game);
     }
-    
-    //public void closeGameScreen(){
-    //    this.gameScreenStage.close();
-    //}
 
     @Override
     public void onGameStarted(Game game) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                DataManager.setGame(game);
-                FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
-                Stage gameScreenStage = new Stage();
-                gameScreenStage.show();
-                gameScreenStage.setMaximized(true);
-                Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
-                try {
-                    gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
-                    primaryStage.close();
-                    
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("IOException");
-                    alert.setHeaderText("Exception at create game screen controller");
-                    alert.show();
-                }
-                
-                gameScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent we) {
-                    deleteGame(game);
-                    gameScreenStage.close();
-                    //Platform.exit();
-                    //System.exit(0);
-                }
-                });  
+        Platform.runLater(() -> {
+            DataManager.setGame(game);
+            FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
+            Stage gameScreenStage = new Stage();
+            gameScreenStage.show();
+            gameScreenStage.setMaximized(true);
+            Stage primaryStage = (Stage) btnCreateGame.getScene().getWindow();
+            try {
+                gameScreenStage.setScene(new Scene(gameScreenLoader.load()));
+                primaryStage.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("IOException");
+                alert.setHeaderText("Exception at create game screen controller");
+                alert.show();
             }
+
+            gameScreenStage.setOnCloseRequest(we -> {
+                deleteGame(game);
+                gameScreenStage.close();
+            });
         });
     }
 }

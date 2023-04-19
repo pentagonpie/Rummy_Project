@@ -36,24 +36,8 @@ public class GameState implements Serializable {
         return this._deck;
     }
 
-    public void setCards1(ArrayList<Card> cards1) {
-        this._cards1 = cards1;
-    }
-
-    public void setCards2(ArrayList<Card> cards2) {
-        this._cards2 = cards2;
-    }
-
-    public void setDeck(ArrayList<Card> deck) {
-        this._deck = deck;
-    }
-
     public ArrayList<ArrayList<Card>> getBoard() {
         return this._board;
-    }
-
-    public void setBoard(ArrayList<ArrayList<Card>> board) {
-        this._board = board;
     }
 
     public int getTurn() {
@@ -70,10 +54,6 @@ public class GameState implements Serializable {
 
     public ArrayList<Card> getDiscardPile() {
         return this._discardPile;
-    }
-
-    public void setDiscardPile(ArrayList<Card> discardPile) {
-        this._discardPile = discardPile;
     }
 
     public GameMove getLastMove() {

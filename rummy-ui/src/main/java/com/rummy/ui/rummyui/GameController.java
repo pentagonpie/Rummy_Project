@@ -1,6 +1,5 @@
 package com.rummy.ui.rummyui;
 
-
 import com.rummy.shared.*;
 import com.rummy.shared.gameMove.GameMove;
 import com.rummy.shared.gameMove.GameMoveEventType;
@@ -11,7 +10,6 @@ import com.rummy.ui.gameEvents.GameMoveEventListener;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -21,22 +19,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.EventListener;
-
-
-import javafx.event.EventHandler;
-
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-
-
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.stage.WindowEvent;
+import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import java.util.ArrayList;
 
 public class GameController implements GameEndedEventListener, GameMoveEventListener {
     @FXML
@@ -53,7 +42,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     protected Label helpLabel;
-
 
     @FXML
     protected HBox hboxMyCards;
@@ -99,7 +87,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     public GameController() throws NotBoundException, RemoteException {
         this.rmiClient = RMIClient.getInstance();
-        GameEventsManager.register((EventListener) this);
+        GameEventsManager.register(this);
         selectedCards = new ArrayList<>();
     }
 
@@ -176,7 +164,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             this.addImageToHBox(hbox, fileName, true, card, Constants.CARD_IMAGE_LEFT_MARGIN);
         });
     }
-
 
     private void addOpponentCardsToBoard(HBox hbox) {
         getOpponentCards().forEach(card -> {
@@ -290,10 +277,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     //Set labels with names of players for me and opponent
     private void setLabelUser(Label label_name, String user) {
-
         label_name.setText(user);
     }
-
 
     private void setDiscardPile(ArrayList<Card> discardPile) {
         if (discardPile.size() == 0) {
@@ -315,7 +300,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             mainGrid.prefHeightProperty().bind(anchorPane.heightProperty());
             mainGrid.prefWidthProperty().bind(anchorPane.widthProperty());
             Game game = DataManager.getGame();
-            GameState gameState = game.getGameState();
             String creatorName = this.rmiClient.getPlayerName(game.getCreator());
             String secondPlayerName = this.rmiClient.getPlayerName(game.getSecondPlayer());
             boolean isGameCreator = game.getCreator().equals(DataManager.getPlayerId());
@@ -440,7 +424,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             String playerId = DataManager.getPlayerId();
             String gameId = DataManager.getGame().getId();
 
-
             GameMove gameMove = new GameMove(playerId, GameMoveEventType.DRAW_FROM_DISCARD, null, null, gameId);
 
 
@@ -472,7 +455,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 case 8 -> helpLabel.setText("Cards not same suit");
                 case 9 -> helpLabel.setText("Series not raising value");
             }
-
         }
     }
 
@@ -504,7 +486,6 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-
 
             updateHelpLabel(result);
 
@@ -550,37 +531,30 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     public void onBackButtonClick() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+        Platform.runLater(() -> {
+            Game game = DataManager.getGame();
+            FXMLLoader mainScreenLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
+            Stage mainScreenStage = new Stage();
+            mainScreenStage.show();
+            mainScreenStage.setMaximized(true);
+            deleteGame(game);
 
-                Game game = DataManager.getGame();
-                FXMLLoader mainScreenLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
-                Stage mainScreenStage = new Stage();
-                mainScreenStage.show();
-                mainScreenStage.setMaximized(true);
-                deleteGame(game);
+            mainScreenStage.setOnCloseRequest(we -> {
+                Platform.exit();
+                System.exit(0);
+            });
 
-                mainScreenStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent we) {
-                        Platform.exit();
-                        System.exit(0);
-                    }
-                });
+            try {
+                mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
+                Stage primaryStage = (Stage) backButton.getScene().getWindow();
+                primaryStage.close();
 
-                try {
-                    mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
-                    Stage primaryStage = (Stage) backButton.getScene().getWindow();
-                    primaryStage.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("IOException");
-                    alert.setHeaderText("Exception at create game screen controller");
-                    alert.show();
-                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("IOException");
+                alert.setHeaderText("Exception at create game screen controller");
+                alert.show();
             }
         });
     }
@@ -678,6 +652,5 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             DataManager.setGame(game);
             resetAndInitGameUI();
         });
-
     }
 }

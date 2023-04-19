@@ -4,7 +4,6 @@
  */
 package com.rummy.ui.rummyui;
 
-
 import java.io.IOException;
 
 import javafx.application.Platform;
@@ -24,12 +23,6 @@ import javafx.stage.WindowEvent;
  * @author pentagonpie
  */
 public class MainScreenController {
-    
-
-
-    /**
-     * Initializes the controller class.
-     */
     @FXML
     private Button btnLogout;
 
@@ -37,15 +30,13 @@ public class MainScreenController {
     private Button btnNewGame;
 
     @FXML
-    private Label  userNameLabel;
-    
+    private Label userNameLabel;
+
     @FXML
     public void initialize() {
-        
-       
         userNameLabel.setText("User: " + DataManager.getUserName());
     }
-    
+
     @FXML
     protected void onCreateNewGameClick() {
         FXMLLoader createGameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("createGameScreen.fxml"));
@@ -58,7 +49,7 @@ public class MainScreenController {
             newStage.show();
 
             handleCloseProgram(newStage);
-            
+
             Stage primaryStage = (Stage) btnNewGame.getScene().getWindow();
             primaryStage.close();
         } catch (IOException ex) {
@@ -79,9 +70,9 @@ public class MainScreenController {
             newStage.setTitle("Join A Game");
             newStage.setScene(joinGameScene);
             newStage.show();
-            
+
             handleCloseProgram(newStage);
-            
+
             Stage primaryStage = (Stage) btnNewGame.getScene().getWindow();
             primaryStage.close();
         } catch (IOException ex) {
@@ -113,15 +104,13 @@ public class MainScreenController {
             alert.show();
         }
     }
-    
-    protected void handleCloseProgram(Stage newStage){
-        newStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-        public void handle(WindowEvent we) {
+
+    protected void handleCloseProgram(Stage newStage) {
+        newStage.setOnCloseRequest(we -> {
             newStage.close();
             Platform.exit();
             System.exit(0);
-        }
-    });  
+        });
     }
 }
 

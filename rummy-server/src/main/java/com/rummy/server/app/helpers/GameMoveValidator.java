@@ -12,18 +12,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class GameMoveValidator {
-    private static  MoveValidationResult isValidDraw(Game game, GameMove gameMove) {
+    private static MoveValidationResult isValidDraw(Game game, GameMove gameMove) {
         System.out.println("checking if valid draw");
         GameMove lastGameMove = game.getGameState().getLastMove();
         boolean lastMoveDoneByOpponent = !lastGameMove.getPlayerId().equals(gameMove.getPlayerId());
-        //boolean lastMoveWasDiscard = lastGameMove.getGameMoveEventType() == GameMoveEventType.DISCARD;
         GameState state = game.getGameState();
         boolean discardPileEmpty = state.getDiscardPile().isEmpty();
-        
-        if(lastMoveDoneByOpponent && !discardPileEmpty){
-            return new MoveValidationResult(true,0);
-        }else{
-            return new MoveValidationResult(false,2);
+
+        if (lastMoveDoneByOpponent && !discardPileEmpty) {
+            return new MoveValidationResult(true, 0);
+        } else {
+            return new MoveValidationResult(false, 2);
         }
     }
 
@@ -32,14 +31,14 @@ public class GameMoveValidator {
         GameMove lastGameMove = game.getGameState().getLastMove();
         boolean lastMoveDoneByCurrPlayer = lastGameMove.getPlayerId().equals(gameMove.getPlayerId());
         boolean lastMoveWasDiscard = lastGameMove.getGameMoveEventType() == GameMoveEventType.DISCARD;
-        if(lastMoveWasDiscard){
-            return new MoveValidationResult(false,3);
+        if (lastMoveWasDiscard) {
+            return new MoveValidationResult(false, 3);
         }
         if (lastMoveDoneByCurrPlayer && !lastMoveWasDiscard) {
-            return new MoveValidationResult(true,0);
+            return new MoveValidationResult(true, 0);
         }
 
-         return new MoveValidationResult(false,6);
+        return new MoveValidationResult(false, 6);
     }
 
     private static MoveValidationResult areCardsSameValue(ArrayList<Card> cards) {
@@ -50,11 +49,11 @@ public class GameMoveValidator {
             Card currCard = cards.get(i);
 
             if (currCard.getValue() != firstCardValue) {
-                return new MoveValidationResult(false,7);
+                return new MoveValidationResult(false, 7);
             }
         }
 
-        return new MoveValidationResult(true,0);
+        return new MoveValidationResult(true, 0);
     }
 
     private static MoveValidationResult areCardsSameSuit(ArrayList<Card> cards) {
@@ -65,11 +64,11 @@ public class GameMoveValidator {
             Card currCard = cards.get(i);
 
             if (currCard.getSuit() != firstCardSuit) {
-                return new MoveValidationResult(false,8);
+                return new MoveValidationResult(false, 8);
             }
         }
 
-        return new MoveValidationResult(true,0);
+        return new MoveValidationResult(true, 0);
     }
 
     private static void sortCards(ArrayList<Card> cards) {
@@ -78,11 +77,11 @@ public class GameMoveValidator {
 
     private static MoveValidationResult isValidSeries(ArrayList<Card> cards) {
         if (areCardsSameValue(cards).isValid()) {
-            return new MoveValidationResult(true,0);
+            return new MoveValidationResult(true, 0);
         }
 
         if (!areCardsSameSuit(cards).isValid()) {
-            return new MoveValidationResult(false,8);
+            return new MoveValidationResult(false, 8);
         }
 
         sortCards(cards);
@@ -92,11 +91,11 @@ public class GameMoveValidator {
             Card nextCard = cards.get(i + 1);
 
             if (currCard.getValue() != nextCard.getValue() - 1) {
-                return new MoveValidationResult(false,9);
+                return new MoveValidationResult(false, 9);
             }
         }
 
-        return new MoveValidationResult(true,0);
+        return new MoveValidationResult(true, 0);
     }
 
     private static boolean doesSeriesContainCards(ArrayList<Card> series, Card card) {
@@ -116,7 +115,7 @@ public class GameMoveValidator {
         boolean lastMoveWasDiscard = lastGameMove.getGameMoveEventType() == GameMoveEventType.DISCARD;
 
         if (!lastMoveDoneByCurrPlayer || lastMoveWasDiscard) {
-            return new MoveValidationResult(false,4);
+            return new MoveValidationResult(false, 4);
         }
 
         Card destinationCard = gameMove.getDestinationCard();
@@ -134,52 +133,50 @@ public class GameMoveValidator {
                 }
             }
 
-            return new MoveValidationResult(false,4);
+            return new MoveValidationResult(false, 4);
         }
-        if( !isValidSeries(gameMove.getCardsToMove()).isValid() ){
-            return new MoveValidationResult(false,8);
+        if (!isValidSeries(gameMove.getCardsToMove()).isValid()) {
+            return new MoveValidationResult(false, 8);
         }
-        
-        
-        if( gameMove.getCardsToMove().size() >= 3 ){
-            return new MoveValidationResult(true,0);
-        }else{
-            return new MoveValidationResult(false,4);
+
+
+        if (gameMove.getCardsToMove().size() >= 3) {
+            return new MoveValidationResult(true, 0);
+        } else {
+            return new MoveValidationResult(false, 4);
         }
     }
 
     public static MoveValidationResult isValidMove(Game game, GameMove gameMove) {
         System.out.println("checking if valid move");
         if (gameMove == null || game == null || !game.getPlayersIds().contains(gameMove.getPlayerId())) {
-            return new MoveValidationResult(false,1);
-            
+            return new MoveValidationResult(false, 1);
+
         }
 
         GameMoveEventType gameMoveEventType = gameMove.getGameMoveEventType();
 
         if (gameMoveEventType == null) {
-            return new MoveValidationResult(false,1);
-           
+            return new MoveValidationResult(false, 1);
+
         }
 
         boolean isGameCreator = game.getCreator().equals(gameMove.getPlayerId());
         boolean isPlayerTurn = game.getGameState().getTurn() == 0 && isGameCreator || game.getGameState().getTurn() == 1 && !isGameCreator;
 
         if (!isPlayerTurn) {
-            return new MoveValidationResult(false,5);
-            
+            return new MoveValidationResult(false, 5);
+
         }
 
         boolean isFirstGameMove = game.getGameState().getLastMove() == null;
         boolean isDrawMove = gameMoveEventType == GameMoveEventType.DRAW_FROM_DECK || gameMoveEventType == GameMoveEventType.DRAW_FROM_DISCARD;
 
         if (isFirstGameMove && isDrawMove) {
-            return new MoveValidationResult(true,0);
-            
+            return new MoveValidationResult(true, 0);
         }
 
         if (isDrawMove) {
-            
             return isValidDraw(game, gameMove);
         }
 
@@ -189,12 +186,8 @@ public class GameMoveValidator {
 
         if (gameMoveEventType == GameMoveEventType.MELD) {
             return isValidMeld(game, gameMove);
-
-
-            
         }
 
-        return new MoveValidationResult(false,1);
+        return new MoveValidationResult(false, 1);
     }
-
 }
