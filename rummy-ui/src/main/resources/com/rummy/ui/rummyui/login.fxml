@@ -27,7 +27,7 @@
                <Insets top="20.0" />
             </VBox.margin>
          </Label>
-         <TextField fx:id="username" text="nadav">
+         <TextField fx:id="username">
             <VBox.margin>
                <Insets top="5.0" />
             </VBox.margin>
@@ -37,7 +37,7 @@
                <Insets top="10.0" />
             </VBox.margin>
          </Label>
-         <PasswordField fx:id="password" text="123456">
+         <PasswordField fx:id="password">
             <VBox.margin>
                <Insets top="5.0" />
             </VBox.margin>
