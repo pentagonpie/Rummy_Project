@@ -95,8 +95,11 @@ public class CreateGameController implements GameStartedEventListener {
             }
 
             gameScreenStage.setOnCloseRequest(we -> {
+                String userId = DataManager.getPlayerId();
+                this.rmiClient.logout(userId );
                 deleteGame(game);
-                gameScreenStage.close();
+                Platform.exit();
+                System.exit(0);
             });
         });
     }

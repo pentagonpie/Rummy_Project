@@ -5,6 +5,8 @@
 package com.rummy.ui.rummyui;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -23,6 +25,9 @@ import javafx.stage.WindowEvent;
  * @author pentagonpie
  */
 public class MainScreenController {
+    
+    private final RMIClient rmiClient;
+    
     @FXML
     private Button btnLogout;
 
@@ -35,6 +40,10 @@ public class MainScreenController {
     @FXML
     public void initialize() {
         userNameLabel.setText("User: " + DataManager.getUserName());
+    }
+    
+    public MainScreenController() throws NotBoundException, RemoteException {
+        this.rmiClient = RMIClient.getInstance();
     }
 
     @FXML
@@ -97,6 +106,8 @@ public class MainScreenController {
             //Close login window
             Stage primaryStage = (Stage) btnLogout.getScene().getWindow();
             primaryStage.close();
+            String userId = DataManager.getPlayerId();
+            this.rmiClient.logout(userId);
         } catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
@@ -107,7 +118,10 @@ public class MainScreenController {
 
     protected void handleCloseProgram(Stage newStage) {
         newStage.setOnCloseRequest(we -> {
+            String userId = DataManager.getPlayerId();
+            
             newStage.close();
+            this.rmiClient.logout(userId);
             Platform.exit();
             System.exit(0);
         });
