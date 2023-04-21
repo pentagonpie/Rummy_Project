@@ -8,6 +8,10 @@
       <id>Central</id>
       <url>https://repo1.maven.org/maven2</url>
     </repository>
+        <repository>
+        <id>localrepository</id>
+        <url>file://${project.basedir}/lib</url>
+    </repository>
   </repositories>
   <groupId>com.rummy.server.app</groupId>
   <artifactId>rummy-server</artifactId>
@@ -42,12 +46,10 @@
       <version>8.0.31</version>
     </dependency>
     <dependency>
-      <groupId>de.svenkubiak</groupId>
-      <artifactId>jBCrypt</artifactId>
-      <version>0.4.3</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/jBCrypt-0.4.3.jar</systemPath>
-    </dependency>
+    <groupId>org.mindrot</groupId>
+    <artifactId>jbcrypt</artifactId>
+    <version>0.4</version>
+</dependency>
   </dependencies>
 
   <build>
