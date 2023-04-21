@@ -36,6 +36,14 @@ public class RMIClient implements Serializable, RummyClient {
             throw new RuntimeException(e);
         }
     }
+    
+    public void logout(String userId) {
+        try {
+            server.logout(userId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public int createUser(String name, String password) {
         try {
@@ -68,6 +76,18 @@ public class RMIClient implements Serializable, RummyClient {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
         }
+
+    }
+    
+    public boolean checkGameActive(int id){
+        try {
+            return server.checkGameActive( id);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        
 
     }
 
