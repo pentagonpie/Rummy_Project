@@ -32,5 +32,6 @@
             </HBox>
          </children>
       </VBox>
+      <Button fx:id="backButton" layoutX="25.0" layoutY="76.0" mnemonicParsing="false" onAction="#onBackButtonClick" text="Back" />
    </children>
 </AnchorPane>
