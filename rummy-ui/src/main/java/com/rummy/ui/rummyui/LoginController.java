@@ -39,6 +39,7 @@ public class LoginController {
         newStage.show();
 
         newStage.setOnCloseRequest(we -> {
+            
             Platform.exit();
             System.exit(0);
         });
@@ -68,6 +69,16 @@ public class LoginController {
         final String userId = this.rmiClient.login(username, password);
 
         boolean isLoggedIn = userId != null;
+        
+        if(userId.equals("loggedInAlready")){
+                                
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Login Failed");
+            alert.setHeaderText("User logged in already");
+            alert.show();
+            return;
+        }
+
 
         if (isLoggedIn) {
 
@@ -84,6 +95,7 @@ public class LoginController {
                 newStage.show();
 
                 newStage.setOnCloseRequest(we -> {
+                    this.rmiClient.logout(userId);
                     Platform.exit();
                     System.exit(0);
                 });
