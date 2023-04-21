@@ -604,6 +604,44 @@ public class Database {
         }
         return 1;
     }
+    
+     //0 - not started yet
+    //1 - now playing
+    //2 - finished, can look at winner
+    public static int getGameActive(int id) {
+        Connection connection = null;
+        ResultSet resultSet = null;
+
+        int result = -1;
+        try {
+
+            String selectString =
+                    "SELECT * FROM games where id = ?";
+
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);
+            PreparedStatement selectGame = connection.prepareStatement(selectString);
+
+            selectGame.setInt(1, id);
+            resultSet = selectGame.executeQuery();
+            while (resultSet.next()) {
+                result = resultSet.getInt("active");
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+
+                if (connection != null) connection.close();
+            } catch (SQLException ex) {
+            }
+        }
+
+        return result;
+    }
+    
 
     public static int[] getGamePlayers(int id) {
         Connection connection = null;
