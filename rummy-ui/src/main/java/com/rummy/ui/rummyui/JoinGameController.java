@@ -32,6 +32,10 @@ public class JoinGameController implements GameStartedEventListener {
     public void initialize() {
         List<Game> games = this.rmiClient.getGames();
         for (Game game : games) {
+            
+            if(this.rmiClient.checkGameActive(Integer.parseInt(  game.getId()))){
+                continue;
+            }
             HBox gameHBox = new HBox();
             Label gameNameLabel = new Label(game.getName());
 
@@ -69,8 +73,11 @@ public class JoinGameController implements GameStartedEventListener {
 
             //Close app after closing window
             gameScreenStage.setOnCloseRequest(we -> {
+                String userId = DataManager.getPlayerId();
+                this.rmiClient.logout(userId);
                 deleteGame(game);
-                gameScreenStage.close();
+                Platform.exit();
+                System.exit(0);
             });
 
             try {
