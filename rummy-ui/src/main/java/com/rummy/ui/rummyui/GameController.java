@@ -183,7 +183,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     }
 
     private void addCardsToBoard(ArrayList<ArrayList<Card>> listSeries) {
-        System.out.println("addCardsToBoard");
+        //System.out.println("addCardsToBoard");
         final int MAX_CARDS_PER_HBOX = 20;
 
 
@@ -217,7 +217,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                 myTurn = true;
             }
         }
-        System.out.println("creator: " + isGameCreator + " myTurn " + myTurn);
+        //System.out.println("creator: " + isGameCreator + " myTurn " + myTurn);
         return myTurn;
     }
 
@@ -238,7 +238,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     //Create box around my cards when it is my turn to emphesize it visually
     public void setMyBorder() {
-        System.out.println("setMyBorder");
+        //System.out.println("setMyBorder");
         hboxMyCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;" + "-fx-border-color: blue;");
@@ -337,6 +337,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         mainScreenStage.setMaximized(true);
 
         mainScreenStage.setOnCloseRequest(we -> {
+            String userId = DataManager.getPlayerId();
+            this.rmiClient.logout(userId);
             Platform.exit();
             System.exit(0);
         });
@@ -531,32 +533,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     @FXML
     public void onBackButtonClick() {
-        Platform.runLater(() -> {
-            Game game = DataManager.getGame();
-            FXMLLoader mainScreenLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
-            Stage mainScreenStage = new Stage();
-            mainScreenStage.show();
-            mainScreenStage.setMaximized(true);
-            deleteGame(game);
-
-            mainScreenStage.setOnCloseRequest(we -> {
-                Platform.exit();
-                System.exit(0);
-            });
-
-            try {
-                mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
-                Stage primaryStage = (Stage) backButton.getScene().getWindow();
-                primaryStage.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("IOException");
-                alert.setHeaderText("Exception at create game screen controller");
-                alert.show();
-            }
-        });
+        Game game = DataManager.getGame();
+        deleteGame(game);
     }
 
     private ArrayList<Card> getMyCards() {
