@@ -20,6 +20,8 @@ public interface RummyServer extends Remote {
     void exitGame(String gameName, String playerId) throws RemoteException;
 
     void deleteGame(Game game) throws RemoteException;
+    
+    boolean checkGameActive(int id) throws RemoteException;
 
     ArrayList<Game> getGames() throws RemoteException;
 

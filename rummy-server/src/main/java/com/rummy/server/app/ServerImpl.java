@@ -47,9 +47,14 @@ public class ServerImpl implements RummyServer {
         }
 
         userId = Integer.toString(id);
+        if(Database.getPlayerOnline(Integer.parseInt(userId))==1){
+            return "loggedInAlready";
+            
+        }
 
         if (Database.checkPassword(username, password)) {
             this._connectedPlayers.put(userId, new Player(userId, username, client));
+            Database.setPlayerOnline(Integer.parseInt(userId), 1);
             return userId;
         }
         return null;
@@ -57,6 +62,8 @@ public class ServerImpl implements RummyServer {
 
     @Override
     public void logout(String userId) throws RemoteException {
+        this._connectedPlayers.remove(userId);
+        Database.setPlayerOnline(Integer.parseInt(userId), 0);
     }
 
     private ArrayList<Card> shuffle(ArrayList<Card> cards) {
@@ -69,6 +76,14 @@ public class ServerImpl implements RummyServer {
         }
 
         return cards;
+    }
+    
+    @Override
+    public boolean checkGameActive(int id) throws RemoteException{
+        if(Database.getGameActive(id)==1){
+            return true;
+        }
+        return false;
     }
 
     private ArrayList<Card> generateDeck() {
@@ -129,9 +144,16 @@ public class ServerImpl implements RummyServer {
             return;
         }
 
+        
+        int gameID = Database.getGameID(gameName);
+        if(Database.getGameActive(gameID) != 0){
+            return;
+            
+        }
         game.addPlayer(player.getUserId());
-        System.out.println("adding player to game from joinGame");
-        Database.addPlayerGame(Integer.parseInt(playerId), Database.getGameID(gameName));
+        
+        Database.addPlayerGame(Integer.parseInt(playerId), gameID);
+        Database.setGameActive(gameID, 1);
 
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);
