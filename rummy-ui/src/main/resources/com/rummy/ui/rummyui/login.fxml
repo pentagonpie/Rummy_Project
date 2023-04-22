@@ -42,12 +42,12 @@
                <Insets top="5.0" />
             </VBox.margin>
          </PasswordField>
-         <Button fx:id="btnLogin" defaultButton="true" mnemonicParsing="false" onAction="#onLoginClick" prefHeight="26.0" prefWidth="93.0" text="Login">
+         <Button fx:id="btnLogin" defaultButton="true" mnemonicParsing="false" onMouseClicked="#onLoginClick" prefHeight="26.0" prefWidth="93.0" text="Login">
             <VBox.margin>
                <Insets top="30.0" />
             </VBox.margin>
          </Button>
-         <Button fx:id="btnCreateUser" defaultButton="true" mnemonicParsing="false" onAction="#onCreateUserClick" prefHeight="26.0" prefWidth="93.0" text="create user" />
+         <Button fx:id="btnCreateUser" defaultButton="true" mnemonicParsing="false" onMouseClicked="#onCreateUserClick" prefHeight="26.0" prefWidth="93.0" text="create user" />
       </children>
    </VBox>
 </VBox>
