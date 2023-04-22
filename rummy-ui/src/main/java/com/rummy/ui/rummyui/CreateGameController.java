@@ -39,6 +39,9 @@ public class CreateGameController implements GameStartedEventListener {
 
     @FXML
     protected Label lblWaitingText;
+    
+    @FXML
+    private Button backButton;
 
 
     
@@ -65,6 +68,39 @@ public class CreateGameController implements GameStartedEventListener {
         this.createNewGameContainer.setVisible(false);
         this.lblWaitingText.setVisible(true);
     }
+    
+    
+    @FXML
+    public void onBackButtonClick() {
+        try {
+        //Open main window
+        FXMLLoader fxmlLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
+
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(fxmlLoader.load()));
+        newStage.setTitle("Welcome to Rummy!");
+        newStage.show();
+        String userId = DataManager.getPlayerId();
+        newStage.setOnCloseRequest(we -> {
+            this.rmiClient.logout(userId);
+            Platform.exit();
+            System.exit(0);
+        });
+
+        //Close login window
+        Stage primaryStage = (Stage) backButton.getScene().getWindow();
+        primaryStage.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("IOException");
+            alert.setHeaderText("Exception at create game screen controller");
+            alert.show();
+        }
+
+    }
+    
 
     @FXML
     protected void checkIfEnterKey(KeyEvent e) {
