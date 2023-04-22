@@ -10,12 +10,12 @@
 
 <AnchorPane minHeight="300.0" minWidth="600.0" prefHeight="631.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rummy.ui.rummyui.JoinGameController">
    <children>
-      <Label layoutX="236.0" layoutY="41.0" text="Join A Game">
+      <Label layoutX="236.0" layoutY="41.0" text="Join a Game">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <VBox fx:id="vboxGames" layoutX="192.0" layoutY="113.0" prefHeight="482.0" prefWidth="217.0" spacing="15.0">
+      <VBox fx:id="vboxGames" layoutX="185.0" layoutY="114.0" prefHeight="482.0" prefWidth="257.0" spacing="15.0">
          <children>
             <HBox fx:id="hboxGame" prefHeight="57.0" prefWidth="217.0" style="-fx-background-color: #d9edfc;" visible="false">
                <children>

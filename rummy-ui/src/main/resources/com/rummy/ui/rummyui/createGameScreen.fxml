@@ -10,9 +10,9 @@
 
 <AnchorPane minHeight="300.0" minWidth="600.0" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rummy.ui.rummyui.CreateGameController">
    <children>
-      <VBox fx:id="createNewGameContainer" layoutX="195.0" layoutY="65.0" prefHeight="165.0" prefWidth="210.0">
+      <VBox fx:id="createNewGameContainer" layoutX="195.0" layoutY="65.0" prefHeight="178.0" prefWidth="298.0">
          <children>
-            <Label text="Create a new game">
+            <Label prefHeight="38.0" prefWidth="306.0" text="Create a new game">
                <font>
                   <Font size="26.0" />
                </font>
@@ -22,7 +22,7 @@
                   <Insets top="30.0" />
                </VBox.margin>
             </Label>
-            <TextField fx:id="gameName" onKeyPressed="#checkIfEnterKey">
+            <TextField fx:id="gameName" onKeyPressed="#checkIfEnterKey" prefHeight="26.0" prefWidth="221.0">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
@@ -39,5 +39,6 @@
             <Font size="18.0" />
          </font>
       </Label>
+      <Button fx:id="backButton" layoutX="34.0" layoutY="26.0" mnemonicParsing="false" onAction="#onBackButtonClick" text="back" />
    </children>
 </AnchorPane>

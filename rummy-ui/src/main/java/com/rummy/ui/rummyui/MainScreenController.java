@@ -104,6 +104,7 @@ public class MainScreenController {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
             alert.setHeaderText("Exception at main screen controller");
+            System.out.println(ex.getMessage());
             alert.show();
         }
     }

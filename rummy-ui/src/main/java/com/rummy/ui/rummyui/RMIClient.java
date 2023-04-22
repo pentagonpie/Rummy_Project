@@ -47,7 +47,7 @@ public class RMIClient implements Serializable, RummyClient {
 
     public int createUser(String name, String password) {
         try {
-            System.out.println("hello inside RMIclientt, createUser " + name + ", " + password);
+            //System.out.println("hello inside RMIclientt, createUser " + name + ", " + password);
 
             return server.createUser(name, password);
         } catch (RemoteException e) {

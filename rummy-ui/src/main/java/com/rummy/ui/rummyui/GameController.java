@@ -528,7 +528,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
     public void deleteGame(Game game) {
 
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
-        this.rmiClient.deleteGame(game);
+        this.rmiClient.deleteGame(game.getId());
     }
 
     @FXML
