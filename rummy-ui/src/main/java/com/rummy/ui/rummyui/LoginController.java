@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -61,6 +62,13 @@ public class LoginController {
             alert.show();
         }
     }
+    
+    @FXML
+    protected void checkIfEnterKey(KeyEvent e) {
+        if (e.getCode().toString().equals("ENTER")) {
+            onLoginClick();
+        }
+    }
 
     @FXML
     protected void onLoginClick() {
@@ -70,17 +78,18 @@ public class LoginController {
 
         boolean isLoggedIn = userId != null;
         
-        if(userId.equals("loggedInAlready")){
-                                
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Login Failed");
-            alert.setHeaderText("User logged in already");
-            alert.show();
-            return;
-        }
+
 
 
         if (isLoggedIn) {
+            
+            if(userId.equals("loggedInAlready")){                       
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Login Failed");
+                alert.setHeaderText("User logged in already");
+                alert.show();
+                return;
+            }
 
             DataManager.setUserName(username);
             DataManager.setPlayerId(userId);
