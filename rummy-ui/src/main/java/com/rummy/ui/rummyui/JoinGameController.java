@@ -109,8 +109,9 @@ public class JoinGameController implements GameStartedEventListener {
             //Close app after closing window
             gameScreenStage.setOnCloseRequest(we -> {
                 String userId = DataManager.getPlayerId();
-                this.rmiClient.logout(userId);
+                
                 deleteGame(game);
+                this.rmiClient.logout(userId);
                 Platform.exit();
                 System.exit(0);
             });
