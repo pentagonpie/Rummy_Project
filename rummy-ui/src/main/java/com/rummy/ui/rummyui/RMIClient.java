@@ -28,6 +28,14 @@ public class RMIClient implements Serializable, RummyClient {
         }
         return rmiClient;
     }
+    
+    public int getScore(String userId) {
+        try {
+            return server.getScore(userId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public String login(String username, String password) {
         try {

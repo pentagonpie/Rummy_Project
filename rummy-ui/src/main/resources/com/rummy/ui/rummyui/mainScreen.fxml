@@ -11,15 +11,16 @@
       <AnchorPane id="AnchorPane" prefHeight="410.0" prefWidth="610.0">
          <children>
             <ButtonBar layoutX="232.0" layoutY="353.0" prefHeight="40.0" prefWidth="200.0" />
-            <Button fx:id="btnNewGame" layoutX="263.0" layoutY="119.0" mnemonicParsing="false" onAction="#onCreateNewGameClick" text="New Game" />
+            <Button fx:id="btnNewGame" layoutX="263.0" layoutY="192.0" mnemonicParsing="false" onAction="#onCreateNewGameClick" text="New Game" />
             <Label layoutX="183.0" layoutY="32.0" text="Main Screen">
                <font>
                   <Font size="43.0" />
                </font>
             </Label>
-            <Button layoutX="237.0" layoutY="161.0" mnemonicParsing="false" onAction="#onJoinGameClick" text="Join existing game" />
+            <Button layoutX="243.0" layoutY="242.0" mnemonicParsing="false" onAction="#onJoinGameClick" text="Join existing game" />
             <Button fx:id="btnLogout" layoutX="29.0" layoutY="340.0" mnemonicParsing="false" onAction="#onLogoutClick" text="Logout" />
             <Label fx:id="userNameLabel" layoutX="286.0" layoutY="96.0" text="Label" />
+            <Label fx:id="scoreLabel" layoutX="287.0" layoutY="124.0" text="Label" />
          </children>
       </AnchorPane>
    </children>

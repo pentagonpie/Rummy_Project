@@ -37,10 +37,14 @@ public class MainScreenController {
 
     @FXML
     private Label userNameLabel;
+    
+    @FXML
+    private Label scoreLabel;
 
     @FXML
     public void initialize() {
-        userNameLabel.setText("User: " + DataManager.getUserName());
+        userNameLabel.setText("User: " + DataManager.getUserName() );
+        scoreLabel.setText(" Score: " + this.rmiClient.getScore(DataManager.getPlayerId()));
     }
     
     public MainScreenController() throws NotBoundException, RemoteException {

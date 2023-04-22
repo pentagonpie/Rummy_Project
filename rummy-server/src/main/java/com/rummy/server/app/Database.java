@@ -397,7 +397,7 @@ public class Database {
             updatePlayer.setInt(1, online);
             updatePlayer.setInt(2, id);
             updatePlayer.executeUpdate();
-            System.out.println("updated online");
+            //System.out.println("updated online");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return -1;

@@ -33,6 +33,11 @@ public class ServerImpl implements RummyServer {
         return result;
     }
 
+    public int getScore(String userId) throws RemoteException{
+        return Database.getPlayerScore( Integer.parseInt(userId));
+        
+    }
+    
     //returns user id if login is correct
     @Override
     public String login(String username, String password, RummyClient client) throws RemoteException {
@@ -40,7 +45,7 @@ public class ServerImpl implements RummyServer {
         String userId;
 
         int id = Database.getID(username);
-        System.out.println("user id is " + id);
+        //System.out.println("user id is " + id);
         //no such user
         if (id == -1) {
             return null;
