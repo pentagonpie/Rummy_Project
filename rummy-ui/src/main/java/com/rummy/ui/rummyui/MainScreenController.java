@@ -4,6 +4,7 @@
  */
 package com.rummy.ui.rummyui;
 
+import com.rummy.shared.Game;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -56,8 +57,22 @@ public class MainScreenController {
             newStage.setTitle("Create new game");
             newStage.setScene(createGameScene);
             newStage.show();
-
-            handleCloseProgram(newStage);
+            
+            
+        
+            newStage.setOnCloseRequest(we -> {
+                String userId = DataManager.getPlayerId();
+                Game game = DataManager.getGame();
+                System.out.println("in closing join game window");
+                
+                if(game != null){
+                    System.out.println("deleting game");
+                    this.rmiClient.deleteGame(game.getId());
+                }
+                this.rmiClient.logout(userId);
+                Platform.exit();
+                System.exit(0);
+            });
 
             Stage primaryStage = (Stage) btnNewGame.getScene().getWindow();
             primaryStage.close();
@@ -65,6 +80,7 @@ public class MainScreenController {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
             alert.setHeaderText("Exception at main screen controller");
+            System.out.println(ex.getMessage());
             alert.show();
         }
     }

@@ -40,11 +40,14 @@ public class CreateGameController implements GameStartedEventListener {
     @FXML
     protected Label lblWaitingText;
 
+
+    
     @FXML
     protected void onCreateNewGameClick() {
         final String playerId = DataManager.getPlayerId();
         final Game createdGame = this.rmiClient.createGame(gameName.getText(), playerId);
 
+        //Cannot create game, show error
         if (createdGame.getId().equals("-1")) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
@@ -53,8 +56,11 @@ public class CreateGameController implements GameStartedEventListener {
 
             return;
         }
+        
+        DataManager.setGame(createdGame);
+        
+        //Waiting for other user to join
         String waitingLabel = "Game Name: " + createdGame.getName() + "\n\nWaiting for another player to join...";
-
         this.lblWaitingText.setText(waitingLabel);
         this.createNewGameContainer.setVisible(false);
         this.lblWaitingText.setVisible(true);
@@ -70,7 +76,7 @@ public class CreateGameController implements GameStartedEventListener {
     public void deleteGame(Game game) {
 
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
-        this.rmiClient.deleteGame(game);
+        this.rmiClient.deleteGame(game.getId());
     }
 
     @Override
@@ -95,6 +101,7 @@ public class CreateGameController implements GameStartedEventListener {
             }
 
             gameScreenStage.setOnCloseRequest(we -> {
+                System.out.println("closing game from create game");
                 String userId = DataManager.getPlayerId();
                 this.rmiClient.logout(userId );
                 deleteGame(game);
