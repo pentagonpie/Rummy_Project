@@ -91,9 +91,9 @@ public class RMIClient implements Serializable, RummyClient {
 
     }
 
-    public void deleteGame(Game game) {
+    public void deleteGame(String gameID) {
         try {
-            server.deleteGame(game);
+            server.deleteGame(gameID);
         } catch (RemoteException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);

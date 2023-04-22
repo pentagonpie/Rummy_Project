@@ -240,8 +240,8 @@ public class ServerImpl implements RummyServer {
     }
 
     @Override
-    public void deleteGame(Game game) throws RemoteException {
-        Database.deleteGame(Integer.parseInt(game.getId()));
-        this._games.remove(game.getId());
+    public void deleteGame(String gameID) throws RemoteException {
+        Database.deleteGame(Integer.parseInt(gameID));
+        this._games.remove(gameID);
     }
 }
