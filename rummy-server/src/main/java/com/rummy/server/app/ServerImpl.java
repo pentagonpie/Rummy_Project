@@ -117,8 +117,7 @@ public class ServerImpl implements RummyServer {
             }
         }
 
-        //return shuffle(deck);
-        return deck;
+        return shuffle(deck);
     }
 
     @Override

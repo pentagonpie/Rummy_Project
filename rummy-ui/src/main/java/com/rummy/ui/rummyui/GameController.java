@@ -109,10 +109,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     private void addImageToHBox(HBox hbox, String imageFileName, boolean mine, Card card, double leftMargin) {
         StackPane stackPane = new StackPane();
-//        String backImageUrl = this.imgDeck.getImage().getUrl();
-//        String imageUrl = backImageUrl.replace("back", imageFileName.toLowerCase());
         Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName.toLowerCase() + ".png"));
-//        Image image = new Image(imageUrl);
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Constants.CARD_IMAGE_HEIGHT);
         imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
