@@ -41,9 +41,10 @@ public class JoinGameController implements GameStartedEventListener {
                 continue;
             }
             HBox gameHBox = new HBox();
-            Label gameNameLabel = new Label(game.getName());
+            Label gameNameLabel = new Label("Game name: " + game.getName() + "   ");
+            gameNameLabel.setFont(new javafx.scene.text.Font(20));
 
-            Button joinGameButton = new Button("Join Game");
+            Button joinGameButton = new Button("Join");
             joinGameButton.setOnAction(event -> {
                 try {
                     this.rmiClient.joinGame(game.getName(), DataManager.getPlayerId());
