@@ -76,7 +76,7 @@ public class RMIClient implements Serializable, RummyClient {
 
     public Game createGame(String name, String creatorUserName) {
         try {
-            System.out.println("hello inside RMIclientt," + name + ", " + creatorUserName);
+            //System.out.println("hello inside RMIclientt," + name + ", " + creatorUserName);
 
             return server.createNewGame(name, creatorUserName);
         } catch (RemoteException e) {

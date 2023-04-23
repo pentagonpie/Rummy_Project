@@ -29,6 +29,7 @@ public class JoinGameController implements GameStartedEventListener {
     public JoinGameController() throws NotBoundException, IOException {
         this.rmiClient = RMIClient.getInstance();
         GameEventsManager.register((EventListener) this);
+        
     }
 
     @FXML
@@ -98,7 +99,7 @@ public class JoinGameController implements GameStartedEventListener {
 
     @Override
     public void onGameStarted(Game game) {
-        System.out.println("from onGameStarted, game id is " + game.getId());
+        //System.out.println("from onGameStarted, game id is " + game.getId());
         Platform.runLater(() -> {
             DataManager.setGame(game);
             FXMLLoader gameScreenLoader = new FXMLLoader(RummyApplication.class.getResource("gameScreen.fxml"));
