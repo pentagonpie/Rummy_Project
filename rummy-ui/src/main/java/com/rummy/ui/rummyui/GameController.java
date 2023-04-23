@@ -342,6 +342,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             Platform.exit();
             System.exit(0);
         });
+        
+        deleteGame(DataManager.getGame());
 
         try {
             mainScreenStage.setScene(new Scene(mainScreenLoader.load()));
@@ -354,6 +356,12 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
             alert.setHeaderText("Exception at game screen controller");
             alert.show();
         }
+    }
+    
+    private void increaseScore(){
+        String userId = DataManager.getPlayerId();
+        int score = this.rmiClient.getScore(userId);
+        this.rmiClient.setScore(userId,score+1);
     }
 
     @Override
@@ -378,6 +386,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
                     alert.setTitle("Game ended, You won!");
                     alert.setHeaderText("Game ended, You won!");
                     alert.showAndWait();
+                    increaseScore();
                 } else {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("Game ended, You lost! :(");

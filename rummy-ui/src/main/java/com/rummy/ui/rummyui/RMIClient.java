@@ -36,6 +36,15 @@ public class RMIClient implements Serializable, RummyClient {
             throw new RuntimeException(e);
         }
     }
+    
+    public void setScore(String userId, int score) {
+        try {
+            server.setScore(userId, score);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
 
     public String login(String username, String password) {
         try {
