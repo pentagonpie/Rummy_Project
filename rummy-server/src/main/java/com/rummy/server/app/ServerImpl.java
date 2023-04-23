@@ -124,22 +124,21 @@ public class ServerImpl implements RummyServer {
     @Override
     public Game createNewGame(String gameName, String playerId) throws RemoteException {
         Player creator = this._connectedPlayers.get(playerId);
-        System.out.println("hello createNewGame1");
+        
         if (creator == null) {
             return null;
         }
 
         final int CARDS_PER_PLAYER = 14;
 
-        System.out.println("playerID from createnewgame: " + playerId);
-        System.out.println("hello createNewGame2");
+
 
         if (this.mydb.createGame(Integer.parseInt(playerId), gameName) == -1) {
             System.out.println("Error creating game");
             return new Game(gameName, creator.getUserId(), "-1");
         }
         int gameID = this.mydb.getGameID(gameName);
-        System.out.println("in createnewgame getting from database gameid " + gameID);
+        //System.out.println("in createnewgame getting from database gameid " + gameID);
 
         ArrayList<Card> deck = generateDeck();
         ArrayList<Card> player1Cards = new ArrayList<>(deck.subList(0, CARDS_PER_PLAYER));
@@ -178,8 +177,9 @@ public class ServerImpl implements RummyServer {
         
         this.mydb.addPlayerGame(Integer.parseInt(playerId), gameID);
         this.mydb.setGameActive(gameID, 1);
-
+        System.out.println(" players to notify "+ game.getPlayersIds());
         game.getPlayersIds().forEach(_playerId -> {
+            
             Player playerToNotify = this._connectedPlayers.get(_playerId);
             try {
                 playerToNotify.getClient().handleGameStart(game);
@@ -187,6 +187,8 @@ public class ServerImpl implements RummyServer {
                 throw new RuntimeException(e);
             }
         });
+        
+        System.out.println("end");
     }
 
     @Override
