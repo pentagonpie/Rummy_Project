@@ -290,7 +290,7 @@ public class Database{
             uprs.insertRow();
             uprs.beforeFirst();
 
-            System.out.println("Updated table players...");
+            
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -528,7 +528,7 @@ public class Database{
             uprs.insertRow();
             uprs.beforeFirst();
 
-            System.out.println("Updated table games...");
+            
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -584,7 +584,7 @@ public class Database{
             updatePlayer.setInt(1, playerID);
             updatePlayer.setInt(2, gameID);
             updatePlayer.executeUpdate();
-            System.out.println("updated game");
+            
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return -1;
@@ -613,7 +613,7 @@ public class Database{
             updatePlayer.setInt(1, active);
             updatePlayer.setInt(2, id);
             updatePlayer.executeUpdate();
-            System.out.println("updated game");
+            
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return -1;
@@ -792,7 +792,7 @@ public class Database{
             updatePlayer.setInt(1, playerID);
             updatePlayer.setInt(2, gameID);
             updatePlayer.executeUpdate();
-            System.out.println("updated game winner");
+            
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return -1;

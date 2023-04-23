@@ -264,7 +264,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     //Create box around opponent cards when it is my turn to emphesize it visually
     public void setBorderOpponent() {
-        System.out.println("setBorderOpponent");
+        //System.out.println("setBorderOpponent");
         hboxMyCards.setStyle("-fx-padding: 10;" + "-fx-border-style: solid inside;"
                 + "-fx-border-width: 2;" + "-fx-border-insets: 5;"
                 + "-fx-border-radius: 5;" + "-fx-border-color: green;");
