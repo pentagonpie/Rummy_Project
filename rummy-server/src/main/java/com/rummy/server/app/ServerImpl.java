@@ -14,11 +14,24 @@ import java.rmi.server.UnicastRemoteObject;
 public class ServerImpl implements RummyServer {
     private final Map<String, Game> _games;
     private final Map<String, Player> _connectedPlayers;
+    private Database mydb;
 
     public ServerImpl() throws RemoteException {
         UnicastRemoteObject.exportObject(this, 0);
         this._games = new HashMap<>();
         this._connectedPlayers = new HashMap<>();
+        
+        
+        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+        System.out.println("url:");
+        String url = myObj.nextLine();  
+        
+        System.out.println("user:");
+        String user = myObj.nextLine();  
+        
+        System.out.println("password:");
+        String password = myObj.nextLine();  
+        this.mydb = new Database( url,  user,  password);
     }
 
     @Override
@@ -28,13 +41,18 @@ public class ServerImpl implements RummyServer {
 
     @Override
     public int createUser(String name, String password) throws RemoteException {
-        int result = Database.createPlayer(name, password);
+        int result = this.mydb.createPlayer(name, password);
 
         return result;
     }
 
     public int getScore(String userId) throws RemoteException{
-        return Database.getPlayerScore( Integer.parseInt(userId));
+        return this.mydb.getPlayerScore( Integer.parseInt(userId));
+        
+    }
+    
+    public void setScore(String userId, int newScore) throws RemoteException{
+         this.mydb.setPlayerScore( Integer.parseInt(userId),newScore);
         
     }
     
@@ -44,7 +62,7 @@ public class ServerImpl implements RummyServer {
 
         String userId;
 
-        int id = Database.getID(username);
+        int id = this.mydb.getID(username);
         //System.out.println("user id is " + id);
         //no such user
         if (id == -1) {
@@ -52,14 +70,14 @@ public class ServerImpl implements RummyServer {
         }
 
         userId = Integer.toString(id);
-        if(Database.getPlayerOnline(Integer.parseInt(userId))==1){
+        if(this.mydb.getPlayerOnline(Integer.parseInt(userId))==1){
             return "loggedInAlready";
             
         }
 
-        if (Database.checkPassword(username, password)) {
+        if (this.mydb.checkPassword(username, password)) {
             this._connectedPlayers.put(userId, new Player(userId, username, client));
-            Database.setPlayerOnline(Integer.parseInt(userId), 1);
+            this.mydb.setPlayerOnline(Integer.parseInt(userId), 1);
             return userId;
         }
         return null;
@@ -68,7 +86,7 @@ public class ServerImpl implements RummyServer {
     @Override
     public void logout(String userId) throws RemoteException {
         this._connectedPlayers.remove(userId);
-        Database.setPlayerOnline(Integer.parseInt(userId), 0);
+        this.mydb.setPlayerOnline(Integer.parseInt(userId), 0);
     }
 
     private ArrayList<Card> shuffle(ArrayList<Card> cards) {
@@ -85,7 +103,7 @@ public class ServerImpl implements RummyServer {
     
     @Override
     public boolean checkGameActive(int id) throws RemoteException{
-        if(Database.getGameActive(id)==1){
+        if(this.mydb.getGameActive(id)==1){
             return true;
         }
         return false;
@@ -99,7 +117,8 @@ public class ServerImpl implements RummyServer {
             }
         }
 
-        return shuffle(deck);
+        //return shuffle(deck);
+        return deck;
     }
 
     @Override
@@ -115,11 +134,11 @@ public class ServerImpl implements RummyServer {
         System.out.println("playerID from createnewgame: " + playerId);
         System.out.println("hello createNewGame2");
 
-        if (Database.createGame(Integer.parseInt(playerId), gameName) == -1) {
+        if (this.mydb.createGame(Integer.parseInt(playerId), gameName) == -1) {
             System.out.println("Error creating game");
             return new Game(gameName, creator.getUserId(), "-1");
         }
-        int gameID = Database.getGameID(gameName);
+        int gameID = this.mydb.getGameID(gameName);
         System.out.println("in createnewgame getting from database gameid " + gameID);
 
         ArrayList<Card> deck = generateDeck();
@@ -150,15 +169,15 @@ public class ServerImpl implements RummyServer {
         }
 
         
-        int gameID = Database.getGameID(gameName);
-        if(Database.getGameActive(gameID) != 0){
+        int gameID = this.mydb.getGameID(gameName);
+        if(this.mydb.getGameActive(gameID) != 0){
             return;
             
         }
         game.addPlayer(player.getUserId());
         
-        Database.addPlayerGame(Integer.parseInt(playerId), gameID);
-        Database.setGameActive(gameID, 1);
+        this.mydb.addPlayerGame(Integer.parseInt(playerId), gameID);
+        this.mydb.setGameActive(gameID, 1);
 
         game.getPlayersIds().forEach(_playerId -> {
             Player playerToNotify = this._connectedPlayers.get(_playerId);
@@ -246,7 +265,7 @@ public class ServerImpl implements RummyServer {
 
     @Override
     public void deleteGame(String gameID) throws RemoteException {
-        Database.deleteGame(Integer.parseInt(gameID));
+        this.mydb.deleteGame(Integer.parseInt(gameID));
         this._games.remove(gameID);
     }
 }

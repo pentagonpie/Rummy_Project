@@ -24,6 +24,8 @@ public interface RummyServer extends Remote {
     boolean checkGameActive(int id) throws RemoteException;
     
     public int getScore(String userId) throws RemoteException;
+    
+    public void setScore(String userId, int newScore) throws RemoteException;
 
     ArrayList<Game> getGames() throws RemoteException;
 
