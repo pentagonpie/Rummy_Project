@@ -39,12 +39,18 @@ public class CreateGameController implements GameStartedEventListener {
 
     @FXML
     protected Label lblWaitingText;
+    
+    @FXML
+    private Button backButton;
 
+
+    
     @FXML
     protected void onCreateNewGameClick() {
         final String playerId = DataManager.getPlayerId();
         final Game createdGame = this.rmiClient.createGame(gameName.getText(), playerId);
 
+        //Cannot create game, show error
         if (createdGame.getId().equals("-1")) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
@@ -53,12 +59,48 @@ public class CreateGameController implements GameStartedEventListener {
 
             return;
         }
+        
+        DataManager.setGame(createdGame);
+        
+        //Waiting for other user to join
         String waitingLabel = "Game Name: " + createdGame.getName() + "\n\nWaiting for another player to join...";
-
         this.lblWaitingText.setText(waitingLabel);
         this.createNewGameContainer.setVisible(false);
         this.lblWaitingText.setVisible(true);
     }
+    
+    
+    @FXML
+    public void onBackButtonClick() {
+        try {
+        //Open main window
+        FXMLLoader fxmlLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
+
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(fxmlLoader.load()));
+        newStage.setTitle("Welcome to Rummy!");
+        newStage.show();
+        String userId = DataManager.getPlayerId();
+        newStage.setOnCloseRequest(we -> {
+            this.rmiClient.logout(userId);
+            Platform.exit();
+            System.exit(0);
+        });
+
+        //Close login window
+        Stage primaryStage = (Stage) backButton.getScene().getWindow();
+        primaryStage.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("IOException");
+            alert.setHeaderText("Exception at create game screen controller");
+            alert.show();
+        }
+
+    }
+    
 
     @FXML
     protected void checkIfEnterKey(KeyEvent e) {
@@ -70,7 +112,7 @@ public class CreateGameController implements GameStartedEventListener {
     public void deleteGame(Game game) {
 
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
-        this.rmiClient.deleteGame(game);
+        this.rmiClient.deleteGame(game.getId());
     }
 
     @Override
@@ -95,8 +137,13 @@ public class CreateGameController implements GameStartedEventListener {
             }
 
             gameScreenStage.setOnCloseRequest(we -> {
+                System.out.println("closing game from create game");
+                String userId = DataManager.getPlayerId();
+                
                 deleteGame(game);
-                gameScreenStage.close();
+                this.rmiClient.logout(userId );
+                Platform.exit();
+                System.exit(0);
             });
         });
     }

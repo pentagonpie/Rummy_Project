@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -39,6 +40,7 @@ public class LoginController {
         newStage.show();
 
         newStage.setOnCloseRequest(we -> {
+            
             Platform.exit();
             System.exit(0);
         });
@@ -60,6 +62,13 @@ public class LoginController {
             alert.show();
         }
     }
+    
+    @FXML
+    protected void checkIfEnterKey(KeyEvent e) {
+        if (e.getCode().toString().equals("ENTER")) {
+            onLoginClick();
+        }
+    }
 
     @FXML
     protected void onLoginClick() {
@@ -68,8 +77,19 @@ public class LoginController {
         final String userId = this.rmiClient.login(username, password);
 
         boolean isLoggedIn = userId != null;
+        
+
+
 
         if (isLoggedIn) {
+            
+            if(userId.equals("loggedInAlready")){                       
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Login Failed");
+                alert.setHeaderText("User logged in already");
+                alert.show();
+                return;
+            }
 
             DataManager.setUserName(username);
             DataManager.setPlayerId(userId);
@@ -84,6 +104,7 @@ public class LoginController {
                 newStage.show();
 
                 newStage.setOnCloseRequest(we -> {
+                    this.rmiClient.logout(userId);
                     Platform.exit();
                     System.exit(0);
                 });

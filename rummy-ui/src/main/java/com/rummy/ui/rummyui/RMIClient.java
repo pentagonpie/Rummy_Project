@@ -28,6 +28,23 @@ public class RMIClient implements Serializable, RummyClient {
         }
         return rmiClient;
     }
+    
+    public int getScore(String userId) {
+        try {
+            return server.getScore(userId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public void setScore(String userId, int score) {
+        try {
+            server.setScore(userId, score);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
 
     public String login(String username, String password) {
         try {
@@ -36,10 +53,18 @@ public class RMIClient implements Serializable, RummyClient {
             throw new RuntimeException(e);
         }
     }
+    
+    public void logout(String userId) {
+        try {
+            server.logout(userId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public int createUser(String name, String password) {
         try {
-            System.out.println("hello inside RMIclientt, createUser " + name + ", " + password);
+            //System.out.println("hello inside RMIclientt, createUser " + name + ", " + password);
 
             return server.createUser(name, password);
         } catch (RemoteException e) {
@@ -70,10 +95,22 @@ public class RMIClient implements Serializable, RummyClient {
         }
 
     }
-
-    public void deleteGame(Game game) {
+    
+    public boolean checkGameActive(int id){
         try {
-            server.deleteGame(game);
+            return server.checkGameActive( id);
+        } catch (RemoteException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        
+
+    }
+
+    public void deleteGame(String gameID) {
+        try {
+            server.deleteGame(gameID);
         } catch (RemoteException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);

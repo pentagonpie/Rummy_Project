@@ -16,13 +16,13 @@ public class passwordManager {
         String result[] = new String[2];
         result[0] = hashed;
         result[1] = salt;
-        System.out.println("in creating password using salt " + salt);
+        //System.out.println("in creating password using salt " + salt);
         return result;
     }
 
     public static boolean checkPass(String plainPassword, String salt, String realHash) {
 
-        System.out.println("used salt to check pass: " + salt);
+        //System.out.println("used salt to check pass: " + salt);
 
         String possibleHash = BCrypt.hashpw(plainPassword, salt);
         return possibleHash.equals(realHash);

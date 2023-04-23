@@ -4,7 +4,10 @@
  */
 package com.rummy.ui.rummyui;
 
+import com.rummy.shared.Game;
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -23,6 +26,9 @@ import javafx.stage.WindowEvent;
  * @author pentagonpie
  */
 public class MainScreenController {
+    
+    private final RMIClient rmiClient;
+    
     @FXML
     private Button btnLogout;
 
@@ -31,10 +37,18 @@ public class MainScreenController {
 
     @FXML
     private Label userNameLabel;
+    
+    @FXML
+    private Label scoreLabel;
 
     @FXML
     public void initialize() {
-        userNameLabel.setText("User: " + DataManager.getUserName());
+        userNameLabel.setText("User: " + DataManager.getUserName() );
+        scoreLabel.setText(" Score: " + this.rmiClient.getScore(DataManager.getPlayerId()));
+    }
+    
+    public MainScreenController() throws NotBoundException, RemoteException {
+        this.rmiClient = RMIClient.getInstance();
     }
 
     @FXML
@@ -47,8 +61,22 @@ public class MainScreenController {
             newStage.setTitle("Create new game");
             newStage.setScene(createGameScene);
             newStage.show();
-
-            handleCloseProgram(newStage);
+            
+            
+        
+            newStage.setOnCloseRequest(we -> {
+                String userId = DataManager.getPlayerId();
+                Game game = DataManager.getGame();
+                System.out.println("in closing join game window");
+                
+                if(game != null){
+                    System.out.println("deleting game");
+                    this.rmiClient.deleteGame(game.getId());
+                }
+                this.rmiClient.logout(userId);
+                Platform.exit();
+                System.exit(0);
+            });
 
             Stage primaryStage = (Stage) btnNewGame.getScene().getWindow();
             primaryStage.close();
@@ -56,6 +84,7 @@ public class MainScreenController {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
             alert.setHeaderText("Exception at main screen controller");
+            System.out.println(ex.getMessage());
             alert.show();
         }
     }
@@ -79,6 +108,7 @@ public class MainScreenController {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
             alert.setHeaderText("Exception at main screen controller");
+            System.out.println(ex.getMessage());
             alert.show();
         }
     }
@@ -97,6 +127,8 @@ public class MainScreenController {
             //Close login window
             Stage primaryStage = (Stage) btnLogout.getScene().getWindow();
             primaryStage.close();
+            String userId = DataManager.getPlayerId();
+            this.rmiClient.logout(userId);
         } catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("IOException");
@@ -107,7 +139,10 @@ public class MainScreenController {
 
     protected void handleCloseProgram(Stage newStage) {
         newStage.setOnCloseRequest(we -> {
+            String userId = DataManager.getPlayerId();
+            
             newStage.close();
+            this.rmiClient.logout(userId);
             Platform.exit();
             System.exit(0);
         });

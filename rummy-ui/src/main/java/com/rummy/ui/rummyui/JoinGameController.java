@@ -23,6 +23,9 @@ import java.util.List;
 public class JoinGameController implements GameStartedEventListener {
     private final RMIClient rmiClient;
 
+    @FXML
+    private Button backButton;
+        
     public JoinGameController() throws NotBoundException, IOException {
         this.rmiClient = RMIClient.getInstance();
         GameEventsManager.register((EventListener) this);
@@ -32,6 +35,10 @@ public class JoinGameController implements GameStartedEventListener {
     public void initialize() {
         List<Game> games = this.rmiClient.getGames();
         for (Game game : games) {
+            
+            if(this.rmiClient.checkGameActive(Integer.parseInt(  game.getId()))){
+                continue;
+            }
             HBox gameHBox = new HBox();
             Label gameNameLabel = new Label(game.getName());
 
@@ -54,7 +61,39 @@ public class JoinGameController implements GameStartedEventListener {
 
     public void deleteGame(Game game) {
         this.rmiClient.exitGame(game.getName(), DataManager.getPlayerId());
-        this.rmiClient.deleteGame(game);
+        this.rmiClient.deleteGame(game.getId());
+    }
+    
+    
+    @FXML
+    public void onBackButtonClick() {
+        try {
+        //Open main window
+        FXMLLoader fxmlLoader = new FXMLLoader(RummyApplication.class.getResource("mainScreen.fxml"));
+
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(fxmlLoader.load()));
+        newStage.setTitle("Welcome to Rummy!");
+        newStage.show();
+        String userId = DataManager.getPlayerId();
+        newStage.setOnCloseRequest(we -> {
+            this.rmiClient.logout(userId);
+            Platform.exit();
+            System.exit(0);
+        });
+
+        //Close login window
+        Stage primaryStage = (Stage) backButton.getScene().getWindow();
+        primaryStage.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("IOException");
+            alert.setHeaderText("Exception at join game screen controller");
+            alert.show();
+        }
+
     }
 
     @Override
@@ -69,8 +108,12 @@ public class JoinGameController implements GameStartedEventListener {
 
             //Close app after closing window
             gameScreenStage.setOnCloseRequest(we -> {
+                String userId = DataManager.getPlayerId();
+                
                 deleteGame(game);
-                gameScreenStage.close();
+                this.rmiClient.logout(userId);
+                Platform.exit();
+                System.exit(0);
             });
 
             try {

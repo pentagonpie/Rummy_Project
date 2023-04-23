@@ -8,21 +8,32 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 
-public class Database {
+public class Database{
     //Saving database url and login credentials
-    //"jdbc:mysql://localhost:3306/mysql?zeroDateTimeBehavior=CONVERT_TO_NULL";
-    static final String DB_URL =
-            "jdbc:mysql://localhost:3306/rummydb?zeroDateTimeBehavior=CONVERT_TO_NULL";
-    static final String DB_USER = "root";
-    static final String DB_PASSWD = "#!#bookclub#!#";
+   
+//    static final String DB_URL =
+//            "jdbc:mysql://localhost:3306/rummydb?zeroDateTimeBehavior=CONVERT_TO_NULL";
+//    static final String DB_USER = "root";
+//    static final String DB_PASSWD = "#!#bookclub#!#";
+    
+     final String DB_URL;
+     final String DB_USER;
+     final String DB_PASSWD;
+    
+    
+    public Database(String url, String user, String password){
+        this.DB_URL=url;
+        this.DB_USER=user;
+        this.DB_PASSWD=password;
+    }
 
-    private static int getPlayersNum() {
+    private int getPlayersNum() {
         return searchAmount("players") + 1;
     }
 
     //Helper method for getPlayersNum,getGamesNum
     //Searches in the table what is the highest id that exists, and returns it.
-    private static int searchAmount(String atable) {
+    private int searchAmount(String atable) {
 
         Connection connection = null;
 
@@ -36,7 +47,7 @@ public class Database {
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);
             PreparedStatement selectRows = connection.prepareStatement(selectString);
 
-            //selectRows.setString(1, "players");
+            
             resultSet = selectRows.executeQuery();
             int currentID = 0;
             while (resultSet.next()) {
@@ -62,13 +73,23 @@ public class Database {
         return result;
     }
 
-    private static int getGamesNum() {
+    private int getGamesNum() {
         return searchAmount("games") + 1;
     }
 
     public static void main(String[] args) {
-        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+        Scanner myObj = new Scanner(System.in);  
 
+        System.out.println("url:");
+        String url = myObj.nextLine();  
+        
+        System.out.println("user:");
+        String user = myObj.nextLine();  
+        
+        System.out.println("password:");
+        String password = myObj.nextLine();  
+        
+        Database mydb = new Database( url,  user,  password);
         //Endless loop to show user all command options
         while (true) {
             System.out.println("addplayer,playersscore,setscore,playeronline,setonline,creategame,deletegame,addplayergame or exit:");
@@ -81,29 +102,29 @@ public class Database {
                 String name = myObj.nextLine();  // Read user input
                 System.out.println("password:");
                 String pass = myObj.nextLine();  // Read user input
-                System.out.println("result: " + createPlayer(name, pass));
+                System.out.println("result: " + mydb.createPlayer(name, pass));
             } else if (choice.equals("exit")) {
                 break;
             } else if (choice.equals("playersscore")) {
                 System.out.println("id:");
                 String id = myObj.nextLine();  // Read user input
-                System.out.println("score:" + getPlayerScore(Integer.parseInt(id)));
+                System.out.println("score:" + mydb.getPlayerScore(Integer.parseInt(id)));
             } else if (choice.equals("setscore")) {
                 System.out.println("id:");
                 String id = myObj.nextLine();  // Read user input
                 System.out.println("score:");
                 String score = myObj.nextLine();  // Read user input
-                setPlayerScore(Integer.parseInt(id), Integer.parseInt(score));
+                mydb.setPlayerScore(Integer.parseInt(id), Integer.parseInt(score));
             } else if (choice.equals("playeronline")) {
                 System.out.println("id:");
                 String id = myObj.nextLine();  // Read user input
-                System.out.println("online:" + getPlayerOnline(Integer.parseInt(id)));
+                System.out.println("online:" + mydb.getPlayerOnline(Integer.parseInt(id)));
             } else if (choice.equals("setonline")) {
                 System.out.println("id:");
                 String id = myObj.nextLine();  // Read user input
                 System.out.println("online:");
                 String online = myObj.nextLine();  // Read user input
-                setPlayerOnline(Integer.parseInt(id), Integer.parseInt(online));
+                mydb.setPlayerOnline(Integer.parseInt(id), Integer.parseInt(online));
             } else if (choice.equals("creategame")) {
                 System.out.println("playerID:");
                 String id = myObj.nextLine();  // Read user input
@@ -111,30 +132,30 @@ public class Database {
                 System.out.println("game name:");
                 String gameName = myObj.nextLine();  // Read user input
 
-                System.out.println("result: " + createGame(Integer.parseInt(id), gameName));
+                System.out.println("result: " + mydb.createGame(Integer.parseInt(id), gameName));
             } else if (choice.equals("deletegame")) {
                 System.out.println("gameID:");
                 String id = myObj.nextLine();  // Read user input
 
-                deleteGame(Integer.parseInt(id));
+                mydb.deleteGame(Integer.parseInt(id));
             } else if (choice.equals("addplayergame")) {
                 System.out.println("gameID:");
                 String gameID = myObj.nextLine();  // Read user input
 
                 System.out.println("playerID:");
                 String playerID = myObj.nextLine();  // Read user input
-                addPlayerGame(Integer.parseInt(playerID), Integer.parseInt(gameID));
+                mydb.addPlayerGame(Integer.parseInt(playerID), Integer.parseInt(gameID));
             } else if (choice.equals("getgameplayers")) {
                 System.out.println("gameID:");
                 String gameID = myObj.nextLine();  // Read user input
 
-                int players[] = getGamePlayers(Integer.parseInt(gameID));
+                int players[] = mydb.getGamePlayers(Integer.parseInt(gameID));
                 System.out.printf("player1:%d, player2:%d\n", players[0], players[1]);
             } else if (choice.equals("getwinner")) {
                 System.out.println("gameID:");
                 String gameID = myObj.nextLine();  // Read user input
 
-                int player = getWinner(Integer.parseInt(gameID));
+                int player = mydb.getWinner(Integer.parseInt(gameID));
                 System.out.printf("winner:%d\n", player);
             } else if (choice.equals("setwinner")) {
                 System.out.println("gameID:");
@@ -142,23 +163,23 @@ public class Database {
 
                 System.out.println("playerID:");
                 String playerID = myObj.nextLine();  // Read user input
-                setWinner(Integer.parseInt(gameID), Integer.parseInt(playerID));
+                mydb.setWinner(Integer.parseInt(gameID), Integer.parseInt(playerID));
             } else if (choice.equals("setgameactive")) {
                 System.out.println("gameID:");
                 String gameID = myObj.nextLine();  // Read user input
 
                 System.out.println("active:");
                 String active = myObj.nextLine();  // Read user input
-                setGameActive(Integer.parseInt(gameID), Integer.parseInt(active));
+                mydb.setGameActive(Integer.parseInt(gameID), Integer.parseInt(active));
             } else if (choice.equals("getplayername")) {
                 System.out.println("playerID:");
                 String playerID = myObj.nextLine();  // Read user input
-                System.out.println(getPlayerName(Integer.parseInt(playerID)));
+                System.out.println(mydb.getPlayerName(Integer.parseInt(playerID)));
             }
         }//end of while true
     }//end of main
 
-    public static boolean checkPassword(String name, String enteredPassword) {
+    public boolean checkPassword(String name, String enteredPassword) {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -213,7 +234,7 @@ public class Database {
     }
 
     //return -1 if error in creating
-    public static int createPlayer(String name, String password) {
+    public int createPlayer(String name, String password) {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -286,7 +307,7 @@ public class Database {
         return 1;
     }
 
-    public static int getPlayerScore(int id) {
+    public int getPlayerScore(int id) {
         Connection connection = null;
 
         ResultSet resultSet = null;
@@ -320,7 +341,7 @@ public class Database {
         return result;
     }
 
-    public static int setPlayerScore(int id, int score) {
+    public int setPlayerScore(int id, int score) {
         Connection connection = null;
 
         String updateString =
@@ -347,7 +368,7 @@ public class Database {
         return 1;
     }
 
-    public static int getPlayerOnline(int id) {
+    public int getPlayerOnline(int id) {
         Connection connection = null;
 
         ResultSet resultSet = null;
@@ -384,7 +405,7 @@ public class Database {
 
     //0 - offline
     //1 - online
-    public static int setPlayerOnline(int id, int online) {
+    public int setPlayerOnline(int id, int online) {
         Connection connection = null;
 
         String updateString =
@@ -397,7 +418,7 @@ public class Database {
             updatePlayer.setInt(1, online);
             updatePlayer.setInt(2, id);
             updatePlayer.executeUpdate();
-            System.out.println("updated online");
+            //System.out.println("updated online");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return -1;
@@ -411,7 +432,7 @@ public class Database {
         return 1;
     }
 
-    public static int getGameID(String name) {
+    public int getGameID(String name) {
         Connection connection = null;
 
         ResultSet resultSet = null;
@@ -446,7 +467,7 @@ public class Database {
     }
 
 
-    public static int createGame(int playerID, String gameName) {
+    public int createGame(int playerID, String gameName) {
         Connection connection = null;
 
         int newId = getGamesNum();
@@ -521,7 +542,7 @@ public class Database {
         return 1;
     }
 
-    public static int deleteGame(int id) {
+    public int deleteGame(int id) {
         Connection connection = null;
 
         try {
@@ -550,7 +571,7 @@ public class Database {
         return 1;
     }
 
-    public static int addPlayerGame(int playerID, int gameID) {
+    public int addPlayerGame(int playerID, int gameID) {
         Connection connection = null;
 
         String updateString =
@@ -579,7 +600,7 @@ public class Database {
     //0 - not started yet
     //1 - now playing
     //2 - finished, can look at winner
-    public static int setGameActive(int id, int active) {
+    public int setGameActive(int id, int active) {
         Connection connection = null;
 
         String updateString =
@@ -604,8 +625,46 @@ public class Database {
         }
         return 1;
     }
+    
+     //0 - not started yet
+    //1 - now playing
+    //2 - finished, can look at winner
+    public int getGameActive(int id) {
+        Connection connection = null;
+        ResultSet resultSet = null;
 
-    public static int[] getGamePlayers(int id) {
+        int result = -1;
+        try {
+
+            String selectString =
+                    "SELECT * FROM games where id = ?";
+
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);
+            PreparedStatement selectGame = connection.prepareStatement(selectString);
+
+            selectGame.setInt(1, id);
+            resultSet = selectGame.executeQuery();
+            while (resultSet.next()) {
+                result = resultSet.getInt("active");
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+
+                if (connection != null) connection.close();
+            } catch (SQLException ex) {
+            }
+        }
+
+        return result;
+    }
+    
+
+    public int[] getGamePlayers(int id) {
         Connection connection = null;
         ResultSet resultSet = null;
 
@@ -644,7 +703,7 @@ public class Database {
     //winner is id of winning player
     //If problem with getting winner, return -1
     //If games still not finished, return -2
-    public static int getWinner(int id) {
+    public int getWinner(int id) {
         Connection connection = null;
         ResultSet resultSet = null;
 
@@ -686,7 +745,7 @@ public class Database {
     }
 
     //if problem, return -1
-    public static int getID(String name) {
+    public int getID(String name) {
         Connection connection = null;
         ResultSet resultSet = null;
 
@@ -720,7 +779,7 @@ public class Database {
         return result;
     }
 
-    public static int setWinner(int gameID, int playerID) {
+    public int setWinner(int gameID, int playerID) {
         Connection connection = null;
 
         String updateString =
@@ -747,7 +806,7 @@ public class Database {
         return 1;
     }
 
-    public static String getPlayerName(int ID) {
+    public String getPlayerName(int ID) {
         Connection connection = null;
         ResultSet resultSet = null;
 
