@@ -46,10 +46,10 @@
       <version>8.0.31</version>
     </dependency>
     <dependency>
-    <groupId>org.mindrot</groupId>
-    <artifactId>jbcrypt</artifactId>
-    <version>0.4</version>
-</dependency>
+      <groupId>de.svenkubiak</groupId>
+      <artifactId>jBCrypt</artifactId>
+      <version>0.4.3</version>
+    </dependency>
   </dependencies>
 
   <build>

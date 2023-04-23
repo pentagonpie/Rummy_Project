@@ -109,7 +109,10 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     private void addImageToHBox(HBox hbox, String imageFileName, boolean mine, Card card, double leftMargin) {
         StackPane stackPane = new StackPane();
-        Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
+//        String backImageUrl = this.imgDeck.getImage().getUrl();
+//        String imageUrl = backImageUrl.replace("back", imageFileName.toLowerCase());
+        Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName.toLowerCase() + ".png"));
+//        Image image = new Image(imageUrl);
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Constants.CARD_IMAGE_HEIGHT);
         imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
@@ -142,7 +145,7 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
 
     private void addImageToBoardHBox(HBox hbox, String imageFileName, Card card, double leftMargin) {
         StackPane stackPane = new StackPane();
-        Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
+        Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName.toLowerCase() + ".png"));
         ImageView imageView = new ImageView(image);
         imageView.setFitHeight(Constants.CARD_IMAGE_HEIGHT);
         imageView.setFitWidth(Constants.CARD_IMAGE_WIDTH);
@@ -287,8 +290,8 @@ public class GameController implements GameEndedEventListener, GameMoveEventList
         }
 
         Card discardCard = discardPile.get(0);
-        String imageFileName = discardCard.getValue() + "_" + discardCard.getSuit();
-        Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName + ".png"));
+        String imageFileName = discardCard.getValue() + "_" + discardCard.getSuit().toString().toLowerCase();
+        Image image = new Image(getClass().getResourceAsStream("/com/rummy/ui/rummyui/Card_files/images/" + imageFileName.toLowerCase() + ".png"));
         this.imgDiscardPile.setImage(image);
     }
 
