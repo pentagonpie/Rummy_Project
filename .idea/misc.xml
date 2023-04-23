@@ -5,7 +5,6 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/rummy-server/pom.xml" />
         <option value="$PROJECT_DIR$/rummy-shared/pom.xml" />
         <option value="$PROJECT_DIR$/rummy-ui/pom.xml" />
         <option value="$PROJECT_DIR$/demo/pom.xml" />
